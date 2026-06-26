@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Gợi ý AI{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-stars"></i> Cá nhân hóa</span>
+        <h1>Gợi ý khóa học (AI)</h1>
+        <p class="page-subtitle">Đề xuất khóa học dựa trên lịch sử học tập của sinh viên.</p>
+    </div>
+    <span class="data-source"><i class="bi bi-gear-fill"></i> sinh qua <code>sp_RecommendCourses</code></span>
+</div>
+
+{% if not is_student %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-person-badge"></i></div>
+        <h6 class="mb-1">Trang này dành cho sinh viên</h6>
+        <p class="mb-0 small">
+            {% if student %}Bạn đang đóng vai <strong>{{ student.FullName }}</strong> ({{ student.Role }}).{% endif %}
+            Hãy chọn một <em>Student</em> ở ô "Đóng vai" để xem &amp; sinh gợi ý.
+        </p>
+    </div>
+{% else %}
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <p class="text-muted mb-0">
+            Gợi ý cho <strong>{{ student.FullName }}</strong> <span class="role-pill">{{ student.Role }}</span>
+        </p>
+        <form method="post" action="{{ url_for('generate_recommendations') }}">
+            <button class="btn btn-primary btn-sm" type="submit">
+                <i class="bi bi-magic me-1"></i>Sinh gợi ý mới
+            </button>
+        </form>
+    </div>
+
+    {% if recs %}
+    <div class="row g-3">
+        {% for r in recs %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card course-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="code-chip">{{ r.CourseCode }}</span>
+                        {% if r.Status == 'Enrolled' %}<span class="status-badge is-graded">{{ r.Status }}</span>
+                        {% elif r.Status == 'Clicked' %}<span class="status-badge is-submitted">{{ r.Status }}</span>
+                        {% elif r.Status == 'Ignored' %}<span class="status-badge is-archived">{{ r.Status }}</span>
+                        {% else %}<span class="status-badge is-draft">{{ r.Status }}</span>{% endif %}
+                    </div>
+                    <h5 class="card-title">{{ r.Title }}</h5>
+                    {% if r.Reason %}<p class="text-muted small mb-2"><i class="bi bi-info-circle me-1"></i>{{ r.Reason }}</p>{% endif %}
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="meta-chip"><i class="bi bi-graph-up"></i>Điểm: {{ '%.2f' % r.Score if r.Score is not none else '—' }}</span>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">{{ r.CreatedAt.strftime('%Y-%m-%d') if r.CreatedAt else '' }}</span>
+                    <a class="btn btn-sm btn-outline-primary btn-detail"
+                       href="{{ url_for('course_detail', course_id=r.CourseID) }}">Xem khóa <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-lightbulb"></i></div>
+        <h6 class="mb-1">Chưa có gợi ý nào</h6>
+        <p class="mb-0 small">Bấm <strong>"Sinh gợi ý mới"</strong> để chạy <code>sp_RecommendCourses</code>.</p>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

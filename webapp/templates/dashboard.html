@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Bảng điều khiển{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-speedometer2"></i> Sinh viên</span>
+        <h1>Bảng điều khiển</h1>
+        <p class="page-subtitle">Tiến độ học tập &amp; bảng điểm cá nhân.</p>
+    </div>
+    <span class="data-source">
+        <i class="bi bi-database-fill-check"></i>
+        <code>vw_Gradebook</code> · <code>fn_CourseProgress</code>
+    </span>
+</div>
+
+{% if not is_student %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-person-badge"></i></div>
+        <h6 class="mb-1">Trang này dành cho sinh viên</h6>
+        <p class="mb-0 small">
+            {% if student %}Bạn đang đóng vai <strong>{{ student.FullName }}</strong> ({{ student.Role }}).{% endif %}
+            Hãy chọn một <em>Student</em> ở ô "Đóng vai" trên thanh điều hướng để xem tiến độ &amp; điểm.
+        </p>
+    </div>
+{% else %}
+    <p class="text-muted">
+        Dữ liệu của <strong>{{ student.FullName }}</strong> <span class="role-pill">{{ student.Role }}</span>
+    </p>
+
+    <!-- Tiến độ theo khóa -->
+    <h2 class="h6 fw-bold mb-3"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Tiến độ theo khóa đã đăng ký</h2>
+    {% if progress %}
+    <div class="row g-3 mb-4">
+        {% for p in progress %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card progress-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="code-chip">{{ p.CourseCode }}</span>
+                        <div class="pc-title mt-2">{{ p.CourseTitle }}</div>
+                    </div>
+                    {% if p.EnrollmentStatus == 'Completed' %}
+                        <span class="status-badge is-graded">{{ p.EnrollmentStatus }}</span>
+                    {% elif p.EnrollmentStatus == 'Dropped' %}
+                        <span class="status-badge is-rejected">{{ p.EnrollmentStatus }}</span>
+                    {% else %}
+                        <span class="status-badge is-submitted">{{ p.EnrollmentStatus }}</span>
+                    {% endif %}
+                </div>
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Tiến độ</span>
+                    <span class="fw-semibold text-dark">{{ '%.0f' % (p.ProgressPct or 0) }}%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"
+                         style="width: {{ p.ProgressPct or 0 }}%"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2 small">
+                    <span class="text-muted">Điểm tổng kết</span>
+                    {% if p.FinalGrade is not none %}
+                        <span>
+                            <span class="fw-semibold text-dark">{{ '%.1f' % p.FinalGrade }}%</span>
+                            {% if p.Passed %}
+                                <a href="{{ url_for('certificate_view', course_id=p.CourseID) }}"
+                                   target="_blank" class="status-badge is-graded ms-1 text-decoration-none">
+                                    <i class="bi bi-patch-check"></i> Đạt
+                                </a>
+                            {% else %}
+                                <span class="status-badge is-late ms-1">Chưa đạt</span>
+                            {% endif %}
+                        </span>
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Chứng chỉ đã đạt -->
+    <h2 class="h6 fw-bold mb-3"><i class="bi bi-patch-check text-primary me-2"></i>Chứng chỉ đã đạt
+        <span class="data-source ms-2"><i class="bi bi-table"></i> bảng <code>Certificates</code></span>
+    </h2>
+    {% if certificates %}
+    <div class="row g-3 mb-4">
+        {% for cert in certificates %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card progress-card border-success">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="code-chip">{{ cert.CourseCode }}</span>
+                    <span class="status-badge is-graded"><i class="bi bi-patch-check-fill"></i> {{ '%.1f' % cert.FinalScore }}%</span>
+                </div>
+                <div class="pc-title">{{ cert.CourseTitle }}</div>
+                <div class="small text-muted mt-1">{{ cert.CertificateCode }}</div>
+                <a href="{{ url_for('certificate_view', course_id=cert.CourseID) }}"
+                   target="_blank" class="btn btn-sm btn-outline-success mt-2">
+                    <i class="bi bi-eye me-1"></i>Xem &amp; in chứng chỉ
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state mb-4">
+        <div class="empty-icon mb-2"><i class="bi bi-patch-exclamation"></i></div>
+        <h6 class="mb-0">Chưa có chứng chỉ nào</h6>
+        <p class="mb-0 small">Đạt ≥ {{ passing_threshold }}% điểm tổng kết một khóa để nhận chứng chỉ.</p>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state mb-4">
+        <div class="empty-icon mb-2"><i class="bi bi-journal-x"></i></div>
+        <h6 class="mb-0">Chưa đăng ký khóa học nào</h6>
+    </div>
+    {% endif %}
+
+    <!-- Bảng điểm -->
+    <h2 class="h6 fw-bold mb-3"><i class="bi bi-card-checklist text-primary me-2"></i>Bảng điểm</h2>
+    {% if grades %}
+    <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+        <thead><tr>
+            <th>Khóa học</th><th>Bài đánh giá</th><th>Loại</th>
+            <th class="text-center">Trạng thái</th><th class="text-center">Điểm</th><th>Nhận xét</th>
+        </tr></thead>
+        <tbody>
+        {% for g in grades %}
+            <tr>
+                <td class="small fw-semibold">{{ g.CourseTitle }}</td>
+                <td class="small">{{ g.AssignmentTitle }}</td>
+                <td><span class="meta-chip">{{ g.AType }}</span></td>
+                <td class="text-center">
+                    {% if g.SubmissionStatus == 'Graded' %}<span class="status-badge is-graded">Graded</span>
+                    {% elif g.SubmissionStatus == 'Rejected' %}<span class="status-badge is-rejected">Rejected</span>
+                    {% else %}<span class="status-badge is-submitted">{{ g.SubmissionStatus }}</span>{% endif %}
+                    {% if g.IsLate %}<span class="status-badge is-late ms-1">Trễ</span>{% endif %}
+                </td>
+                <td class="text-center">
+                    {% if g.Score is not none %}
+                        <span class="score-value">{{ '%.2f' % g.Score }}</span>
+                        <span class="score-max">/ {{ '%.0f' % g.MaxScore }}</span>
+                    {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td class="small text-muted">{{ g.Feedback or '' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table></div></div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-clipboard"></i></div>
+        <h6 class="mb-0">Chưa có điểm nào</h6>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

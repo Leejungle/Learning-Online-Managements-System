@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% block title %}{{ course.Title }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('catalog') }}" class="small text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Quay lại danh mục
+    </a>
+</div>
+
+<!-- ============ HEADER KHÓA HỌC ============ -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+            <span class="code-chip">{{ course.CourseCode }}</span>
+            {% if course.Status == 'Published' %}
+                <span class="status-badge is-published"><i class="bi bi-check-circle"></i>{{ course.Status }}</span>
+            {% elif course.Status == 'Draft' %}
+                <span class="status-badge is-draft"><i class="bi bi-pencil"></i>{{ course.Status }}</span>
+            {% else %}
+                <span class="status-badge is-archived"><i class="bi bi-archive"></i>{{ course.Status }}</span>
+            {% endif %}
+        </div>
+        <h1 class="h3 fw-bold mb-1">{{ course.Title }}</h1>
+        <p class="text-muted mb-3"><i class="bi bi-person-workspace me-1"></i>{{ course.InstructorName }}</p>
+        {% if course.Description %}<p class="mb-3">{{ course.Description }}</p>{% endif %}
+        <div class="d-flex flex-wrap gap-2">
+            <span class="meta-chip"><i class="bi bi-bar-chart-steps"></i>{{ course.Level }}</span>
+            {% if course.CategoryName %}<span class="meta-chip"><i class="bi bi-tag"></i>{{ course.CategoryName }}</span>{% endif %}
+            <span class="meta-chip"><i class="bi bi-people"></i>{{ course.EnrolledStudents }} học viên</span>
+            <span class="meta-chip"><i class="bi bi-collection"></i>{{ course.ModuleCount }} module</span>
+        </div>
+    </div>
+
+    <!-- Trạng thái đăng ký / hành động (Phase 4) -->
+    {% if current_user and current_user.Role == 'Student' %}
+    <div class="card-footer">
+        {% if can_access %}
+            <span class="status-badge is-published"><i class="bi bi-check-circle"></i>Bạn đã đăng ký khóa này</span>
+        {% else %}
+            <form method="post" action="{{ url_for('enroll') }}" class="d-flex flex-wrap align-items-center gap-2">
+                <input type="hidden" name="course_id" value="{{ course.CourseID }}">
+                <span class="text-muted small me-1">
+                    <i class="bi bi-lock me-1"></i>Bạn chưa đăng ký — học liệu đang bị ẩn.
+                </span>
+                <button class="btn btn-sm btn-primary" type="submit">
+                    <i class="bi bi-plus-circle me-1"></i>Đăng ký khóa này
+                </button>
+                <span class="data-source ms-auto"><i class="bi bi-gear"></i> qua <code>sp_EnrollStudent</code></span>
+            </form>
+        {% endif %}
+    </div>
+    {% elif not current_user %}
+    <div class="card-footer">
+        <span class="text-muted small"><i class="bi bi-info-circle me-1 text-primary"></i>
+            Đóng vai một sinh viên (thanh trên) để đăng ký &amp; mở khóa học liệu.</span>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ============ KẾT QUẢ & CHỨNG CHỈ (Coursera-style >= 80%) ============ -->
+{% if current_user and current_user.Role == 'Student' and can_access %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-patch-check text-primary me-2"></i>Kết quả khóa học &amp; Chứng chỉ</span>
+        <span class="data-source"><i class="bi bi-gear"></i> <code>fn_CourseFinalGrade</code> · <code>sp_IssueCertificate</code></span>
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center gap-4">
+            <div>
+                <div class="small text-muted mb-1">Điểm tổng kết</div>
+                {% if final_grade is not none %}
+                    <span class="score-value" style="font-size:1.6rem;">{{ '%.1f' % final_grade }}%</span>
+                {% else %}
+                    <span class="text-muted">Chưa có bài được chấm</span>
+                {% endif %}
+            </div>
+            <div>
+                <div class="small text-muted mb-1">Ngưỡng đạt</div>
+                <span class="fw-semibold">{{ passing_threshold }}%</span>
+            </div>
+            <div class="ms-auto">
+                {% if certificate %}
+                    <span class="status-badge is-graded mb-2 d-inline-block"><i class="bi bi-check-circle"></i> Đã đạt &amp; được cấp chứng chỉ</span><br>
+                    <a href="{{ url_for('certificate_view', course_id=course.CourseID) }}"
+                       class="btn btn-sm btn-success" target="_blank">
+                        <i class="bi bi-patch-check-fill me-1"></i>Xem chứng chỉ {{ certificate.CertificateCode }}
+                    </a>
+                {% elif passed %}
+                    <form method="post" action="{{ url_for('claim_certificate') }}">
+                        <input type="hidden" name="course_id" value="{{ course.CourseID }}">
+                        <button class="btn btn-success" type="submit">
+                            <i class="bi bi-award me-1"></i>Nhận chứng chỉ
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="status-badge is-rejected"><i class="bi bi-lock"></i> Chưa đạt {{ passing_threshold }}%</span>
+                    <div class="small text-muted mt-1" style="max-width:280px;">
+                        Hoàn thành &amp; đạt điểm các bài đánh giá để mở khóa chứng chỉ.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% if final_grade is not none %}
+        <div class="progress mt-3" style="height:10px;">
+            <div class="progress-bar {% if passed %}bg-success{% else %}bg-warning{% endif %}"
+                 role="progressbar" style="width: {{ final_grade }}%"></div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- ============ OUTLINE: MODULES / MATERIALS ============ -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 fw-bold mb-0"><i class="bi bi-collection text-primary me-2"></i>Nội dung khóa học</h2>
+    <span class="data-source"><i class="bi bi-table"></i> bảng <code>Modules</code> · <code>Materials</code></span>
+</div>
+
+{% if modules %}
+<div class="accordion" id="outline">
+    {% for m in modules %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="h{{ m.ModuleID }}">
+            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#c{{ m.ModuleID }}">
+                <span class="me-2 text-muted">{{ m.ModuleOrder }}.</span>{{ m.ModuleTitle }}
+                <span class="ms-2 role-pill">{{ m.materials|length }} học liệu</span>
+            </button>
+        </h2>
+        <div id="c{{ m.ModuleID }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+             data-bs-parent="#outline">
+            <div class="accordion-body">
+                {% if m.materials %}
+                    {% for mat in m.materials %}
+                    <div class="material-row">
+                        <span>
+                            <i class="bi bi-file-earmark-text text-muted me-2"></i>{{ mat.Title }}
+                            <span class="meta-chip ms-1">{{ mat.MaterialType }}</span>
+                        </span>
+                        {% if can_access %}
+                            <a href="{{ mat.ContentURL }}" target="_blank" rel="noopener"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-box-arrow-up-right"></i> Mở
+                            </a>
+                        {% else %}
+                            <span class="text-muted small"><i class="bi bi-lock"></i> cần đăng ký</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted small mb-0">Module này chưa có học liệu.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-inbox"></i></div>
+        <h6 class="mb-1">Khóa học này chưa có module</h6>
+        <p class="mb-0 small">Nội dung sẽ xuất hiện khi giảng viên thêm module &amp; học liệu.</p>
+    </div>
+{% endif %}
+
+<!-- ============ BÀI ĐÁNH GIÁ (sp_SubmitAssignment) ============ -->
+<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+    <h2 class="h5 fw-bold mb-0"><i class="bi bi-clipboard-check text-primary me-2"></i>Bài đánh giá</h2>
+    <span class="data-source"><i class="bi bi-gear"></i> nộp qua <code>sp_SubmitAssignment</code></span>
+</div>
+{% if assignments %}
+<div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+    <thead><tr>
+        <th>Bài đánh giá</th><th>Loại</th><th>Hạn nộp</th><th>Chính sách trễ</th>
+        <th class="text-center">Bài nộp của bạn</th><th class="text-center">Điểm</th>
+        {% if current_user and current_user.Role == 'Student' and can_access %}<th>Nộp bài</th>{% endif %}
+    </tr></thead>
+    <tbody>
+    {% for a in assignments %}
+        <tr>
+            <td class="fw-semibold">{{ a.Title }}</td>
+            <td><span class="meta-chip">{{ a.AType }}</span></td>
+            <td class="small text-muted">{{ a.Deadline.strftime('%Y-%m-%d %H:%M') if a.Deadline else '—' }}</td>
+            <td class="small">{{ a.LatePolicy }}</td>
+            <td class="text-center">
+                {% if a.SubStatus == 'Graded' %}
+                    <span class="status-badge is-graded">Graded</span>
+                {% elif a.SubStatus == 'Rejected' %}
+                    <span class="status-badge is-rejected">Rejected</span>
+                {% elif a.SubStatus == 'Submitted' %}
+                    <span class="status-badge is-submitted">Submitted</span>
+                {% else %}
+                    <span class="text-muted small">Chưa nộp</span>
+                {% endif %}
+                {% if a.IsLate %}<span class="status-badge is-late ms-1">Trễ</span>{% endif %}
+            </td>
+            <td class="text-center">
+                {% if a.Score is not none %}
+                    <span class="score-value">{{ '%.2f' % a.Score }}</span>
+                    <span class="score-max">/ {{ '%.0f' % a.MaxScore }}</span>
+                {% else %}<span class="text-muted">—</span>{% endif %}
+            </td>
+            {% if current_user and current_user.Role == 'Student' and can_access %}
+            <td>
+                <form method="post" action="{{ url_for('submit') }}" class="d-flex gap-1">
+                    <input type="hidden" name="assignment_id" value="{{ a.AssignmentID }}">
+                    <input type="hidden" name="course_id" value="{{ course.CourseID }}">
+                    <input type="url" name="content_url" class="form-control form-control-sm"
+                           style="min-width: 150px;" placeholder="URL bài làm (tùy chọn)">
+                    <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-upload"></i></button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table></div></div>
+{% else %}
+<div class="empty-state"><div class="empty-icon mb-2"><i class="bi bi-clipboard"></i></div>
+    <h6 class="mb-0">Khóa học này chưa có bài đánh giá</h6></div>
+{% endif %}
+
+<!-- ============ THẢO LUẬN (ForumThreads / ForumPosts) ============ -->
+<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+    <h2 class="h5 fw-bold mb-0"><i class="bi bi-chat-dots text-primary me-2"></i>Thảo luận</h2>
+    <span class="data-source"><i class="bi bi-table"></i> bảng <code>ForumThreads</code> · <code>ForumPosts</code></span>
+</div>
+
+{% if current_user %}
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="post" action="{{ url_for('forum_thread') }}">
+            <input type="hidden" name="course_id" value="{{ course.CourseID }}">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="title" class="form-control" placeholder="Tiêu đề chủ đề mới..." required>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="content" class="form-control" placeholder="Nội dung bài viết đầu tiên..." required>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-plus-circle me-1"></i>Tạo</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-soft py-2"><i class="bi bi-info-circle me-1 text-primary"></i>Đóng vai một người dùng để tham gia thảo luận.</div>
+{% endif %}
+
+{% if forum %}
+    {% for item in forum %}
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-chat-square-text me-1"></i>{{ item.thread.Title }}</span>
+            <span class="text-muted small">{{ item.thread.CreatedBy }} · {{ item.thread.PostCount }} bài</span>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for p in item.posts %}
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <span class="fw-semibold small">{{ p.Author }}
+                        <span class="role-pill ms-1">{{ p.AuthorRole }}</span></span>
+                    <span class="text-muted small">{{ p.CreatedAt.strftime('%Y-%m-%d %H:%M') if p.CreatedAt else '' }}</span>
+                </div>
+                <div class="mt-1">{{ p.Content }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% if current_user %}
+        <div class="card-body py-2">
+            <form method="post" action="{{ url_for('forum_post') }}" class="d-flex gap-2">
+                <input type="hidden" name="thread_id" value="{{ item.thread.ThreadID }}">
+                <input type="hidden" name="course_id" value="{{ course.CourseID }}">
+                <input type="text" name="content" class="form-control form-control-sm" placeholder="Viết trả lời..." required>
+                <button class="btn btn-sm btn-outline-primary" type="submit"><i class="bi bi-reply"></i></button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+<div class="empty-state"><div class="empty-icon mb-2"><i class="bi bi-chat"></i></div>
+    <h6 class="mb-0">Chưa có thảo luận nào cho khóa này</h6></div>
+{% endif %}
+{% endblock %}

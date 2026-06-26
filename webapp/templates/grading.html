@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Chấm điểm{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-pencil-square"></i> Giảng viên</span>
+        <h1>Chấm điểm bài nộp</h1>
+        <p class="page-subtitle">Ghi điểm &amp; nhận xét cho bài nộp của sinh viên.</p>
+    </div>
+    <span class="data-source"><i class="bi bi-gear-fill"></i> ghi qua <code>sp_GradeSubmission</code></span>
+</div>
+
+{% if not can_grade %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-person-badge"></i></div>
+        <h6 class="mb-1">Trang này dành cho Instructor / Admin</h6>
+        <p class="mb-0 small">
+            {% if grader %}Bạn đang đóng vai <strong>{{ grader.FullName }}</strong> ({{ grader.Role }}).{% endif %}
+            Hãy chọn một giảng viên ở ô <em>"Đóng vai"</em> trên thanh điều hướng.
+        </p>
+    </div>
+{% else %}
+    <p class="text-muted">
+        Đang chấm với vai trò <strong>{{ grader.FullName }}</strong>
+        <span class="role-pill">{{ grader.Role }}</span>
+        {% if grader.Role == 'Instructor' %}— chỉ hiển thị bài thuộc khóa bạn phụ trách.{% endif %}
+    </p>
+
+    {% if submissions %}
+    <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+        <thead><tr>
+            <th>#</th><th>Khóa học</th><th>Bài đánh giá</th><th>Sinh viên</th>
+            <th class="text-center">Trạng thái</th><th class="text-center">Điểm hiện tại</th>
+            <th style="min-width: 320px;">Chấm / cập nhật</th>
+        </tr></thead>
+        <tbody>
+        {% for s in submissions %}
+            <tr>
+                <td class="text-muted">{{ s.SubmissionID }}</td>
+                <td class="small fw-semibold">{{ s.Course }}</td>
+                <td class="small">{{ s.Assignment }}
+                    <span class="text-muted">(max {{ '%.0f' % s.MaxScore }})</span></td>
+                <td class="small">{{ s.Student }}</td>
+                <td class="text-center">
+                    {% if s.Status == 'Graded' %}<span class="status-badge is-graded">Graded</span>
+                    {% elif s.Status == 'Rejected' %}<span class="status-badge is-rejected">Rejected</span>
+                    {% else %}<span class="status-badge is-submitted">Submitted</span>{% endif %}
+                    {% if s.IsLate %}<span class="status-badge is-late ms-1">Trễ</span>{% endif %}
+                </td>
+                <td class="text-center">
+                    {% if s.Score is not none %}<span class="score-value">{{ '%.2f' % s.Score }}</span>
+                    {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td>
+                    {% if s.Status == 'Rejected' %}
+                        <span class="text-muted small">Bài bị từ chối — không chấm.</span>
+                    {% else %}
+                    <form method="post" action="{{ url_for('grading_submit') }}" class="d-flex gap-1 align-items-center">
+                        <input type="hidden" name="submission_id" value="{{ s.SubmissionID }}">
+                        <input type="number" step="0.01" min="0" name="score" class="form-control form-control-sm"
+                               style="width: 90px;" placeholder="Điểm" required>
+                        <input type="text" name="feedback" class="form-control form-control-sm"
+                               placeholder="Nhận xét (tùy chọn)">
+                        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-check2"></i></button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table></div></div>
+    <p class="text-muted small mt-2">
+        <i class="bi bi-lightbulb me-1"></i>Mẹo demo: nhập điểm <strong>lớn hơn MaxScore</strong> để thấy trigger
+        <code>trg_Grades_MarkGraded</code> chặn với thông báo "score exceeds the assignment MaxScore".
+    </p>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-clipboard-x"></i></div>
+        <h6 class="mb-0">Không có bài nộp nào để chấm</h6>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

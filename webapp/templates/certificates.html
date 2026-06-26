@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Chứng chỉ{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-patch-check"></i> Sinh viên</span>
+        <h1>Chứng chỉ của tôi</h1>
+        <p class="page-subtitle">Chứng chỉ đạt được khi điểm tổng kết khóa học ≥ 80% (Coursera-style).</p>
+    </div>
+    <span class="data-source">
+        <i class="bi bi-database-fill-check"></i>
+        bảng <code>Certificates</code> · <code>sp_IssueCertificate</code>
+    </span>
+</div>
+
+{% if not is_student %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-person-badge"></i></div>
+        <h6 class="mb-1">Trang này dành cho sinh viên</h6>
+        <p class="mb-0 small">
+            {% if student %}Bạn đang đóng vai <strong>{{ student.FullName }}</strong> ({{ student.Role }}).{% endif %}
+            Hãy chọn một <em>Student</em> ở ô "Đóng vai" trên thanh điều hướng.
+        </p>
+    </div>
+{% elif certs %}
+    <div class="row g-3">
+        {% for cert in certs %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card progress-card border-success h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="code-chip">{{ cert.CourseCode }}</span>
+                    <span class="status-badge is-graded"><i class="bi bi-patch-check-fill"></i> {{ '%.1f' % cert.FinalScore }}%</span>
+                </div>
+                <div class="pc-title">{{ cert.CourseTitle }}</div>
+                <div class="small text-muted mt-1"><i class="bi bi-person-workspace me-1"></i>{{ cert.InstructorName }}</div>
+                <div class="small text-muted">{{ cert.CertificateCode }} ·
+                    {{ cert.IssuedAt.strftime('%d/%m/%Y') if cert.IssuedAt else '' }}</div>
+                <a href="{{ url_for('certificate_view', course_id=cert.CourseID) }}"
+                   target="_blank" class="btn btn-sm btn-outline-success mt-2">
+                    <i class="bi bi-eye me-1"></i>Xem &amp; in chứng chỉ
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-patch-exclamation"></i></div>
+        <h6 class="mb-1">Chưa có chứng chỉ nào</h6>
+        <p class="mb-0 small">
+            Đăng ký khóa học, hoàn thành các bài đánh giá và đạt ≥ 80% điểm tổng kết để nhận chứng chỉ.
+            Xem điểm tổng kết ở <a href="{{ url_for('dashboard') }}">Bảng điều khiển</a>.
+        </p>
+    </div>
+{% endif %}
+{% endblock %}

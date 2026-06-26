@@ -1,0 +1,65 @@
+# =====================================================================
+#  Root .gitignore — Online Learning Management System (DBI202)
+#  Mục tiêu: loại file bí mật / cục bộ / sinh tự động; GIỮ mã nguồn,
+#  tài liệu, sơ đồ, ảnh screenshot, requirements.txt, .env.example.
+# =====================================================================
+
+# ---------- Secrets / biến môi trường ----------
+# GIỮ file mẫu .env.example (không chứa bí mật); chặn .env thật.
+# Lưu ý: .gitignore KHÔNG hỗ trợ comment cùng dòng -> để riêng dòng.
+.env
+.env.*
+!.env.example
+
+# ---------- Python: cache & bytecode ----------
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---------- Môi trường ảo Python ----------
+.venv/
+venv/
+env/
+ENV/
+
+# ---------- Flask ----------
+instance/
+.webassets-cache
+
+# ---------- Log ----------
+*.log
+logs/
+
+# ---------- File tạm / backup ----------
+*.tmp
+*.temp
+*.bak
+*.old
+*~
+*.swp
+*.swo
+
+# ---------- File nén / lưu trữ ----------
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+
+# ---------- IDE / editor cache ----------
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ---------- Rác hệ điều hành ----------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo &amp; Thống kê{% endblock %}
+
+{% macro num(v) %}{% if v is none %}—{% else %}{{ v }}{% endif %}{% endmacro %}
+{% macro pct(v) %}{% if v is none %}—{% else %}{{ '%.2f' % v }}%{% endif %}{% endmacro %}
+{% macro dec(v) %}{% if v is none %}—{% else %}{{ '%.2f' % v }}{% endif %}{% endmacro %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-bar-chart-line"></i> Phân tích</span>
+        <h1>Báo cáo &amp; Thống kê</h1>
+        <p class="page-subtitle">6 báo cáo phân tích chạy trực tiếp từ <code>sql/06_reports.sql</code>.</p>
+    </div>
+    <span class="data-source"><i class="bi bi-database-fill-check"></i> Read-only · từng SELECT độc lập</span>
+</div>
+
+<ul class="nav nav-pills flex-wrap gap-1 mb-4" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#r1">1 · Học lực SV</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r2">2 · Hoàn thành khóa</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r3">3 · Hoạt động GV</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r4">4 · Nộp bài</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r5">5 · Sử dụng hệ thống</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r6">6 · Hiệu quả gợi ý AI</button></li>
+</ul>
+
+<div class="tab-content">
+    <!-- ===== Report 1 ===== -->
+    <div class="tab-pane fade show active" id="r1">
+        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Sinh viên</th><th>Khóa học</th><th class="text-center">Bài tập</th>
+                <th class="text-center">Đã chấm</th><th class="text-center">Điểm TB</th>
+                <th class="text-center">Tiến độ</th><th class="text-center">Trạng thái</th></tr></thead>
+            <tbody>
+            {% for r in student_performance %}
+                <tr><td class="small fw-semibold">{{ r.StudentName }}</td><td class="small">{{ r.Course }}</td>
+                    <td class="text-center">{{ num(r.TotalAssignments) }}</td>
+                    <td class="text-center">{{ num(r.GradedCount) }}</td>
+                    <td class="text-center"><span class="score-value">{{ dec(r.AvgScore) }}</span></td>
+                    <td class="text-center">{{ pct(r.ProgressPct) }}</td>
+                    <td class="text-center"><span class="meta-chip">{{ r.EnrollStatus }}</span></td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+    </div>
+
+    <!-- ===== Report 2 ===== -->
+    <div class="tab-pane fade" id="r2">
+        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Mã</th><th>Khóa học</th><th>Giảng viên</th>
+                <th class="text-center">Đăng ký</th><th class="text-center">Hoàn thành</th>
+                <th class="text-center">Bỏ học</th><th class="text-center">Tỷ lệ HT</th></tr></thead>
+            <tbody>
+            {% for r in course_completion %}
+                <tr><td><span class="code-chip">{{ r.CourseCode }}</span></td>
+                    <td class="small fw-semibold">{{ r.Title }}</td><td class="small">{{ r.Instructor }}</td>
+                    <td class="text-center">{{ num(r.TotalEnrollments) }}</td>
+                    <td class="text-center">{{ num(r.Completed) }}</td>
+                    <td class="text-center">{{ num(r.Dropped) }}</td>
+                    <td class="text-center">{{ pct(r.CompletionRatePct) }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+    </div>
+
+    <!-- ===== Report 3 ===== -->
+    <div class="tab-pane fade" id="r3">
+        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Giảng viên</th><th class="text-center">Số khóa</th>
+                <th class="text-center">Bài tập tạo</th><th class="text-center">SV dạy</th>
+                <th class="text-center">Điểm TB SV</th></tr></thead>
+            <tbody>
+            {% for r in instructor_activity %}
+                <tr><td class="small fw-semibold">{{ r.Instructor }}</td>
+                    <td class="text-center">{{ num(r.CoursesOwned) }}</td>
+                    <td class="text-center">{{ num(r.AssignmentsCreated) }}</td>
+                    <td class="text-center">{{ num(r.StudentsTaught) }}</td>
+                    <td class="text-center"><span class="score-value">{{ dec(r.AvgStudentScore) }}</span></td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+    </div>
+
+    <!-- ===== Report 4 ===== -->
+    <div class="tab-pane fade" id="r4">
+        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Bài đánh giá</th><th>Loại</th><th>Hạn nộp</th><th>Chính sách</th>
+                <th class="text-center">Lượt nộp</th><th class="text-center">Đúng hạn</th>
+                <th class="text-center">Trễ</th><th class="text-center">Từ chối</th>
+                <th class="text-center">Tỷ lệ đúng hạn</th></tr></thead>
+            <tbody>
+            {% for r in assignment_submission %}
+                <tr><td class="small fw-semibold">{{ r.Title }}</td><td><span class="meta-chip">{{ r.AType }}</span></td>
+                    <td class="small text-muted">{{ r.Deadline.strftime('%Y-%m-%d %H:%M') if r.Deadline else '—' }}</td>
+                    <td class="small">{{ r.LatePolicy }}</td>
+                    <td class="text-center">{{ num(r.TotalSubmissions) }}</td>
+                    <td class="text-center">{{ num(r.OnTime) }}</td>
+                    <td class="text-center">{{ num(r.Late) }}</td>
+                    <td class="text-center">{{ num(r.Rejected) }}</td>
+                    <td class="text-center">{{ pct(r.OnTimeRatePct) }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+    </div>
+
+    <!-- ===== Report 5 ===== -->
+    <div class="tab-pane fade" id="r5">
+        <h2 class="h6 fw-bold mb-2">Sử dụng theo ngày</h2>
+        <div class="grade-table mb-4"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Ngày</th><th class="text-center">User hoạt động</th>
+                <th class="text-center">Phiên</th><th class="text-center">Hành động</th>
+                <th class="text-center">Tổng giây</th><th class="text-center">TB giây/hành động</th></tr></thead>
+            <tbody>
+            {% for r in usage_daily %}
+                <tr><td class="small">{{ r.Date.strftime('%Y-%m-%d') if r.Date else '—' }}</td>
+                    <td class="text-center">{{ num(r.ActiveUsers) }}</td>
+                    <td class="text-center">{{ num(r.Sessions) }}</td>
+                    <td class="text-center">{{ num(r.TotalActions) }}</td>
+                    <td class="text-center">{{ num(r.TotalDurationSec) }}</td>
+                    <td class="text-center">{{ dec(r.AvgActionSec) }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+        <h2 class="h6 fw-bold mb-2">Thời lượng từng phiên</h2>
+        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Người dùng</th><th>Bắt đầu</th><th>Kết thúc</th>
+                <th class="text-center">Độ dài (giây)</th></tr></thead>
+            <tbody>
+            {% for r in usage_sessions %}
+                <tr><td class="small fw-semibold">{{ r.User or '—' }}</td>
+                    <td class="small text-muted">{{ r.SessionStart.strftime('%Y-%m-%d %H:%M') if r.SessionStart else '—' }}</td>
+                    <td class="small text-muted">{{ r.SessionEnd.strftime('%Y-%m-%d %H:%M') if r.SessionEnd else '—' }}</td>
+                    <td class="text-center">{{ num(r.SessionLengthSec) }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+    </div>
+
+    <!-- ===== Report 6 ===== -->
+    <div class="tab-pane fade" id="r6">
+        <h2 class="h6 fw-bold mb-2">Tổng quan hiệu quả gợi ý</h2>
+        {% if rec_overall %}
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
+                <div class="summary-value">{{ num(rec_overall.TotalShown) }}</div>
+                <div class="summary-label">Lượt hiển thị</div></div></div></div>
+            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
+                <div class="summary-value">{{ num(rec_overall.Clicked) }}</div>
+                <div class="summary-label">Đã click</div></div></div></div>
+            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
+                <div class="summary-value">{{ num(rec_overall.Enrolled) }}</div>
+                <div class="summary-label">Đã đăng ký</div></div></div></div>
+            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
+                <div class="summary-value">{{ num(rec_overall.Ignored) }}</div>
+                <div class="summary-label">Bỏ qua</div></div></div></div>
+            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
+                <div class="summary-value">{{ pct(rec_overall.ClickThroughRatePct) }}</div>
+                <div class="summary-label">CTR</div></div></div></div>
+            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
+                <div class="summary-value">{{ pct(rec_overall.ConversionRatePct) }}</div>
+                <div class="summary-label">Chuyển đổi</div></div></div></div>
+        </div>
+        {% endif %}
+        <h2 class="h6 fw-bold mb-2">Theo khóa được gợi ý</h2>
+        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+            <thead><tr><th>Khóa được gợi ý</th><th class="text-center">Số lần</th>
+                <th class="text-center">Chuyển đổi</th></tr></thead>
+            <tbody>
+            {% for r in rec_by_course %}
+                <tr><td class="small fw-semibold">{{ r.RecommendedCourse }}</td>
+                    <td class="text-center">{{ num(r.Times) }}</td>
+                    <td class="text-center">{{ num(r.Conversions) }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div></div>
+    </div>
+</div>
+{% endblock %}

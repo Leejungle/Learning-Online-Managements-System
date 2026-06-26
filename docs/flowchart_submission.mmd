@@ -1,0 +1,27 @@
+%%{init: {'theme':'dark', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart TD
+    Start(["Student submits assignment"]) --> P["EXEC sp_SubmitAssignment"]
+    P --> INS[/"INSERT INTO Submissions"/]
+    INS --> TRG{"trg_Submissions_Policy"}
+    TRG --> ENR{"Student enrolled in the course?"}
+    ENR -- No --> REJ1["Raise error + ROLLBACK"]
+    ENR -- Yes --> LATE{"SubmittedAt > Deadline?"}
+    LATE -- No --> OK["Status = Submitted, IsLate = 0"]
+    LATE -- Yes --> SETLATE["IsLate = 1"]
+    SETLATE --> POL{"LatePolicy = RejectLate?"}
+    POL -- Yes --> REJ2["Status = Rejected"]
+    POL -- No --> OK2["Status = Submitted, IsLate = 1<br/>(Penalty applied at grading)"]
+    OK --> Done(["Submission saved"])
+    OK2 --> Done
+    REJ2 --> Done
+    REJ1 --> Blocked(["Submission blocked"])
+
+    classDef startend fill:#16a34a,stroke:#bbf7d0,stroke-width:2px,color:#ffffff;
+    classDef decision fill:#b45309,stroke:#fcd34d,stroke-width:1px,color:#ffffff;
+    classDef errnode  fill:#b91c1c,stroke:#fca5a5,stroke-width:1px,color:#ffffff;
+    classDef okmode   fill:#1e3a8a,stroke:#93c5fd,stroke-width:1px,color:#ffffff;
+
+    class Start,Done startend;
+    class ENR,LATE,POL,TRG decision;
+    class REJ1,REJ2,Blocked errnode;
+    class OK,OK2,P,INS,SETLATE okmode;

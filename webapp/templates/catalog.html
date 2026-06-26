@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Danh mục khóa học{% endblock %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-grid"></i> Khóa học</span>
+        <h1>Danh mục khóa học</h1>
+        <p class="page-subtitle">Khám phá toàn bộ khóa học trong hệ thống và lọc theo nhu cầu.</p>
+    </div>
+    <span class="data-source">
+        <i class="bi bi-database-fill-check"></i> Nguồn dữ liệu: view <code>vw_CourseCatalog</code>
+    </span>
+</div>
+
+<!-- Summary bar -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card summary-card">
+            <span class="summary-icon"><i class="bi bi-journal-bookmark"></i></span>
+            <div>
+                <div class="summary-value">{{ courses|length }}</div>
+                <div class="summary-label">Khóa học hiển thị</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card summary-card">
+            <span class="summary-icon"><i class="bi bi-tags"></i></span>
+            <div>
+                <div class="summary-value">{{ categories|length }}</div>
+                <div class="summary-label">Danh mục</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card summary-card">
+            <span class="summary-icon"><i class="bi bi-people"></i></span>
+            <div>
+                <div class="summary-value">{{ courses|sum(attribute='EnrolledStudents') }}</div>
+                <div class="summary-label">Lượt đăng ký</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card summary-card">
+            <span class="summary-icon"><i class="bi bi-collection"></i></span>
+            <div>
+                <div class="summary-value">{{ courses|sum(attribute='ModuleCount') }}</div>
+                <div class="summary-label">Tổng số module</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bộ lọc -->
+<form class="card filter-card shadow-sm mb-4" method="get">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label">Tìm kiếm</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="q" value="{{ filters.q }}" class="form-control"
+                       placeholder="Tên hoặc mã khóa học...">
+            </div>
+        </div>
+        <div class="col-md-2 col-6">
+            <label class="form-label">Cấp độ</label>
+            <select name="level" class="form-select">
+                <option value="">Tất cả</option>
+                {% for lv in ['Beginner', 'Intermediate', 'Advanced'] %}
+                    <option value="{{ lv }}" {% if filters.level == lv %}selected{% endif %}>{{ lv }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3 col-6">
+            <label class="form-label">Danh mục</label>
+            <select name="category" class="form-select">
+                <option value="">Tất cả</option>
+                {% for c in categories %}
+                    <option value="{{ c.CategoryName }}"
+                        {% if filters.category == c.CategoryName %}selected{% endif %}>
+                        {{ c.CategoryName }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 col-6">
+            <label class="form-label">Trạng thái</label>
+            <select name="status" class="form-select">
+                <option value="">Tất cả</option>
+                {% for st in ['Published', 'Draft', 'Archived'] %}
+                    <option value="{{ st }}" {% if filters.status == st %}selected{% endif %}>{{ st }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1 col-6 d-grid">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-funnel"></i></button>
+        </div>
+    </div>
+    {% if filters.q or filters.level or filters.category or filters.status %}
+        <div class="mt-3">
+            <a href="{{ url_for('catalog') }}" class="small text-decoration-none">
+                <i class="bi bi-x-circle"></i> Xóa bộ lọc
+            </a>
+        </div>
+    {% endif %}
+</form>
+
+<!-- Danh sách khóa học -->
+{% if courses %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    {% for course in courses %}
+    <div class="col">
+        <div class="card course-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="code-chip">{{ course.CourseCode }}</span>
+                    {% if course.Status == 'Published' %}
+                        <span class="status-badge is-published"><i class="bi bi-check-circle"></i>{{ course.Status }}</span>
+                    {% elif course.Status == 'Draft' %}
+                        <span class="status-badge is-draft"><i class="bi bi-pencil"></i>{{ course.Status }}</span>
+                    {% else %}
+                        <span class="status-badge is-archived"><i class="bi bi-archive"></i>{{ course.Status }}</span>
+                    {% endif %}
+                </div>
+                <h5 class="card-title">{{ course.Title }}</h5>
+                <p class="instructor mb-3">
+                    <i class="bi bi-person-workspace me-1"></i>{{ course.InstructorName }}
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="meta-chip"><i class="bi bi-bar-chart-steps"></i>{{ course.Level }}</span>
+                    {% if course.CategoryName %}
+                        <span class="meta-chip"><i class="bi bi-tag"></i>{{ course.CategoryName }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 small text-muted">
+                    <span><i class="bi bi-people me-1"></i>{{ course.EnrolledStudents }}</span>
+                    <span><i class="bi bi-collection me-1"></i>{{ course.ModuleCount }} module</span>
+                </div>
+                <a class="btn btn-sm btn-primary btn-detail"
+                   href="{{ url_for('course_detail', course_id=course.CourseID) }}">
+                    Chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon mb-2"><i class="bi bi-search"></i></div>
+    <h6 class="mb-1">Không tìm thấy khóa học nào</h6>
+    <p class="mb-2 small">Thử nới lỏng bộ lọc hoặc xóa từ khóa tìm kiếm.</p>
+    <a href="{{ url_for('catalog') }}" class="btn btn-sm btn-outline-primary">Xóa bộ lọc</a>
+</div>
+{% endif %}
+{% endblock %}

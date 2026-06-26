@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Quy tắc nghiệp vụ{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-shield-check"></i> Toàn vẹn dữ liệu</span>
+        <h1>Showcase quy tắc nghiệp vụ</h1>
+        <p class="page-subtitle">Cố tình thử các thao tác để xem <strong>database tự chặn</strong> và trả về nguyên văn lỗi.</p>
+    </div>
+    <span class="data-source"><i class="bi bi-database-fill-lock"></i> trigger &amp; <code>sp_EnrollStudent</code></span>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-flask me-1"></i>Thử nghiệm đăng ký</div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Chọn một <em>người dùng bất kỳ</em> (kể cả Instructor/Admin) và một khóa, rồi bấm thử.
+                    Kết quả (thành công hoặc lỗi) hiện ở thanh thông báo phía trên.
+                </p>
+                <form method="post" action="{{ url_for('br_try_enroll') }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Người dùng</label>
+                        <select name="user_id" class="form-select" required>
+                            <option value="">— chọn người dùng —</option>
+                            {% for u in users %}
+                                <option value="{{ u.UserID }}">{{ u.FullName }} — {{ u.Role }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Khóa học</label>
+                        <select name="course_id" class="form-select" required>
+                            <option value="">— chọn khóa học —</option>
+                            {% for c in courses %}
+                                <option value="{{ c.CourseID }}">{{ c.CourseCode }} — {{ c.Title }} ({{ c.Status }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-play-circle me-1"></i>Thử đăng ký
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-list-check me-1"></i>Quy tắc được DB thực thi</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><i class="bi bi-person-x text-danger me-2"></i>
+                    Chỉ user có vai trò <strong>Student</strong> mới được đăng ký.</li>
+                <li class="list-group-item"><i class="bi bi-files text-danger me-2"></i>
+                    Không cho <strong>đăng ký trùng</strong> cùng một khóa.</li>
+                <li class="list-group-item"><i class="bi bi-eye-slash text-danger me-2"></i>
+                    Chỉ đăng ký được khóa đã <strong>Published</strong>.</li>
+                <li class="list-group-item"><i class="bi bi-clock-history text-danger me-2"></i>
+                    Nộp bài trễ bị <strong>đánh dấu Late / từ chối</strong> theo chính sách.</li>
+                <li class="list-group-item"><i class="bi bi-sliders text-danger me-2"></i>
+                    Điểm chấm không được <strong>vượt MaxScore</strong> của bài.</li>
+                <li class="list-group-item"><i class="bi bi-shield-lock text-danger me-2"></i>
+                    Chỉ <strong>Instructor/Admin</strong> mới được chấm điểm.</li>
+            </ul>
+            <div class="card-body">
+                <p class="alert alert-soft small mb-0">
+                    <i class="bi bi-lightbulb me-1 text-primary"></i>
+                    Mọi quy tắc nằm ở <strong>tầng database</strong> (trigger/procedure) — web chỉ hiển thị lại
+                    đúng thông điệp, không tự kiểm tra logic.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
