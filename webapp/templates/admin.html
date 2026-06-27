@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Quản trị{% endblock %}
+
+{% macro num(v) %}{% if v is none %}—{% else %}{{ v }}{% endif %}{% endmacro %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-sliders"></i> Quản trị</span>
+        <h1>Tổng quan hệ thống</h1>
+        <p class="page-subtitle">Số liệu toàn nền tảng tổng hợp trực tiếp từ database.</p>
+    </div>
+    <span class="data-source">
+        <i class="bi bi-database-fill-check"></i> <code>COUNT</code> · <code>GROUP BY</code> trên toàn bộ bảng
+    </span>
+</div>
+
+{% if not is_admin %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-shield-lock"></i></div>
+        <h6 class="mb-1">Trang này dành cho quản trị viên</h6>
+        <p class="mb-0 small">
+            {% if admin %}Bạn đang đóng vai <strong>{{ admin.FullName }}</strong> ({{ admin.Role }}).{% endif %}
+            Hãy chọn một <em>Admin</em> ở ô "Đóng vai" trên thanh điều hướng.
+        </p>
+    </div>
+{% else %}
+    <!-- Chỉ số toàn hệ thống -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-mortarboard"></i></div>
+            <div><div class="summary-value">{{ num(overview.Students) }}</div>
+                 <div class="summary-label">Sinh viên</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-person-video3"></i></div>
+            <div><div class="summary-value">{{ num(overview.Instructors) }}</div>
+                 <div class="summary-label">Giảng viên</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-journal-bookmark"></i></div>
+            <div><div class="summary-value">{{ num(overview.Courses) }}</div>
+                 <div class="summary-label">Khóa học ({{ num(overview.Published) }} đã xuất bản)</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-person-check"></i></div>
+            <div><div class="summary-value">{{ num(overview.Enrollments) }}</div>
+                 <div class="summary-label">Lượt đăng ký</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-file-earmark-text"></i></div>
+            <div><div class="summary-value">{{ num(overview.Submissions) }}</div>
+                 <div class="summary-label">Bài nộp</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon" style="background:#ecfdf3;color:#16a34a;"><i class="bi bi-patch-check"></i></div>
+            <div><div class="summary-value">{{ num(overview.Certificates) }}</div>
+                 <div class="summary-label">Chứng chỉ đã cấp</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-shield-lock"></i></div>
+            <div><div class="summary-value">{{ num(overview.Admins) }}</div>
+                 <div class="summary-label">Quản trị viên</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon" style="background:#eef2ff;color:#6366f1;"><i class="bi bi-bar-chart-line"></i></div>
+            <div>
+                <a href="{{ url_for('reports') }}" class="stretched-link text-decoration-none"></a>
+                <div class="summary-value" style="font-size:1.1rem;">Báo cáo &amp; SQL</div>
+                <div class="summary-label">Mở phân tích chi tiết</div></div></div></div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Top khóa học -->
+        <div class="col-lg-7">
+            <h2 class="h6 fw-bold mb-3"><i class="bi bi-trophy text-primary me-2"></i>Top khóa theo lượt đăng ký</h2>
+            <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+                <thead><tr><th>Mã</th><th>Khóa học</th><th>Giảng viên</th>
+                    <th class="text-center">Đăng ký</th><th class="text-center">Hoàn thành</th></tr></thead>
+                <tbody>
+                {% for c in top_courses %}
+                    <tr><td><span class="code-chip">{{ c.CourseCode }}</span></td>
+                        <td class="small fw-semibold">{{ c.Title }}</td>
+                        <td class="small">{{ c.Instructor }}</td>
+                        <td class="text-center">{{ num(c.Enrollments) }}</td>
+                        <td class="text-center">{{ num(c.Completed) }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table></div></div>
+        </div>
+
+        <!-- Chứng chỉ gần đây -->
+        <div class="col-lg-5">
+            <h2 class="h6 fw-bold mb-3"><i class="bi bi-patch-check text-primary me-2"></i>Chứng chỉ gần đây</h2>
+            {% if recent_certs %}
+            <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+                <thead><tr><th>Mã</th><th>Sinh viên</th><th class="text-center">Điểm</th></tr></thead>
+                <tbody>
+                {% for cert in recent_certs %}
+                    <tr><td class="small mono">{{ cert.CertificateCode }}</td>
+                        <td class="small fw-semibold">{{ cert.StudentName }}</td>
+                        <td class="text-center"><span class="status-badge is-graded">{{ '%.1f' % cert.FinalScore }}%</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table></div></div>
+            {% else %}
+            <div class="empty-state"><div class="empty-icon mb-2"><i class="bi bi-patch-exclamation"></i></div>
+                <h6 class="mb-0">Chưa có chứng chỉ nào</h6></div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

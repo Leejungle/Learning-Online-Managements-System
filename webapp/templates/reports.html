@@ -27,6 +27,9 @@
 <div class="tab-content">
     <!-- ===== Report 1 ===== -->
     <div class="tab-pane fade show active" id="r1">
+        {% if student_performance %}
+        <div class="chart-card mb-3"><div class="chart-box"><canvas id="chart1"></canvas></div></div>
+        {% endif %}
         <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
             <thead><tr><th>Sinh viên</th><th>Khóa học</th><th class="text-center">Bài tập</th>
                 <th class="text-center">Đã chấm</th><th class="text-center">Điểm TB</th>
@@ -46,6 +49,9 @@
 
     <!-- ===== Report 2 ===== -->
     <div class="tab-pane fade" id="r2">
+        {% if course_completion %}
+        <div class="chart-card mb-3"><div class="chart-box"><canvas id="chart2"></canvas></div></div>
+        {% endif %}
         <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
             <thead><tr><th>Mã</th><th>Khóa học</th><th>Giảng viên</th>
                 <th class="text-center">Đăng ký</th><th class="text-center">Hoàn thành</th>
@@ -65,6 +71,9 @@
 
     <!-- ===== Report 3 ===== -->
     <div class="tab-pane fade" id="r3">
+        {% if instructor_activity %}
+        <div class="chart-card mb-3"><div class="chart-box"><canvas id="chart3"></canvas></div></div>
+        {% endif %}
         <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
             <thead><tr><th>Giảng viên</th><th class="text-center">Số khóa</th>
                 <th class="text-center">Bài tập tạo</th><th class="text-center">SV dạy</th>
@@ -83,6 +92,9 @@
 
     <!-- ===== Report 4 ===== -->
     <div class="tab-pane fade" id="r4">
+        {% if assignment_submission %}
+        <div class="chart-card mb-3"><div class="chart-box"><canvas id="chart4"></canvas></div></div>
+        {% endif %}
         <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
             <thead><tr><th>Bài đánh giá</th><th>Loại</th><th>Hạn nộp</th><th>Chính sách</th>
                 <th class="text-center">Lượt nộp</th><th class="text-center">Đúng hạn</th>
@@ -106,6 +118,9 @@
     <!-- ===== Report 5 ===== -->
     <div class="tab-pane fade" id="r5">
         <h2 class="h6 fw-bold mb-2">Sử dụng theo ngày</h2>
+        {% if usage_daily %}
+        <div class="chart-card mb-3"><div class="chart-box"><canvas id="chart5"></canvas></div></div>
+        {% endif %}
         <div class="grade-table mb-4"><div class="table-responsive"><table class="table table-hover align-middle">
             <thead><tr><th>Ngày</th><th class="text-center">User hoạt động</th>
                 <th class="text-center">Phiên</th><th class="text-center">Hành động</th>
@@ -161,6 +176,14 @@
                 <div class="summary-label">Chuyển đổi</div></div></div></div>
         </div>
         {% endif %}
+        <div class="row g-3 mb-3">
+            {% if rec_overall and rec_overall.TotalShown %}
+            <div class="col-lg-5"><div class="chart-card h-100"><div class="chart-box"><canvas id="chart6a"></canvas></div></div></div>
+            {% endif %}
+            {% if rec_by_course %}
+            <div class="col-lg-7"><div class="chart-card h-100"><div class="chart-box"><canvas id="chart6b"></canvas></div></div></div>
+            {% endif %}
+        </div>
         <h2 class="h6 fw-bold mb-2">Theo khóa được gợi ý</h2>
         <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
             <thead><tr><th>Khóa được gợi ý</th><th class="text-center">Số lần</th>
@@ -175,4 +198,126 @@
         </table></div></div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    const BRAND = '#2563eb', GREEN = '#16a34a', AMBER = '#d97706',
+          RED = '#dc2626', GREY = '#94a3b8', INDIGO = '#6366f1';
+    const charts = [];
+    Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+    Chart.defaults.color = '#475569';
+    const baseOpts = { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { boxWidth: 12, font: { size: 11 } } } } };
+
+    function mk(id, cfg) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        charts.push(new Chart(el, cfg));
+    }
+
+    // R1 - Điểm trung bình theo (sinh viên · khóa)
+    mk('chart1', {
+        type: 'bar',
+        data: {
+            labels: [{% for r in student_performance %}{{ (r.StudentName ~ ' · ' ~ r.Course)|tojson }},{% endfor %}],
+            datasets: [{ label: 'Điểm TB', backgroundColor: BRAND, borderRadius: 4,
+                data: [{% for r in student_performance %}{{ r.AvgScore if r.AvgScore is not none else 'null' }},{% endfor %}] }]
+        },
+        options: Object.assign({}, baseOpts, { indexAxis: 'y',
+            scales: { x: { beginAtZero: true, suggestedMax: 10 } },
+            plugins: { legend: { display: false } } })
+    });
+
+    // R2 - Đăng ký / Hoàn thành / Bỏ học theo khóa
+    mk('chart2', {
+        type: 'bar',
+        data: {
+            labels: [{% for r in course_completion %}{{ r.CourseCode|tojson }},{% endfor %}],
+            datasets: [
+                { label: 'Đăng ký',   backgroundColor: BRAND, borderRadius: 4, data: [{% for r in course_completion %}{{ r.TotalEnrollments or 0 }},{% endfor %}] },
+                { label: 'Hoàn thành', backgroundColor: GREEN, borderRadius: 4, data: [{% for r in course_completion %}{{ r.Completed or 0 }},{% endfor %}] },
+                { label: 'Bỏ học',    backgroundColor: RED,   borderRadius: 4, data: [{% for r in course_completion %}{{ r.Dropped or 0 }},{% endfor %}] }
+            ]
+        },
+        options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
+    });
+
+    // R3 - Hoạt động giảng viên
+    mk('chart3', {
+        type: 'bar',
+        data: {
+            labels: [{% for r in instructor_activity %}{{ r.Instructor|tojson }},{% endfor %}],
+            datasets: [
+                { label: 'SV dạy',    backgroundColor: INDIGO, borderRadius: 4, data: [{% for r in instructor_activity %}{{ r.StudentsTaught or 0 }},{% endfor %}] },
+                { label: 'Bài tập tạo', backgroundColor: AMBER, borderRadius: 4, data: [{% for r in instructor_activity %}{{ r.AssignmentsCreated or 0 }},{% endfor %}] }
+            ]
+        },
+        options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
+    });
+
+    // R4 - Nộp bài: đúng hạn / trễ / từ chối (stacked)
+    mk('chart4', {
+        type: 'bar',
+        data: {
+            labels: [{% for r in assignment_submission %}{{ r.Title|tojson }},{% endfor %}],
+            datasets: [
+                { label: 'Đúng hạn', backgroundColor: GREEN, data: [{% for r in assignment_submission %}{{ r.OnTime or 0 }},{% endfor %}] },
+                { label: 'Trễ',      backgroundColor: AMBER, data: [{% for r in assignment_submission %}{{ r.Late or 0 }},{% endfor %}] },
+                { label: 'Từ chối',  backgroundColor: RED,   data: [{% for r in assignment_submission %}{{ r.Rejected or 0 }},{% endfor %}] }
+            ]
+        },
+        options: Object.assign({}, baseOpts, {
+            scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } } } })
+    });
+
+    // R5 - Sử dụng theo ngày
+    mk('chart5', {
+        type: 'line',
+        data: {
+            labels: [{% for r in usage_daily %}{{ (r.Date.strftime('%m-%d') if r.Date else '')|tojson }},{% endfor %}],
+            datasets: [
+                { label: 'User hoạt động', borderColor: BRAND, backgroundColor: 'rgba(37,99,235,.12)', fill: true, tension: .3, data: [{% for r in usage_daily %}{{ r.ActiveUsers or 0 }},{% endfor %}] },
+                { label: 'Phiên', borderColor: GREEN, backgroundColor: 'rgba(22,163,74,.10)', fill: true, tension: .3, data: [{% for r in usage_daily %}{{ r.Sessions or 0 }},{% endfor %}] }
+            ]
+        },
+        options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
+    });
+
+    {% if rec_overall and rec_overall.TotalShown %}
+    // R6a - Phân bổ trạng thái gợi ý
+    mk('chart6a', {
+        type: 'doughnut',
+        data: {
+            labels: ['Đã click', 'Đã đăng ký', 'Bỏ qua'],
+            datasets: [{ backgroundColor: [BRAND, GREEN, GREY],
+                data: [{{ rec_overall.Clicked or 0 }}, {{ rec_overall.Enrolled or 0 }}, {{ rec_overall.Ignored or 0 }}] }]
+        },
+        options: Object.assign({}, baseOpts, { plugins: { legend: { position: 'bottom' } } })
+    });
+    {% endif %}
+
+    // R6b - Số lần gợi ý vs chuyển đổi theo khóa
+    mk('chart6b', {
+        type: 'bar',
+        data: {
+            labels: [{% for r in rec_by_course %}{{ r.RecommendedCourse|tojson }},{% endfor %}],
+            datasets: [
+                { label: 'Số lần', backgroundColor: GREY, borderRadius: 4, data: [{% for r in rec_by_course %}{{ r.Times or 0 }},{% endfor %}] },
+                { label: 'Chuyển đổi', backgroundColor: GREEN, borderRadius: 4, data: [{% for r in rec_by_course %}{{ r.Conversions or 0 }},{% endfor %}] }
+            ]
+        },
+        options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
+    });
+
+    // Biểu đồ nằm trong tab ẩn -> resize lại khi tab được hiển thị.
+    document.querySelectorAll('[data-bs-toggle="pill"]').forEach(function (btn) {
+        btn.addEventListener('shown.bs.tab', function () {
+            charts.forEach(function (c) { c.resize(); });
+        });
+    });
+})();
+</script>
 {% endblock %}

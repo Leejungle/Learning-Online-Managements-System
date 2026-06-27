@@ -87,6 +87,9 @@ sqlcmd -S localhost -E -C -i 01_schema.sql -i 02_triggers.sql -i 03_functions_vi
   nó đọc dữ liệu và gọi các object có sẵn trong database.
 - **Web app dùng dữ liệu SQL Server THẬT** (qua pyodbc + Windows Authentication), **không**
   dùng dữ liệu giả ở frontend, không mock, không JSON/SQLite/localStorage.
+- Web demo gồm: danh mục & chi tiết khóa, cổng theo vai trò **Student / Instructor / Admin**,
+  báo cáo **kèm biểu đồ**, hệ thống **chứng chỉ ≥ 80%**, showcase quy tắc nghiệp vụ, và trang
+  **minh bạch SQL** (`/sql-objects` + panel "SQL chạy cho trang này") đọc trực tiếp system catalog.
 - Chi tiết cài đặt & cách chạy web app: xem [`webapp/README.md`](webapp/README.md).
 
 ## 3. Sơ đồ thực thể quan hệ (ERD)
@@ -176,6 +179,9 @@ erDiagram
 4. Thống kê nộp bài đúng hạn vs trễ hạn
 5. Phân tích sử dụng hệ thống (người dùng hoạt động, thời lượng phiên)
 6. Hiệu quả gợi ý của AI (CTR, tỷ lệ chuyển đổi)
+
+> Trang `/reports` của web app hiển thị 6 báo cáo này **kèm biểu đồ trực quan** (Chart.js),
+> dữ liệu đẩy thẳng từ các truy vấn trên — không có số liệu giả ở frontend.
 
 ## 8. Ghi chú thiết kế: mô hình vai trò đơn giản hóa (Role model)
 

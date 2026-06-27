@@ -25,6 +25,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="nav">
+            {% set role = current_user.Role if current_user else None %}
             <ul class="navbar-nav mx-lg-auto my-2 my-lg-0">
                 <li class="nav-item">
                     <a class="nav-link {% if request.endpoint == 'catalog' %}active{% endif %}"
@@ -32,16 +33,12 @@
                         <i class="bi bi-grid me-1"></i>Danh mục khóa học
                     </a>
                 </li>
+
+                {% if role == 'Student' %}
                 <li class="nav-item">
                     <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
                        href="{{ url_for('dashboard') }}">
                         <i class="bi bi-speedometer2 me-1"></i>Bảng điều khiển
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'reports' %}active{% endif %}"
-                       href="{{ url_for('reports') }}">
-                        <i class="bi bi-bar-chart-line me-1"></i>Báo cáo
                     </a>
                 </li>
                 <li class="nav-item">
@@ -51,21 +48,56 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'certificates' %}active{% endif %}"
+                       href="{{ url_for('certificates') }}">
+                        <i class="bi bi-patch-check me-1"></i>Chứng chỉ
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if role == 'Instructor' %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'instructor_portal' %}active{% endif %}"
+                       href="{{ url_for('instructor_portal') }}">
+                        <i class="bi bi-easel me-1"></i>Khóa của tôi
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if role == 'Admin' %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'admin_portal' %}active{% endif %}"
+                       href="{{ url_for('admin_portal') }}">
+                        <i class="bi bi-sliders me-1"></i>Quản trị
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if role in ('Instructor', 'Admin') %}
+                <li class="nav-item">
                     <a class="nav-link {% if request.endpoint == 'grading' %}active{% endif %}"
                        href="{{ url_for('grading') }}">
                         <i class="bi bi-pencil-square me-1"></i>Chấm điểm
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'certificates' %}active{% endif %}"
-                       href="{{ url_for('certificates') }}">
-                        <i class="bi bi-patch-check me-1"></i>Chứng chỉ
+                    <a class="nav-link {% if request.endpoint == 'reports' %}active{% endif %}"
+                       href="{{ url_for('reports') }}">
+                        <i class="bi bi-bar-chart-line me-1"></i>Báo cáo
                     </a>
                 </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link {% if request.endpoint == 'business_rules' %}active{% endif %}"
                        href="{{ url_for('business_rules') }}">
                         <i class="bi bi-shield-check me-1"></i>Quy tắc nghiệp vụ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'sql_objects' %}active{% endif %}"
+                       href="{{ url_for('sql_objects') }}">
+                        <i class="bi bi-database-gear me-1"></i>SQL
                     </a>
                 </li>
             </ul>
@@ -102,6 +134,39 @@
     {% endwith %}
 
     {% block content %}{% endblock %}
+
+    {% if page_sql %}
+    <div class="sql-peek">
+        <button class="sql-peek-toggle" type="button" data-bs-toggle="collapse"
+                data-bs-target="#sqlPeek" aria-expanded="false">
+            <i class="bi bi-database-fill-gear me-1"></i>
+            SQL chạy cho trang này
+            <span class="badge text-bg-light ms-1">{{ page_sql|length }}</span>
+            <i class="bi bi-chevron-down ms-1"></i>
+        </button>
+        <div class="collapse" id="sqlPeek">
+            <div class="sql-peek-body">
+                <p class="sql-peek-note">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Đây là <strong>đúng những câu lệnh</strong> web app vừa gửi tới
+                    SQL Server để dựng trang (tham số truyền qua <code>?</code> —
+                    parameterized, chống SQL injection).
+                </p>
+                {% for q in page_sql %}
+                <div class="sql-block">
+                    <pre><code>{{ q.sql }}</code></pre>
+                    {% if q.params %}
+                    <div class="sql-params">
+                        <span class="sql-params-label">params:</span>
+                        {% for p in q.params %}<code>{{ p }}</code>{% if not loop.last %}, {% endif %}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </main>
 
 <footer class="container app-main py-4 text-center app-footer">
@@ -111,5 +176,6 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

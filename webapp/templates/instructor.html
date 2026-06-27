@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Khóa của tôi{% endblock %}
+
+{% macro num(v) %}{% if v is none %}—{% else %}{{ v }}{% endif %}{% endmacro %}
+
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-2">
+    <div>
+        <span class="page-eyebrow"><i class="bi bi-easel"></i> Giảng viên</span>
+        <h1>Khóa của tôi</h1>
+        <p class="page-subtitle">Tổng quan lớp học, học viên và việc cần chấm.</p>
+    </div>
+    <span class="data-source">
+        <i class="bi bi-database-fill-check"></i>
+        <code>Courses</code> · <code>Enrollments</code> · <code>Submissions</code>
+    </span>
+</div>
+
+{% if not is_instructor %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-person-badge"></i></div>
+        <h6 class="mb-1">Trang này dành cho giảng viên</h6>
+        <p class="mb-0 small">
+            {% if instructor %}Bạn đang đóng vai <strong>{{ instructor.FullName }}</strong> ({{ instructor.Role }}).{% endif %}
+            Hãy chọn một <em>Instructor</em> ở ô "Đóng vai" trên thanh điều hướng.
+        </p>
+    </div>
+{% else %}
+    <p class="text-muted">
+        Dữ liệu của <strong>{{ instructor.FullName }}</strong> <span class="role-pill">{{ instructor.Role }}</span>
+    </p>
+
+    <!-- Chỉ số tổng hợp -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-journal-bookmark"></i></div>
+            <div><div class="summary-value">{{ num(activity.CoursesOwned if activity else courses|length) }}</div>
+                 <div class="summary-label">Khóa phụ trách</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-people"></i></div>
+            <div><div class="summary-value">{{ num(activity.StudentsTaught if activity else '—') }}</div>
+                 <div class="summary-label">Học viên</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon"><i class="bi bi-list-check"></i></div>
+            <div><div class="summary-value">{{ num(activity.AssignmentsCreated if activity else '—') }}</div>
+                 <div class="summary-label">Bài đánh giá</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card summary-card">
+            <div class="summary-icon" style="background:#fff7ed;color:#d97706;"><i class="bi bi-pencil-square"></i></div>
+            <div><div class="summary-value">{{ num(pending) }}</div>
+                 <div class="summary-label">Chờ chấm</div></div></div></div>
+    </div>
+
+    {% if pending and pending > 0 %}
+    <div class="alert alert-soft d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-exclamation-circle me-1"></i>
+            Có <strong>{{ pending }}</strong> bài nộp đang chờ chấm.</span>
+        <a href="{{ url_for('grading') }}" class="btn btn-sm btn-primary">
+            <i class="bi bi-pencil-square me-1"></i>Chấm ngay
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Danh sách khóa -->
+    <h2 class="h6 fw-bold mb-3 mt-2"><i class="bi bi-journal-bookmark text-primary me-2"></i>Danh sách khóa</h2>
+    {% if courses %}
+    <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
+        <thead><tr><th>Mã</th><th>Khóa học</th><th class="text-center">Trạng thái</th>
+            <th class="text-center">Đăng ký</th><th class="text-center">Hoàn thành</th>
+            <th class="text-center">Bài đánh giá</th><th></th></tr></thead>
+        <tbody>
+        {% for c in courses %}
+            <tr>
+                <td><span class="code-chip">{{ c.CourseCode }}</span></td>
+                <td class="small fw-semibold">{{ c.Title }}</td>
+                <td class="text-center">
+                    {% if c.Status == 'Published' %}<span class="status-badge is-published">{{ c.Status }}</span>
+                    {% elif c.Status == 'Draft' %}<span class="status-badge is-draft">{{ c.Status }}</span>
+                    {% else %}<span class="status-badge is-archived">{{ c.Status }}</span>{% endif %}
+                </td>
+                <td class="text-center">{{ num(c.Enrollments) }}</td>
+                <td class="text-center">{{ num(c.Completed) }}</td>
+                <td class="text-center">{{ num(c.Assignments) }}</td>
+                <td class="text-end">
+                    <a href="{{ url_for('course_detail', course_id=c.CourseID) }}"
+                       class="btn btn-sm btn-outline-primary btn-detail">Chi tiết</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table></div></div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon mb-2"><i class="bi bi-journal-x"></i></div>
+        <h6 class="mb-0">Chưa phụ trách khóa nào</h6>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

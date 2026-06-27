@@ -71,12 +71,21 @@ Mỗi trang web ánh xạ trực tiếp tới một object thật trong database
 |---|---|---|
 | `/health` | Kiểm tra kết nối DB (JSON) | `SELECT COUNT(*) FROM Users` |
 | `/catalog` | Danh mục khóa học + lọc (tên/level/category/status) | view `vw_CourseCatalog` |
-| `/courses/<id>` | Chi tiết khóa: outline module/material, đăng ký, nộp bài, thảo luận | `Modules`, `Materials`, `fn_CanAccessCourse`, `sp_EnrollStudent`, `sp_SubmitAssignment`, `ForumThreads/Posts` |
-| `/dashboard` | Điểm + tiến độ của sinh viên đang đóng vai | view `vw_Gradebook`, hàm `fn_CourseProgress` |
-| `/reports` | 6 báo cáo phân tích (tabs) | các SELECT trong `06_reports.sql` |
+| `/courses/<id>` | Chi tiết khóa: outline module/material, đăng ký, nộp bài, **điểm & chứng chỉ**, thảo luận | `Modules`, `Materials`, `fn_CanAccessCourse`, `fn_CourseFinalGrade`, `sp_EnrollStudent`, `sp_SubmitAssignment`, `ForumThreads/Posts` |
+| `/dashboard` | Cổng **Student**: điểm + tiến độ + chứng chỉ | view `vw_Gradebook`, hàm `fn_CourseProgress`, `Certificates` |
+| `/instructor` | Cổng **Instructor**: khóa phụ trách, học viên, việc cần chấm | `Courses`, `Enrollments`, `Submissions` |
+| `/admin` | Cổng **Admin**: tổng quan hệ thống, top khóa, chứng chỉ gần đây | `COUNT`/`GROUP BY` trên toàn bộ bảng |
+| `/portal` | Điều hướng tới cổng đúng theo vai trò | (redirect) |
+| `/reports` | 6 báo cáo phân tích (tabs) **+ biểu đồ Chart.js** | các SELECT trong `06_reports.sql` |
 | `/recommendations` | Gợi ý khóa học (AI) cho sinh viên | `sp_RecommendCourses`, bảng `Recommendations` |
 | `/grading` | Instructor/Admin chấm điểm bài nộp | `sp_GradeSubmission`, trigger `trg_Grades_MarkGraded` |
+| `/certificates`, `/certificate/<id>` | Danh sách & chứng chỉ in được | `Certificates`, `sp_IssueCertificate` |
 | `/business-rules` | Showcase: cố tình vi phạm để DB chặn & hiện nguyên văn lỗi | trigger + `sp_EnrollStudent` |
+| `/sql-objects` | **Minh bạch SQL**: bảng/cột/ràng buộc + định nghĩa view/func/proc/trigger | `sys.tables`, `sys.columns`, `sys.sql_modules`, `sys.foreign_keys` |
+
+> **Navbar theo vai trò:** thanh điều hướng tự đổi link theo Role đang "đóng vai"
+> (Student / Instructor / Admin). Mỗi trang còn có panel **"SQL chạy cho trang này"**
+> hiển thị đúng câu lệnh parameterized vừa gửi tới SQL Server.
 
 **Đối chiếu tính đúng:** mở SSMS chạy `SELECT * FROM vw_CourseCatalog;` và so với trang
 `/catalog` — số liệu phải khớp (bằng chứng web đọc dữ liệu thật từ SQL Server).
@@ -102,8 +111,10 @@ Mỗi trang web ánh xạ trực tiếp tới một object thật trong database
 - **Phase 3** — Trang Reports/Statistics: 6 báo cáo (tabs) từ `06_reports.sql`, chạy từng SELECT độc lập.
 - **Phase 4** — Enroll (`sp_EnrollStudent`) + Recommend (`sp_RecommendCourses`) + Business-rule showcase (hiện nguyên văn lỗi trigger/procedure).
 - **Phase 5** — Submission (`sp_SubmitAssignment`, OUTPUT param) + Grading (`sp_GradeSubmission`) + Forum (`ForumThreads`/`ForumPosts`).
-
-**Tùy chọn (chờ duyệt):** đổi tên `sp_` → `usp_` đồng bộ để tránh tái phát sự cố "procedure ma" trong `master`.
+- **Phase 6 — Chứng chỉ (Coursera-style)** — `fn_CourseFinalGrade`, `fn_HasPassedCourse`, `sp_IssueCertificate`, ràng buộc `CK_Cert_Pass` (≥ 80%); trang `/certificates`, `/certificate/<id>`.
+- **Phase 7 — SQL Transparency** — trang `/sql-objects` (đọc system catalog) + panel "SQL chạy cho trang này" trên mọi trang.
+- **Phase 8 — Reports Charts** — biểu đồ Chart.js cho cả 6 báo cáo (cột/cột chồng/đường/doughnut).
+- **Phase 9 — Role Portal** — navbar theo vai trò + cổng `/instructor` và `/admin`; `/portal` điều hướng theo Role.
 
 ## 10. Ghi chú demo
 

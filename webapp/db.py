@@ -11,6 +11,8 @@ Nguyên tắc:
 
 import os
 import re
+import textwrap
+import threading
 import pyodbc
 from dotenv import load_dotenv
 
@@ -53,8 +55,57 @@ def _rows_to_dicts(cursor):
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
+# =====================================================================
+# SQL Transparency: bắt LẠI đúng câu SQL mà mỗi request vừa chạy.
+# Mục tiêu là để trang web hiển thị "đây chính là SQL gửi tới SQL Server",
+# chứng minh database là source of truth. Dùng thread-local để gắn theo
+# từng request (Flask dev server xử lý tuần tự / theo luồng).
+# =====================================================================
+_cap = threading.local()
+
+
+def capture_begin():
+    """Bắt đầu ghi SQL cho request hiện tại (gọi ở before_request)."""
+    _cap.entries = []
+    _cap.paused = False
+
+
+def capture_pause():
+    """Tạm dừng ghi (vd: khi nạp dữ liệu hạ tầng như danh sách user selector)."""
+    _cap.paused = True
+
+
+def capture_resume():
+    """Tiếp tục ghi sau khi pause."""
+    _cap.paused = False
+
+
+def capture_get():
+    """Lấy danh sách SQL đã ghi cho request hiện tại (list[dict])."""
+    return getattr(_cap, "entries", None) or []
+
+
+def _clean_sql(sql: str) -> str:
+    """Bỏ thụt lề chung + khoảng trắng thừa để hiển thị gọn."""
+    return textwrap.dedent(str(sql)).strip()
+
+
+def _record(sql: str, params: tuple = ()):
+    """Ghi 1 câu SQL vào log của request (nếu đang bật capture)."""
+    entries = getattr(_cap, "entries", None)
+    if entries is None or getattr(_cap, "paused", False):
+        return
+    entries.append(
+        {
+            "sql": _clean_sql(sql),
+            "params": [("NULL" if p is None else str(p)) for p in params],
+        }
+    )
+
+
 def query_all(sql: str, params: tuple = ()):
     """Chạy 1 câu SELECT, trả về list[dict]."""
+    _record(sql, params)
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(sql, params)
@@ -69,6 +120,7 @@ def query_one(sql: str, params: tuple = ()):
 
 def query_scalar(sql: str, params: tuple = ()):
     """Chạy 1 câu SELECT, trả về 1 giá trị đơn (ô đầu tiên) hoặc None."""
+    _record(sql, params)
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(sql, params)
@@ -470,6 +522,7 @@ def enroll_student(student_id: int, course_id: int):
     Có thể raise pyodbc.Error nếu vi phạm quy tắc (vd: đã đăng ký, không phải
     Student, khóa chưa Published) -> route sẽ hiển thị message.
     """
+    _record("EXEC sp_EnrollStudent @StudentID=?, @CourseID=?;", (student_id, course_id))
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("EXEC sp_EnrollStudent ?, ?", (student_id, course_id))
@@ -481,6 +534,7 @@ def recommend_courses(student_id: int, top_n: int = 5):
     Gọi sp_RecommendCourses: vừa SINH gợi ý (INSERT) vừa trả về danh sách
     gợi ý 'Shown'. Trả về list[dict]. Có thể raise nếu user không phải Student.
     """
+    _record("EXEC sp_RecommendCourses @StudentID=?, @TopN=?;", (student_id, top_n))
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("EXEC sp_RecommendCourses ?, ?", (student_id, top_n))
@@ -558,6 +612,14 @@ def submit_assignment(assignment_id: int, student_id: int, content_url=None):
     (do trigger trg_Submissions_Policy đặt) để báo cho người dùng.
     Trả về dict {SubmissionID, Status, IsLate}. Có thể raise nếu chưa enroll.
     """
+    _record(
+        "DECLARE @sid INT;\n"
+        "EXEC sp_SubmitAssignment @AssignmentID=?, @StudentID=?, "
+        "@ContentURL=?, @SubmissionID=@sid OUTPUT;\n"
+        "SELECT @sid AS SubmissionID, s.Status, s.IsLate\n"
+        "FROM Submissions s WHERE s.SubmissionID = @sid;",
+        (assignment_id, student_id, content_url),
+    )
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -609,6 +671,10 @@ def grade_submission(submission_id: int, score, feedback, graded_by: int):
     Chấm điểm 1 bài nộp qua sp_GradeSubmission. Có thể raise nếu vi phạm
     (điểm > MaxScore, người chấm không phải Instructor/Admin, ...).
     """
+    _record(
+        "EXEC sp_GradeSubmission @SubmissionID=?, @Score=?, @Feedback=?, @GradedBy=?;",
+        (submission_id, score, feedback, graded_by),
+    )
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -743,6 +809,7 @@ def issue_certificate(student_id: int, course_id: int):
     Cấp chứng chỉ qua sp_IssueCertificate. Procedure tự kiểm tra điểm >= 80%
     (nếu không sẽ THROW -> route hiển thị message). Trả về dict chứng chỉ.
     """
+    _record("EXEC sp_IssueCertificate @StudentID=?, @CourseID=?;", (student_id, course_id))
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("EXEC sp_IssueCertificate ?, ?", (student_id, course_id))
@@ -755,3 +822,228 @@ def issue_certificate(student_id: int, course_id: int):
                 break
         conn.commit()
         return row[0] if row else None
+
+
+# ---------------------------------------------------------------------
+# Phase: SQL Transparency - đọc metadata LIVE từ system catalog SQL Server.
+# Toàn bộ định nghĩa (CREATE ...) được lấy thẳng từ sys.sql_modules /
+# OBJECT_DEFINITION nên luôn khớp 100% với database thực tế đang chạy.
+# Chỉ đọc (read-only), không nhận tham số người dùng -> không rủi ro.
+# ---------------------------------------------------------------------
+
+def _format_column_type(row) -> str:
+    """Dựng chuỗi kiểu dữ liệu dễ đọc (vd NVARCHAR(100), DECIMAL(5,2))."""
+    t = (row["DataType"] or "").upper()
+    ml = row["MaxLength"]
+    pr = row["Precision"]
+    sc = row["Scale"]
+    if t in ("NVARCHAR", "NCHAR"):
+        length = "MAX" if ml == -1 else int(ml / 2)
+        return f"{t}({length})"
+    if t in ("VARCHAR", "CHAR", "VARBINARY", "BINARY"):
+        length = "MAX" if ml == -1 else ml
+        return f"{t}({length})"
+    if t in ("DECIMAL", "NUMERIC"):
+        return f"{t}({pr},{sc})"
+    return t
+
+
+def get_schema_overview():
+    """
+    Tổng quan các bảng người dùng: mỗi bảng kèm cột + ràng buộc + số dòng thật.
+    Trả về list[dict]: {SchemaName, TableName, RowCount, columns[], constraints[]}.
+    """
+    tables = query_all(
+        """
+        SELECT  t.object_id              AS ObjectId,
+                s.name                    AS SchemaName,
+                t.name                    AS TableName,
+                SUM(p.rows)               AS [RowCount]
+        FROM sys.tables t
+        JOIN sys.schemas s    ON s.schema_id = t.schema_id
+        JOIN sys.partitions p ON p.object_id = t.object_id AND p.index_id IN (0, 1)
+        GROUP BY t.object_id, s.name, t.name
+        ORDER BY t.name;
+        """
+    )
+
+    columns = query_all(
+        """
+        SELECT  c.object_id          AS ObjectId,
+                c.column_id          AS ColumnId,
+                c.name               AS ColumnName,
+                ty.name              AS DataType,
+                c.max_length         AS MaxLength,
+                c.precision          AS Precision,
+                c.scale              AS Scale,
+                c.is_nullable        AS IsNullable,
+                c.is_identity        AS IsIdentity,
+                dc.definition        AS DefaultDefinition
+        FROM sys.columns c
+        JOIN sys.types ty
+             ON ty.user_type_id = c.user_type_id
+        LEFT JOIN sys.default_constraints dc
+             ON dc.object_id = c.default_object_id
+        ORDER BY c.object_id, c.column_id;
+        """
+    )
+
+    constraints = query_all(
+        """
+        SELECT kc.parent_object_id AS ObjectId, kc.name AS Name,
+               kc.type_desc AS Kind, NULL AS Detail
+        FROM sys.key_constraints kc                 -- PRIMARY KEY / UNIQUE
+        UNION ALL
+        SELECT fk.parent_object_id, fk.name,
+               'FOREIGN KEY',
+               'references ' + OBJECT_NAME(fk.referenced_object_id)
+        FROM sys.foreign_keys fk
+        UNION ALL
+        SELECT cc.parent_object_id, cc.name, 'CHECK', cc.definition
+        FROM sys.check_constraints cc
+        ORDER BY ObjectId, Kind;
+        """
+    )
+
+    cols_by_table = {}
+    for c in columns:
+        cols_by_table.setdefault(c["ObjectId"], []).append(
+            {
+                "ColumnName": c["ColumnName"],
+                "TypeText": _format_column_type(c),
+                "IsNullable": bool(c["IsNullable"]),
+                "IsIdentity": bool(c["IsIdentity"]),
+                "Default": c["DefaultDefinition"],
+            }
+        )
+
+    cons_by_table = {}
+    for c in constraints:
+        cons_by_table.setdefault(c["ObjectId"], []).append(
+            {"Name": c["Name"], "Kind": c["Kind"], "Detail": c["Detail"]}
+        )
+
+    for t in tables:
+        oid = t["ObjectId"]
+        t["columns"] = cols_by_table.get(oid, [])
+        t["constraints"] = cons_by_table.get(oid, [])
+    return tables
+
+
+def get_programmable_objects():
+    """
+    Định nghĩa nguyên văn của view / function / procedure / trigger
+    (lấy từ sys.sql_modules). Trả về list[dict] gồm cả mã nguồn T-SQL.
+    """
+    return query_all(
+        """
+        SELECT  o.type                                   AS TypeCode,
+                o.type_desc                              AS TypeDesc,
+                o.name                                   AS ObjectName,
+                m.definition                             AS Definition,
+                o.modify_date                            AS ModifiedAt,
+                CASE WHEN o.type = 'TR'
+                     THEN OBJECT_NAME(tr.parent_id) END  AS ParentTable
+        FROM sys.objects o
+        JOIN sys.sql_modules m   ON m.object_id = o.object_id
+        LEFT JOIN sys.triggers tr ON tr.object_id = o.object_id
+        WHERE o.is_ms_shipped = 0
+          AND o.type IN ('V', 'P', 'FN', 'IF', 'TF', 'TR')
+        ORDER BY CASE o.type
+                     WHEN 'V'  THEN 1
+                     WHEN 'FN' THEN 2
+                     WHEN 'IF' THEN 2
+                     WHEN 'TF' THEN 2
+                     WHEN 'P'  THEN 3
+                     WHEN 'TR' THEN 4
+                     ELSE 5 END,
+                 o.name;
+        """
+    )
+
+
+# ---------------------------------------------------------------------
+# Phase: Role Portal - dữ liệu cho cổng theo vai trò (Instructor / Admin).
+# Tất cả chỉ đọc, dùng các bảng/quan hệ sẵn có. Student đã có /dashboard.
+# ---------------------------------------------------------------------
+
+def get_instructor_courses(instructor_id: int):
+    """
+    Các khóa do 1 giảng viên phụ trách + sĩ số, số hoàn thành, số bài đánh giá.
+    Chỉ JOIN Enrollments (tránh nhân bản hàng); số bài đánh giá tính bằng subquery.
+    """
+    return query_all(
+        """
+        SELECT c.CourseID, c.CourseCode, c.Title, c.Status,
+               COUNT(e.EnrollmentID)                                  AS Enrollments,
+               SUM(CASE WHEN e.Status='Completed' THEN 1 ELSE 0 END)  AS Completed,
+               (SELECT COUNT(*) FROM Assignments a WHERE a.CourseID=c.CourseID) AS Assignments
+        FROM Courses c
+        LEFT JOIN Enrollments e ON e.CourseID = c.CourseID
+        WHERE c.InstructorID = ?
+        GROUP BY c.CourseID, c.CourseCode, c.Title, c.Status
+        ORDER BY c.CourseCode;
+        """,
+        (instructor_id,),
+    )
+
+
+def get_admin_overview():
+    """Số liệu toàn hệ thống (1 dòng) cho cổng quản trị."""
+    return query_one(
+        """
+        SELECT
+            (SELECT COUNT(*) FROM Users WHERE Role='Student')        AS Students,
+            (SELECT COUNT(*) FROM Users WHERE Role='Instructor')     AS Instructors,
+            (SELECT COUNT(*) FROM Users WHERE Role='Admin')          AS Admins,
+            (SELECT COUNT(*) FROM Courses)                           AS Courses,
+            (SELECT COUNT(*) FROM Courses WHERE Status='Published')  AS Published,
+            (SELECT COUNT(*) FROM Enrollments)                       AS Enrollments,
+            (SELECT COUNT(*) FROM Submissions)                       AS Submissions,
+            (SELECT COUNT(*) FROM Certificates)                      AS Certificates;
+        """
+    )
+
+
+def get_users_by_role():
+    """Phân bổ người dùng theo vai trò (cho biểu đồ/bảng quản trị)."""
+    return query_all(
+        """
+        SELECT Role, COUNT(*) AS Total
+        FROM Users
+        GROUP BY Role
+        ORDER BY Total DESC;
+        """
+    )
+
+
+def get_top_courses(top_n: int = 8):
+    """Top khóa học theo lượt đăng ký (cho cổng quản trị)."""
+    return query_all(
+        """
+        SELECT TOP (?) c.CourseCode, c.Title, u.FullName AS Instructor,
+               COUNT(e.EnrollmentID)                                  AS Enrollments,
+               SUM(CASE WHEN e.Status='Completed' THEN 1 ELSE 0 END)  AS Completed
+        FROM Courses c
+        JOIN Users u ON u.UserID = c.InstructorID
+        LEFT JOIN Enrollments e ON e.CourseID = c.CourseID
+        GROUP BY c.CourseCode, c.Title, u.FullName
+        ORDER BY COUNT(e.EnrollmentID) DESC, c.CourseCode;
+        """,
+        (top_n,),
+    )
+
+
+def get_recent_certificates(top_n: int = 8):
+    """Các chứng chỉ mới cấp gần đây trên toàn hệ thống."""
+    return query_all(
+        """
+        SELECT TOP (?) cert.CertificateCode, cert.FinalScore, cert.IssuedAt,
+               u.FullName AS StudentName, c.Title AS CourseTitle
+        FROM Certificates cert
+        JOIN Users   u ON u.UserID = cert.StudentID
+        JOIN Courses c ON c.CourseID = cert.CourseID
+        ORDER BY cert.IssuedAt DESC;
+        """,
+        (top_n,),
+    )

@@ -41,9 +41,18 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret")
 # Demo user selector: lưu UserID đang "đóng vai" trong session.
 # Đây KHÔNG phải auth thật - chỉ để demo dữ liệu theo từng user.
 # ---------------------------------------------------------------------
+@app.before_request
+def _start_sql_capture():
+    """Bắt đầu ghi lại các câu SQL mà request này sẽ chạy (SQL Transparency)."""
+    db.capture_begin()
+
+
 @app.context_processor
 def inject_globals():
-    """Bơm danh sách user + user hiện tại vào mọi template."""
+    """Bơm danh sách user + user hiện tại + SQL của trang vào mọi template."""
+    # Tạm dừng ghi SQL khi nạp dữ liệu hạ tầng (user selector) để panel
+    # "SQL của trang" chỉ chứa truy vấn nghiệp vụ thật sự của trang.
+    db.capture_pause()
     current_user = None
     user_id = session.get("user_id")
     if user_id:
@@ -52,7 +61,12 @@ def inject_globals():
         all_users = db.get_all_users()
     except Exception:  # noqa: BLE001
         all_users = []
-    return {"all_users": all_users, "current_user": current_user}
+    db.capture_resume()
+    return {
+        "all_users": all_users,
+        "current_user": current_user,
+        "page_sql": db.capture_get(),
+    }
 
 
 @app.route("/select-user", methods=["POST"])
@@ -455,6 +469,116 @@ def certificate_view(course_id):
     if not cert:
         abort(404)
     return render_template("certificate.html", cert=cert)
+
+
+@app.route("/portal")
+def portal():
+    """Cổng theo vai trò: điều hướng người dùng tới trang chủ đúng với Role."""
+    current = _current_user()
+    if not current:
+        flash("Hãy đóng vai một người dùng để vào cổng theo vai trò.", "warning")
+        return redirect(url_for("catalog"))
+    role = current["Role"]
+    if role == "Student":
+        return redirect(url_for("dashboard"))
+    if role == "Instructor":
+        return redirect(url_for("instructor_portal"))
+    if role == "Admin":
+        return redirect(url_for("admin_portal"))
+    return redirect(url_for("catalog"))
+
+
+@app.route("/instructor")
+def instructor_portal():
+    """
+    Cổng giảng viên: khóa mình phụ trách (sĩ số, hoàn thành, số bài đánh giá),
+    chỉ số tổng hợp (report_instructor_activity) và số bài đang chờ chấm.
+    """
+    current = _current_user()
+    is_instructor = bool(current and current["Role"] == "Instructor")
+    if not is_instructor:
+        return render_template(
+            "instructor.html", is_instructor=False, instructor=current
+        )
+
+    iid = current["UserID"]
+    courses = db.get_instructor_courses(iid)
+    submissions = db.get_gradable_submissions(iid)
+    pending = sum(
+        1 for s in submissions if s["Score"] is None and s["Status"] == "Submitted"
+    )
+    activity = next(
+        (
+            r
+            for r in db.report_instructor_activity()
+            if r["InstructorID"] == iid
+        ),
+        None,
+    )
+    return render_template(
+        "instructor.html",
+        is_instructor=True,
+        instructor=current,
+        courses=courses,
+        pending=pending,
+        activity=activity,
+    )
+
+
+@app.route("/admin")
+def admin_portal():
+    """Cổng quản trị: tổng quan toàn hệ thống + top khóa + chứng chỉ gần đây."""
+    current = _current_user()
+    is_admin = bool(current and current["Role"] == "Admin")
+    if not is_admin:
+        return render_template("admin.html", is_admin=False, admin=current)
+
+    return render_template(
+        "admin.html",
+        is_admin=True,
+        admin=current,
+        overview=db.get_admin_overview(),
+        users_by_role=db.get_users_by_role(),
+        top_courses=db.get_top_courses(8),
+        recent_certs=db.get_recent_certificates(8),
+    )
+
+
+@app.route("/sql-objects")
+def sql_objects():
+    """
+    SQL Transparency: liệt kê toàn bộ đối tượng database (bảng + cột + ràng
+    buộc + số dòng thật, và định nghĩa nguyên văn của view/function/
+    procedure/trigger) đọc TRỰC TIẾP từ system catalog của SQL Server.
+    Bằng chứng database là source of truth.
+    """
+    tables = db.get_schema_overview()
+    objects = db.get_programmable_objects()
+
+    groups = {"VIEW": [], "FUNCTION": [], "PROCEDURE": [], "TRIGGER": []}
+    for o in objects:
+        # sys.objects.type là char(2) -> có thể kèm khoảng trắng đuôi ('V ', 'P ')
+        code = (o["TypeCode"] or "").strip()
+        if code == "V":
+            groups["VIEW"].append(o)
+        elif code in ("FN", "IF", "TF"):
+            groups["FUNCTION"].append(o)
+        elif code == "P":
+            groups["PROCEDURE"].append(o)
+        elif code == "TR":
+            groups["TRIGGER"].append(o)
+
+    stats = {
+        "tables": len(tables),
+        "views": len(groups["VIEW"]),
+        "functions": len(groups["FUNCTION"]),
+        "procedures": len(groups["PROCEDURE"]),
+        "triggers": len(groups["TRIGGER"]),
+        "rows": sum((t["RowCount"] or 0) for t in tables),
+    }
+    return render_template(
+        "sql_objects.html", tables=tables, groups=groups, stats=stats
+    )
 
 
 @app.route("/health")

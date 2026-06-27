@@ -248,8 +248,66 @@ a { color: var(--brand); }
 .cert-sign-value { font-weight: 600; color: var(--ink); }
 .cert-sign-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
 
+/* ---------- Charts (reports) ---------- */
+.chart-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    padding: 1rem 1.1rem;
+}
+.chart-box { position: relative; height: 320px; }
+
+/* ---------- SQL Transparency: stat cards ---------- */
+.stat-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius-sm); padding: .8rem .9rem; height: 100%;
+    text-align: center;
+}
+.stat-num { font-size: 1.5rem; font-weight: 700; color: var(--brand-dark); line-height: 1; }
+.stat-label { font-size: .75rem; color: var(--muted); margin-top: .25rem; }
+
+/* ---------- SQL Transparency: object cards ---------- */
+.db-card .card-header { background: #fbfcfe; }
+.db-obj-name { font-weight: 650; color: var(--ink); }
+.db-obj-name i { color: var(--brand); }
+.db-constraints { display: flex; flex-direction: column; gap: .4rem; }
+.db-constraint { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+
+.sql-def {
+    background: #0f172a; color: #e2e8f0; border-radius: var(--radius-sm);
+    padding: 1rem 1.1rem; margin: 0; overflow-x: auto;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .82rem;
+    line-height: 1.55; white-space: pre; tab-size: 4;
+}
+.sql-def code { color: inherit; background: none; padding: 0; }
+
+/* ---------- SQL Transparency: per-page "SQL chạy cho trang này" ---------- */
+.sql-peek { margin-top: 2rem; border-top: 1px dashed var(--line); padding-top: 1rem; }
+.sql-peek-toggle {
+    display: inline-flex; align-items: center; gap: .2rem;
+    background: var(--brand-soft); color: var(--brand-dark);
+    border: 1px solid #d7e3ff; border-radius: 999px;
+    font-size: .82rem; font-weight: 600; padding: .4rem .9rem;
+}
+.sql-peek-toggle:hover { background: #e2ecff; }
+.sql-peek-body { margin-top: .9rem; }
+.sql-peek-note { font-size: .82rem; color: var(--muted); margin-bottom: .8rem; }
+.sql-block { margin-bottom: .8rem; }
+.sql-block pre {
+    background: #0f172a; color: #e2e8f0; border-radius: var(--radius-sm);
+    padding: .85rem 1rem; margin: 0; overflow-x: auto;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8rem;
+    line-height: 1.5; white-space: pre;
+}
+.sql-block pre code { color: inherit; background: none; padding: 0; }
+.sql-params { font-size: .78rem; color: var(--ink-2); margin-top: .35rem; }
+.sql-params-label { color: var(--muted); margin-right: .35rem; }
+.sql-params code {
+    background: #f1f4f9; color: var(--brand-dark);
+    padding: .05rem .4rem; border-radius: 6px; margin-right: .2rem;
+}
+
 @media print {
-    .app-navbar, .app-footer, .d-print-none { display: none !important; }
+    .app-navbar, .app-footer, .d-print-none, .sql-peek { display: none !important; }
     body { background: #fff; }
     .certificate { border-color: #1d4ed8; box-shadow: none; }
 }
