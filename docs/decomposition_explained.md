@@ -10,7 +10,7 @@
 **Ký hiệu:** **PK** = khóa chính, **CK** = khóa dự tuyển (candidate key), **FK** = khóa ngoại,
 **UK** = UNIQUE, **NN** = NOT NULL.
 
-![LMS ERD (Chen notation)](./erd_chen.png)
+![LMS ERD (Chen notation)](./diagrams/erd_chen.png)
 
 *Sơ đồ thực thể quan hệ (Chen notation): thực thể = hình chữ nhật, thuộc tính = oval
 (khóa chính gạch chân, thuộc tính suy diễn = oval nét đứt), quan hệ = hình thoi kèm

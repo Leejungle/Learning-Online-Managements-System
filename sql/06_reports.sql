@@ -99,7 +99,7 @@ GROUP BY l.SessionID, u.FullName
 ORDER BY SessionStart;
 GO
 
-PRINT '=== REPORT 6: AI recommendation effectiveness ===';
+PRINT '=== REPORT 6: Recommendation effectiveness (content-based) ===';
 SELECT  COUNT(*)                                                          AS TotalShown,
         SUM(CASE WHEN Status='Clicked'  THEN 1 ELSE 0 END)                AS Clicked,
         SUM(CASE WHEN Status='Enrolled' THEN 1 ELSE 0 END)                AS Enrolled,

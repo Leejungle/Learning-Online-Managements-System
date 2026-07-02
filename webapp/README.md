@@ -112,7 +112,7 @@ Mỗi trang web ánh xạ trực tiếp tới một object thật trong database
 - **Phase 5** — Submission (`sp_SubmitAssignment`, OUTPUT param) + Grading (`sp_GradeSubmission`) + Forum (`ForumThreads`/`ForumPosts`).
 - **Phase 6 — Chứng chỉ (Coursera-style)** — `fn_CourseFinalGrade`, `fn_HasPassedCourse`, `sp_IssueCertificate`, ràng buộc `CK_Cert_Pass` (≥ 80%); trang `/certificates`, `/certificate/<id>`.
 - **Phase 7 — SQL Transparency** — trang `/sql-objects` (đọc system catalog) + panel "SQL chạy cho trang này" trên mọi trang.
-- **Phase 8 — Reports Charts** — biểu đồ Chart.js cho cả 6 báo cáo (cột/cột chồng/đường/doughnut).
+- **Phase 8 — Reports Charts** — biểu đồ Chart.js cho các báo cáo (cột/cột chồng/đường).
 - **Phase 9 — Role Portal** — navbar theo vai trò + cổng `/instructor` và `/admin`; `/portal` điều hướng theo Role.
 
 ## 10. Ghi chú demo

@@ -2,9 +2,9 @@
 
 Tài liệu này trình bày (A) quá trình chuẩn hóa cơ sở dữ liệu lên dạng **3NF**, và
 (B) **từ điển dữ liệu** mô tả chi tiết từng bảng/cột. Sơ đồ quan hệ tổng thể xem ở
-`docs/erd.png`.
+`docs/diagrams/erd.png`.
 
-![ERD](./erd.png)
+![ERD](./diagrams/erd.png)
 
 ---
 

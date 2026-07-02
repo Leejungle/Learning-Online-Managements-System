@@ -51,14 +51,7 @@ PAGE_WIDTH_IN = 6.3                     # usable width inside A4 margins
 # erd.png is already referenced inside lab2/lab4 .md, so it is handled by the
 # normal image parser; only the additional design diagrams are injected here.
 # ----------------------------------------------------------------------------
-FIG_PLAN = {
-    "lab4_relational_design_process.md": [
-        ("## 6. Physical Design", "docs/block_diagram.png",
-         "System architecture overview of the LMS database and its programmable objects."),
-        ("### 7.2.", "docs/flowchart_submission.png",
-         "Submission process flow enforced by sp_SubmitAssignment and trg_Submissions_Policy."),
-    ],
-}
+FIG_PLAN = {}
 
 # A standalone italic caption line already written in the markdown, e.g.
 # "*Figure 1. Entity-Relationship Diagram ...*" — skipped because the builder

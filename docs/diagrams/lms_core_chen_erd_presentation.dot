@@ -1,0 +1,166 @@
+/* =====================================================================
+   LMS (DBI202) - CORE CONCEPTUAL ERD  (Chen notation, presentation slide)
+   ---------------------------------------------------------------------
+   Purpose : a clean textbook-style Chen ERD for SLIDES ONLY.
+             (The full 17-table ERD stays in the report / appendix.)
+   Notation:
+     - Entity      : rectangle
+     - Attribute   : oval ; PRIMARY KEY = underlined
+     - Relationship: diamond, with cardinality (1 / N / M / 0..1) on edges
+     - M:N ENROLLS is drawn directly as a diamond carrying its own
+       relationship attributes.
+   Scope : 10 core entities only. Auxiliary tables are intentionally omitted
+           (see the note at the bottom).
+   Render:
+     "C:\Program Files\Graphviz\bin\dot.exe" -Kneato -Tpng docs/diagrams/lms_core_chen_erd_presentation.dot -o docs/diagrams/lms_core_chen_erd_presentation.png
+   ===================================================================== */
+graph LMS_CORE_ERD {
+    layout    = neato;
+    overlap   = false;
+    splines   = true;
+    sep       = "+18";
+    esep      = "+8";
+    dpi       = 300;
+    fontname  = "Segoe UI";
+    labelloc  = "t";
+    fontsize  = 18;
+    label     = "LMS ERD (Simplified)";
+
+    node [fontname="Segoe UI"];
+    edge [color="#000000", penwidth=1.0, len=1.25, fontname="Segoe UI"];
+
+    /* ---------------- ENTITY (rectangle, white / black) ---------------- */
+    node [shape=box, style="", color="#000000", fontcolor="#000000",
+          fontsize=13, penwidth=2, margin="0.22,0.13"];
+    USER        [label="USER"];
+    CATEGORY    [label="CATEGORY"];
+    COURSE      [label="COURSE"];
+    MODULE      [label="MODULE"];
+    MATERIAL    [label="MATERIAL"];
+    ASSIGNMENT  [label="ASSIGNMENT"];
+    QUESTION    [label="QUESTION"];
+    QOPTION     [label="QUESTION_OPTION"];
+    SUBMISSION  [label="SUBMISSION"];
+    GRADE       [label="GRADE"];
+
+    /* ---------------- ATTRIBUTE (oval, white / black) ---------------- */
+    node [shape=ellipse, style="", color="#333333", fontcolor="#000000",
+          fontsize=10, penwidth=1, margin="0.04,0.02"];
+
+    /* USER */
+    us_id   [label=<<U>UserID</U>>];
+    us_un   [label="Username"];
+    us_em   [label="Email"];
+    us_fn   [label="FullName"];
+    us_rl   [label="Role"];
+    us_st   [label="Status"];
+    USER -- us_id; USER -- us_un; USER -- us_em; USER -- us_fn; USER -- us_rl; USER -- us_st;
+
+    /* CATEGORY */
+    ca_id [label=<<U>CategoryID</U>>];
+    ca_nm [label="CategoryName"];
+    ca_ds [label="Description"];
+    CATEGORY -- ca_id; CATEGORY -- ca_nm; CATEGORY -- ca_ds;
+
+    /* COURSE */
+    co_id [label=<<U>CourseID</U>>];
+    co_cd [label="CourseCode"];
+    co_ti [label="Title"];
+    co_lv [label="Level"];
+    co_st [label="Status"];
+    co_pr [label="Price"];
+    COURSE -- co_id; COURSE -- co_cd; COURSE -- co_ti; COURSE -- co_lv; COURSE -- co_st; COURSE -- co_pr;
+
+    /* MODULE */
+    mo_id [label=<<U>ModuleID</U>>];
+    mo_ti [label="Title"];
+    mo_or [label="OrderIndex"];
+    MODULE -- mo_id; MODULE -- mo_ti; MODULE -- mo_or;
+
+    /* MATERIAL */
+    ma_id [label=<<U>MaterialID</U>>];
+    ma_ti [label="Title"];
+    ma_ty [label="MaterialType"];
+    ma_ur [label="ContentURL"];
+    MATERIAL -- ma_id; MATERIAL -- ma_ti; MATERIAL -- ma_ty; MATERIAL -- ma_ur;
+
+    /* ASSIGNMENT */
+    as_id [label=<<U>AssignmentID</U>>];
+    as_ti [label="Title"];
+    as_ty [label="AType"];
+    as_mx [label="MaxScore"];
+    as_dl [label="Deadline"];
+    as_lp [label="LatePolicy"];
+    ASSIGNMENT -- as_id; ASSIGNMENT -- as_ti; ASSIGNMENT -- as_ty; ASSIGNMENT -- as_mx; ASSIGNMENT -- as_dl; ASSIGNMENT -- as_lp;
+
+    /* QUESTION */
+    qu_id [label=<<U>QuestionID</U>>];
+    qu_tx [label="QuestionText"];
+    qu_pt [label="Points"];
+    QUESTION -- qu_id; QUESTION -- qu_tx; QUESTION -- qu_pt;
+
+    /* QUESTION_OPTION */
+    op_id [label=<<U>OptionID</U>>];
+    op_tx [label="OptionText"];
+    op_ic [label="IsCorrect"];
+    QOPTION -- op_id; QOPTION -- op_tx; QOPTION -- op_ic;
+
+    /* SUBMISSION */
+    su_id [label=<<U>SubmissionID</U>>];
+    su_at [label="SubmittedAt"];
+    su_la [label="IsLate"];
+    su_st [label="Status"];
+    su_tr [label="Attempt"];
+    SUBMISSION -- su_id; SUBMISSION -- su_at; SUBMISSION -- su_la; SUBMISSION -- su_st; SUBMISSION -- su_tr;
+
+    /* GRADE */
+    gr_id [label=<<U>GradeID</U>>];
+    gr_sc [label="Score"];
+    gr_fb [label="Feedback"];
+    gr_at [label="GradedAt"];
+    GRADE -- gr_id; GRADE -- gr_sc; GRADE -- gr_fb; GRADE -- gr_at;
+
+    /* ---------------- RELATIONSHIP (diamond, light grey) ---------------- */
+    node [shape=diamond, style="filled", fillcolor="#eeeeee", color="#000000",
+          fontcolor="#000000", fontsize=11, penwidth=1.4, margin="0.02,0.02",
+          height=0.65, width=1.25];
+    R_TEACHES    [label="TEACHES"];
+    R_CLASSIFIES [label="CLASSIFIES"];
+    R_CONTAINS   [label="CONTAINS"];
+    R_HASMAT     [label="HAS"];
+    R_ENROLLS    [label="ENROLLS"];
+    R_HASASG     [label="HAS"];
+    R_HASQ       [label="HAS"];
+    R_HASOPT     [label="HAS"];
+    R_SUBMITS    [label="SUBMITS"];
+    R_RECEIVES   [label="RECEIVES"];
+    R_EVAL       [label="EVALUATED_AS"];
+    R_GRADES     [label="GRADES"];
+
+    /* ENROLLS relationship attributes */
+    node [shape=ellipse, style="", color="#333333", fontcolor="#000000", fontsize=10, penwidth=1];
+    en_id [label=<<U>EnrollmentID</U>>];
+    en_dt [label="EnrollDate"];
+    en_pg [label="ProgressPercent"];
+    en_st [label="EnrollmentStatus"];
+    R_ENROLLS -- en_id; R_ENROLLS -- en_dt; R_ENROLLS -- en_pg; R_ENROLLS -- en_st;
+
+    /* ---------------- RELATIONSHIP edges with cardinality ---------------- */
+    edge [color="#000000", fontcolor="#000000", fontsize=13, penwidth=1.5, len=1.7];
+
+    USER       -- R_TEACHES    [label="1"]; R_TEACHES    -- COURSE     [label="N"];
+    CATEGORY   -- R_CLASSIFIES [label="1"]; R_CLASSIFIES -- COURSE     [label="N"];
+    COURSE     -- R_CONTAINS   [label="1"]; R_CONTAINS   -- MODULE     [label="N"];
+    MODULE     -- R_HASMAT     [label="1"]; R_HASMAT     -- MATERIAL   [label="N"];
+
+    USER       -- R_ENROLLS    [label="M"]; R_ENROLLS    -- COURSE     [label="N"];
+
+    COURSE     -- R_HASASG     [label="1"]; R_HASASG     -- ASSIGNMENT [label="N"];
+    ASSIGNMENT -- R_HASQ       [label="1"]; R_HASQ       -- QUESTION   [label="N"];
+    QUESTION   -- R_HASOPT     [label="1"]; R_HASOPT     -- QOPTION    [label="N"];
+
+    USER       -- R_SUBMITS    [label="1"]; R_SUBMITS    -- SUBMISSION [label="N"];
+    ASSIGNMENT -- R_RECEIVES   [label="1"]; R_RECEIVES   -- SUBMISSION [label="N"];
+    SUBMISSION -- R_EVAL       [label="1"]; R_EVAL       -- GRADE      [label="0..1"];
+    USER       -- R_GRADES     [label="1"]; R_GRADES     -- GRADE      [label="N"];
+}

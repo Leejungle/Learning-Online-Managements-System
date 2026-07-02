@@ -1,0 +1,122 @@
+Changed database context to 'LMS'.
+=== NGUOI DUNG ===
+Role                 SoLuong    
+-------------------- -----------
+Admin                          1
+Instructor                    15
+Student                       23
+TongNguoiDung
+-------------
+           39
+=== DANH MUC / KHOA HOC ===
+Categories 
+-----------
+          9
+Status               SoLuong    
+-------------------- -----------
+Published                     26
+TongKhoaHoc
+-----------
+         26
+=== MODULE / HOC LIEU ===
+Modules    
+-----------
+        263
+Materials  
+-----------
+       1315
+=== DANG KY (theo trang thai) ===
+Status               SoLuong    
+-------------------- -----------
+Active                       107
+Completed                     37
+Dropped                       14
+TongDangKy 
+-----------
+        158
+=== DANH GIA / CAU HOI ===
+Assignments
+-----------
+         24
+AType                SoLuong    
+-------------------- -----------
+Assignment                    12
+Quiz                          12
+Questions  
+-----------
+          5
+QuestionOptions
+---------------
+             18
+=== BAI NOP / DIEM ===
+Status               SoLuong    
+-------------------- -----------
+Graded                       128
+Rejected                       1
+Submitted                      1
+TongBaiNop 
+-----------
+        130
+Grades     
+-----------
+        128
+AutoGraded 
+-----------
+          1
+ManualGraded
+------------
+         127
+=== CHUNG CHI / GOI Y / NHAT KY ===
+Certificates
+------------
+          36
+StudentAnswers
+--------------
+             2
+Status               SoLuong    
+-------------------- -----------
+Clicked                        4
+Ignored                        3
+Shown                         15
+TongRecommendations
+-------------------
+                 22
+InteractionLogs
+---------------
+             21
+ForumThreads
+------------
+           2
+ForumPosts 
+-----------
+          5
+=== DOI TUONG LAP TRINH TRONG DB ===
+DML_Triggers
+------------
+           7
+Views      
+-----------
+          2
+Procedures 
+-----------
+          6
+ScalarFunctions
+---------------
+              4
+InlineTableFunctions
+--------------------
+                   1
+TotalFunctions
+--------------
+             5
+BaseTables 
+-----------
+         17
+=== KICH BAN DEMO: chung chi + diem tong ket ===
+CertificateCode Student                                                                                                                                                CourseCode           Title                                                                                                                                                                                                    FinalScore
+--------------- ------------------------------------------------------------------------------------------------------------------------------------------------------ -------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ----------
+LMS-CERT-00001  Ngo Thi Lan                                                                                                                                            DBI202               Database Systems                                                                                                                                                                                              90.00
+LMS-CERT-00003  Ngo Thi Lan                                                                                                                                            DS301                Data Science Foundations                                                                                                                                                                                      90.00
+LMS-CERT-00004  Bui Van Minh                                                                                                                                           DS301                Data Science Foundations                                                                                                                                                                                      90.00
+LMS-CERT-00005  Dang Thi Nga                                                                                                                                           DS301                Data Science Foundations                                                                                                                                                                                      85.00
+LMS-CERT-00006  Dang Thi Nga                                                                                                                                           WD110                Web Development Basics                                                                                                                                                                                        90.00

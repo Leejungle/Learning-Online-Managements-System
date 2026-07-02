@@ -3,10 +3,10 @@
 > **Course:** DBI202 — Database Systems
 > **Lab:** 2 — Entity Analysis and Functional Dependencies
 > **Project:** Online Learning Management System (LMS)
-> **Group:** [GROUP NAME]
-> **Members:** [FULL NAME — STUDENT ID], [FULL NAME — STUDENT ID], [FULL NAME — STUDENT ID], [FULL NAME — STUDENT ID]
-> **Class:** [CLASS CODE]
-> **Date:** [SUBMISSION DATE]
+> **Group:** 1
+> **Members:** Huynh Pham Phi Linh — SE211780, Nguyen Tan Thinh — SE212249, Nguyen Quoc Bao — SE212261, Nguyen Hoang Vu — SE212202
+> **Class:** AI2014
+> **Date:** 01/07/2026
 
 ---
 
@@ -22,7 +22,7 @@ dictionary in `docs/Normalization_and_DataDictionary.md`.
 
 ## 2. Project Domain Description
 
-The LMS supports online learning in a Coursera-like style. **Users** (Students, Instructors,
+The LMS supports online learning through a web-based platform. **Users** (Students, Instructors,
 Admins) interact with **Courses** organised into **Categories**. Each course is structured into
 **Modules**, each containing learning **Materials**. Students register for courses through
 **Enrollments** (a many-to-many relationship). Courses contain **Assignments** (Assignment / Quiz
@@ -229,9 +229,9 @@ grade reaches the 80% threshold.
 The overall structure of the entities and their relationships is shown in the Entity-Relationship
 Diagram below.
 
-![Entity-Relationship Diagram of the LMS database](../erd.png)
+![Entity-Relationship Diagram of the LMS database](../diagrams/erd_chen.png)
 
-*Figure 1. Entity-Relationship Diagram of the LMS database (`docs/erd.png`).*
+*Figure 1. Entity-Relationship Diagram of the LMS database in Chen notation (`docs/diagrams/erd_chen.png`).*
 
 
 | Relationship | Type | Implemented by |
@@ -282,4 +282,4 @@ integrity-preserving foundation for the remaining design and implementation labs
 | Table definitions, columns, PK/FK/UNIQUE constraints | `sql/01_schema.sql` |
 | Per-table data dictionary (types and constraints) | `docs/Normalization_and_DataDictionary.md` (Part B) |
 | FD / 3NF determination table | `docs/Normalization_and_DataDictionary.md` (Part A) |
-| Entity-Relationship Diagram | `docs/erd.png` (Figure 1) |
+| Entity-Relationship Diagram (Chen notation) | `docs/diagrams/erd_chen.png` (Figure 1) |

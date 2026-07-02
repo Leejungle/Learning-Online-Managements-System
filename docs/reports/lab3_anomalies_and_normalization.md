@@ -3,10 +3,10 @@
 > **Course:** DBI202 — Database Systems
 > **Lab:** 3 — Anomaly Detection and Normalization
 > **Project:** Online Learning Management System (LMS)
-> **Group:** [GROUP NAME]
-> **Members:** [FULL NAME — STUDENT ID], [FULL NAME — STUDENT ID], [FULL NAME — STUDENT ID], [FULL NAME — STUDENT ID]
-> **Class:** [CLASS CODE]
-> **Date:** [SUBMISSION DATE]
+> **Group:** 1
+> **Members:** Huynh Pham Phi Linh — SE211780, Nguyen Tan Thinh — SE212249, Nguyen Quoc Bao — SE212261, Nguyen Hoang Vu — SE212202
+> **Class:** AI2014
+> **Date:** 01/07/2026
 
 ---
 

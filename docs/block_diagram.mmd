@@ -9,7 +9,7 @@ flowchart TB
     end
 
     subgraph ACCESS["&nbsp;Access Layer&nbsp;"]
-        UI["Web App UI (planned, bonus)<br/>or<br/>SQL Server Management Studio (current)"]
+        UI["Web App (Flask + pyodbc) - primary UI<br/>or<br/>SQL Server Management Studio - direct access"]
     end
 
     subgraph DBMS["&nbsp;SQL Server - LMS Database&nbsp;"]

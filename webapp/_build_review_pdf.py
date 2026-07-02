@@ -14,11 +14,6 @@ MD = os.path.join(DOCS, "PROJECT_REVIEW.md")
 TMP_HTML = os.path.join(DOCS, "_print.html")
 PDF = os.path.join(DOCS, "PROJECT_REVIEW.pdf")
 
-FOCUS_START = "<!-- SQL_FOCUS_START -->"
-FOCUS_END = "<!-- SQL_FOCUS_END -->"
-APX_START = "<!-- SQL_APPENDIX_START -->"
-APX_END = "<!-- SQL_APPENDIX_END -->"
-
 
 def read_text(path):
     for enc in ("utf-8-sig", "utf-8", "cp1252"):
@@ -31,71 +26,13 @@ def read_text(path):
         return f.read()
 
 
-# ---- 1. Load review markdown, strip previously injected blocks (idempotent) ----
+# ---- 1. Load review markdown as-is (the .md file is the single source of truth) ----
+# NOTE: This script no longer injects an "SQL focus" callout or rebuilds an
+# "Phụ lục A — Mã nguồn SQL" appendix. The full SQL source lives in sql/ and is
+# intentionally NOT reprinted in the report. Edit PROJECT_REVIEW.md directly.
 md = read_text(MD)
-md = re.sub(re.escape(FOCUS_START) + r".*?" + re.escape(FOCUS_END) + r"\n*", "", md, flags=re.DOTALL)
-md = re.sub(re.escape(APX_START) + r".*?" + re.escape(APX_END) + r"\n*", "", md, flags=re.DOTALL)
-md = md.rstrip() + "\n"
 
-# ---- 2. Build the "SQL focus" callout and inject before "## 1. Tổng quan" ----
-focus = f"""{FOCUS_START}
-> ### Trọng tâm chấm điểm: MÃ NGUỒN SQL
-> Lõi của đồ án là **database (T-SQL)** — mọi quy tắc nghiệp vụ đều nằm ở đây. **Toàn bộ mã nguồn chính** (schema
-> + ràng buộc, **7 trigger**, **5 function**, **2 view**, **6 stored procedure**, **6 truy vấn báo cáo**,
-> **12 negative test** và **smoke test luồng hợp lệ**) được **in đầy đủ trong _Phụ lục A — Mã nguồn SQL_** ở cuối
-> tài liệu. Riêng hai script **dữ liệu mẫu** (`05_sample_data.sql`, `08_more_sample_data.sql`) chỉ gồm câu lệnh
-> `INSERT`, **nằm trong repository** và **không in** ở đây để tài liệu gọn. Phần demo web (Mục 8) chỉ minh họa
-> DB chạy trong ứng dụng thật.
-
-{FOCUS_END}
-
-"""
-anchor = "## 1. Tổng quan"
-md = md.replace(anchor, focus + anchor, 1)
-
-# ---- 3. Build Appendix A from the real SQL files ----
-files = [
-    ("A.1. Schema & ràng buộc (PK/FK/UNIQUE/CHECK)", "01_schema.sql"),
-    ("A.2. Trigger — nơi thực thi quy tắc nghiệp vụ", "02_triggers.sql"),
-    ("A.3. Function & View", "03_functions_views.sql"),
-    ("A.4. Stored Procedure (có transaction & xử lý lỗi)", "04_procedures.sql"),
-    ("A.5. Truy vấn báo cáo / thống kê", "06_reports.sql"),
-    ("A.6. Kiểm thử quy tắc nghiệp vụ (negative test, 12/12 PASS)", "07_business_rule_tests.sql"),
-    ("A.7. Smoke test luồng hợp lệ (positive, transaction + ROLLBACK)", "09_positive_smoke_tests.sql"),
-]
-
-parts = [
-    APX_START,
-    "---",
-    "",
-    "## Phụ lục A — Mã nguồn SQL đầy đủ",
-    "",
-    "> Phần này in **nguyên văn các file mã nguồn chính** trong thư mục `sql/` (schema, trigger, "
-    "function/view, stored procedure, truy vấn báo cáo, negative test, smoke test) — là phần chính để "
-    "mentor chấm điểm. Hai script **dữ liệu mẫu** `05_sample_data.sql` và `08_more_sample_data.sql` "
-    "(chỉ gồm `INSERT`) **nằm trong repository, không in ở đây** để tránh dài. "
-    "Thứ tự chạy đầy đủ: `01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09`.",
-    "",
-]
-for title, fname in files:
-    code = read_text(os.path.join(SQLDIR, fname)).rstrip()
-    nlines = code.count("\n") + 1
-    parts.append(f"### {title} — `{fname}` ({nlines} dòng)")
-    parts.append("")
-    parts.append("```sql")
-    parts.append(code)
-    parts.append("```")
-    parts.append("")
-parts.append(APX_END)
-appendix = "\n".join(parts) + "\n"
-
-md = md.rstrip() + "\n\n" + appendix
-
-with open(MD, "w", encoding="utf-8") as f:
-    f.write(md)
-print("Updated", MD)
-
-# ---- 4. Render markdown -> HTML (with SQL syntax highlighting) ----
+# ---- 2. Render markdown -> HTML (with SQL syntax highlighting) ----
 text = md
 text = re.sub(r"^(\s*)- \[x\] ", r"\1- &#9989; ", text, flags=re.MULTILINE)
 text = re.sub(r"^(\s*)- \[ \] ", r"\1- &#11036; ", text, flags=re.MULTILINE)
