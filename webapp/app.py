@@ -102,10 +102,32 @@ def catalog():
     )
     categories = db.get_catalog_categories()
 
+    # "Khóa học phổ biến nhất" (kiểu Coursera) chỉ hiển thị ở chế độ xem mặc
+    # định (không lọc/tìm kiếm) để không gây nhiễu khi người dùng đang lọc.
+    has_filter = any([search, level, category, status])
+    popular_courses = [] if has_filter else db.get_popular_courses(top_n=4)
+
+    # "Gợi ý cho bạn" (cá nhân hóa): chỉ khi đang đóng vai một SINH VIÊN và
+    # không lọc. Nếu SV chưa có gợi ý nào thì sinh ngay bằng sp_RecommendCourses
+    # (để luôn có gì đó minh họa khi demo). Lỗi (vd: chưa đủ dữ kiện) được nuốt
+    # nhẹ để không làm hỏng trang danh mục.
+    recommended_courses = []
+    current = _current_user()
+    if not has_filter and current and current.get("Role") == "Student":
+        sid = current["UserID"]
+        try:
+            if not db.has_recommendations(sid):
+                db.recommend_courses(sid, top_n=4)
+        except Exception:  # noqa: BLE001
+            pass
+        recommended_courses = db.get_recommended_courses(sid, top_n=4)
+
     return render_template(
         "catalog.html",
         courses=courses,
         categories=categories,
+        popular_courses=popular_courses,
+        recommended_courses=recommended_courses,
         filters={
             "q": search or "",
             "level": level or "",
@@ -203,18 +225,28 @@ def dashboard():
 @app.route("/reports")
 def reports():
     """
-    Trang Báo cáo / Thống kê: 6 báo cáo phân tích lấy thẳng từ các truy vấn
-    trong sql/06_reports.sql (chạy từng SELECT độc lập qua db.py). Read-only.
+    Trang Báo cáo / Thống kê lấy thẳng từ các truy vấn trong sql/06_reports.sql
+    (chạy từng SELECT độc lập qua db.py). Read-only.
+
+    Phân quyền theo vai trò:
+    - Instructor: CHỈ xem được R1 (Học lực SV), R2 (Hoàn thành khóa),
+      R4 (Nộp bài) — các báo cáo liên quan trực tiếp tới việc dạy/chấm.
+    - Admin: xem toàn bộ 5 báo cáo (gồm cả Hoạt động GV, Sử dụng hệ thống).
+    Backend KHÔNG truy vấn dữ liệu admin-only khi người dùng không phải Admin.
     """
+    user = _current_user()
+    is_admin = bool(user and user.get("Role") == "Admin")
+
     data = {
+        "is_admin": is_admin,
+        # Báo cáo mọi vai trò (Instructor/Admin) đều xem được
         "student_performance": db.report_student_performance(),
         "course_completion": db.report_course_completion(),
-        "instructor_activity": db.report_instructor_activity(),
         "assignment_submission": db.report_assignment_submission(),
-        "usage_daily": db.report_usage_daily(),
-        "usage_sessions": db.report_usage_sessions(),
-        "rec_overall": db.report_recommendation_overall(),
-        "rec_by_course": db.report_recommendation_by_course(),
+        # Báo cáo CHỈ Admin — không fetch nếu không phải Admin
+        "instructor_activity": db.report_instructor_activity() if is_admin else [],
+        "usage_daily": db.report_usage_daily() if is_admin else [],
+        "usage_sessions": db.report_usage_sessions() if is_admin else [],
     }
     return render_template("reports.html", **data)
 
@@ -248,35 +280,6 @@ def enroll():
     return redirect(request.referrer or url_for("course_detail", course_id=course_id))
 
 
-@app.route("/recommendations")
-def recommendations():
-    """Trang gợi ý AI cho sinh viên đang đóng vai (đọc bảng Recommendations)."""
-    current = _current_user()
-    is_student = bool(current and current["Role"] == "Student")
-    recs = db.get_recommendations(current["UserID"]) if is_student else []
-    return render_template(
-        "recommendations.html", student=current, is_student=is_student, recs=recs
-    )
-
-
-@app.route("/recommendations/generate", methods=["POST"])
-def generate_recommendations():
-    """Sinh gợi ý bằng sp_RecommendCourses cho sinh viên đang đóng vai."""
-    current = _current_user()
-    if not current:
-        flash("Hãy đóng vai một sinh viên trước.", "warning")
-        return redirect(url_for("recommendations"))
-    try:
-        shown = db.recommend_courses(current["UserID"], 5)
-        flash(
-            f"Đã chạy sp_RecommendCourses — hiện có {len(shown)} gợi ý đang hiển thị.",
-            "success",
-        )
-    except Exception as exc:  # noqa: BLE001
-        flash("Không tạo được gợi ý — " + db.sql_error_message(exc), "danger")
-    return redirect(url_for("recommendations"))
-
-
 @app.route("/business-rules")
 def business_rules():
     """
@@ -300,9 +303,10 @@ def br_try_enroll():
         return redirect(url_for("business_rules"))
     try:
         db.enroll_student(user_id, course_id)
-        flash("Thành công: DB chấp nhận đăng ký (không vi phạm quy tắc nào).", "success")
+        flash("DB chấp nhận đăng ký (không vi phạm quy tắc nào).", "success")
     except Exception as exc:  # noqa: BLE001
-        flash("DB từ chối (đúng như mong đợi) — " + db.sql_error_message(exc), "danger")
+        # Hiển thị gọn đúng MỘT dòng thông điệp quy tắc do trigger/procedure trả về.
+        flash(db.sql_error_message(exc), "danger")
     return redirect(url_for("business_rules"))
 
 

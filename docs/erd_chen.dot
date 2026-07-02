@@ -1,0 +1,236 @@
+/* =====================================================================
+   LMS (DBI202) - ENTITY RELATIONSHIP DIAGRAM  (Chen notation)
+   ---------------------------------------------------------------------
+   Convention (giong slide COMPANY database cua thay):
+     - Entity (thuc the)        : hinh chu nhat  (box)
+     - Attribute (thuoc tinh)   : hinh oval      (ellipse)
+         * Khoa chinh (PK)      : gach chan (underline)
+         * Thuoc tinh suy dien  : oval net dut (dashed)  vd CertificateCode
+     - Relationship (quan he)   : hinh thoi      (diamond)
+     - Cardinality 1 / N / M    : ghi tren canh noi entity <-> relationship
+   Ghi chu: Khoa ngoai (FK) KHONG ve thanh oval, ma the hien bang
+            duong quan he (diamond) -> dung chuan Chen, tranh du thua.
+   Render:  dot -Tpng docs/erd_chen.dot -o docs/erd_chen.png
+            (file da dat layout=sfdp; muon doi thu -Kdot / -Kneato / -Kfdp)
+   ===================================================================== */
+graph LMS_ERD {
+    layout   = sfdp;
+    overlap  = prism;
+    splines  = true;
+    K        = 1.8;
+    sep      = "+8";
+    fontname = "Segoe UI";
+    labelloc = "t";
+    label    = "LMS ERD";
+    fontsize = 22;
+
+    /* ---- default styles ---- */
+    node [fontname="Segoe UI"];
+    edge [fontname="Segoe UI", arrowhead=none, color="#555555", len=1.1];
+
+    /* ============= ENTITY nodes (rectangles) ============= */
+    node [shape=box, style="filled,bold", fillcolor="#1d4ed8", fontcolor="white",
+          fontsize=13, penwidth=2, margin="0.18,0.10"];
+    Users; Categories; Courses; Modules; Materials; Enrollments; Assignments;
+    Questions; QuestionOptions; Submissions; StudentAnswers; Grades;
+    ForumThreads; ForumPosts; Recommendations; InteractionLogs; Certificates;
+
+    /* ============= RELATIONSHIP nodes (diamonds) ============= */
+    node [shape=diamond, style="filled", fillcolor="#fde68a", fontcolor="#1f2937",
+          fontsize=10, penwidth=1, margin="0.02,0.02", height=0.55, width=1.0];
+    r_teaches       [label="Teaches"];
+    r_classifies    [label="Classifies"];
+    r_course_module [label="Has"];
+    r_module_mat    [label="Contains"];
+    r_enr_student   [label="Enrolls"];
+    r_enr_course    [label="For"];
+    r_course_assign [label="Has"];
+    r_assign_q      [label="Has"];
+    r_q_option      [label="Has"];
+    r_assign_sub    [label="Receives"];
+    r_student_sub   [label="Submits"];
+    r_sub_ans       [label="Contains"];
+    r_q_ans         [label="AnsweredIn"];
+    r_opt_ans       [label="ChosenIn"];
+    r_sub_grade     [label="EvaluatedBy"];
+    r_grader        [label="Grades"];
+    r_course_thread [label="Has"];
+    r_thread_author [label="Creates"];
+    r_thread_post   [label="Has"];
+    r_post_author   [label="Writes"];
+    r_post_reply    [label="RepliesTo"];
+    r_rec_student   [label="Receives"];
+    r_rec_course    [label="Recommends"];
+    r_log_user      [label="Generates"];
+    r_cert_student  [label="Earns"];
+    r_cert_course   [label="CertifiedFor"];
+
+    /* ============= ATTRIBUTE nodes (ovals) ============= */
+    node [shape=ellipse, style="filled", fillcolor="#eef2ff", fontcolor="#1f2937",
+          fontsize=9, penwidth=1, margin="0.03,0.02"];
+
+    /* --- Users --- */
+    Users_UserID       [label=<<U>UserID</U>>];
+    Users_Username     [label="Username"];
+    Users_PasswordHash [label="PasswordHash"];
+    Users_Email        [label="Email"];
+    Users_FullName     [label="FullName"];
+    Users_DOB          [label="DateOfBirth"];
+    Users_Role         [label="Role"];
+    Users_Status       [label="Status"];
+    Users_CreatedAt    [label="CreatedAt"];
+    Users -- {Users_UserID Users_Username Users_PasswordHash Users_Email
+              Users_FullName Users_DOB Users_Role Users_Status Users_CreatedAt};
+
+    /* --- Categories --- */
+    Cat_ID   [label=<<U>CategoryID</U>>];
+    Cat_Name [label="CategoryName"];
+    Cat_Desc [label="Description"];
+    Categories -- {Cat_ID Cat_Name Cat_Desc};
+
+    /* --- Courses --- */
+    Crs_ID     [label=<<U>CourseID</U>>];
+    Crs_Code   [label="CourseCode"];
+    Crs_Title  [label="Title"];
+    Crs_Desc   [label="Description"];
+    Crs_Level  [label="Level"];
+    Crs_Price  [label="Price"];
+    Crs_Status [label="Status"];
+    Crs_At     [label="CreatedAt"];
+    Courses -- {Crs_ID Crs_Code Crs_Title Crs_Desc Crs_Level Crs_Price Crs_Status Crs_At};
+
+    /* --- Modules --- */
+    Mod_ID    [label=<<U>ModuleID</U>>];
+    Mod_Title [label="Title"];
+    Mod_Desc  [label="Description"];
+    Mod_Order [label="OrderIndex"];
+    Modules -- {Mod_ID Mod_Title Mod_Desc Mod_Order};
+
+    /* --- Materials --- */
+    Mat_ID    [label=<<U>MaterialID</U>>];
+    Mat_Title [label="Title"];
+    Mat_Type  [label="MaterialType"];
+    Mat_URL   [label="ContentURL"];
+    Mat_Order [label="OrderIndex"];
+    Mat_At    [label="CreatedAt"];
+    Materials -- {Mat_ID Mat_Title Mat_Type Mat_URL Mat_Order Mat_At};
+
+    /* --- Enrollments (junction M:N Student-Course) --- */
+    Enr_ID       [label=<<U>EnrollmentID</U>>];
+    Enr_Date     [label="EnrollDate"];
+    Enr_Status   [label="Status"];
+    Enr_Progress [label="ProgressPercent"];
+    Enr_Comp     [label="CompletedAt"];
+    Enrollments -- {Enr_ID Enr_Date Enr_Status Enr_Progress Enr_Comp};
+
+    /* --- Assignments --- */
+    Asg_ID      [label=<<U>AssignmentID</U>>];
+    Asg_Title   [label="Title"];
+    Asg_Desc    [label="Description"];
+    Asg_Type    [label="AType"];
+    Asg_Max     [label="MaxScore"];
+    Asg_Dead    [label="Deadline"];
+    Asg_Late    [label="LatePolicy"];
+    Asg_Pen     [label="PenaltyPct"];
+    Asg_At      [label="CreatedAt"];
+    Assignments -- {Asg_ID Asg_Title Asg_Desc Asg_Type Asg_Max Asg_Dead Asg_Late Asg_Pen Asg_At};
+
+    /* --- Questions --- */
+    Q_ID    [label=<<U>QuestionID</U>>];
+    Q_Text  [label="QuestionText"];
+    Q_Pts   [label="Points"];
+    Questions -- {Q_ID Q_Text Q_Pts};
+
+    /* --- QuestionOptions --- */
+    Opt_ID    [label=<<U>OptionID</U>>];
+    Opt_Text  [label="OptionText"];
+    Opt_Corr  [label="IsCorrect"];
+    QuestionOptions -- {Opt_ID Opt_Text Opt_Corr};
+
+    /* --- Submissions --- */
+    Sub_ID     [label=<<U>SubmissionID</U>>];
+    Sub_At     [label="SubmittedAt"];
+    Sub_URL    [label="ContentURL"];
+    Sub_Late   [label="IsLate"];
+    Sub_Status [label="Status"];
+    Sub_Try    [label="Attempt"];
+    Submissions -- {Sub_ID Sub_At Sub_URL Sub_Late Sub_Status Sub_Try};
+
+    /* --- StudentAnswers (junction) --- */
+    Ans_ID [label=<<U>AnswerID</U>>];
+    StudentAnswers -- {Ans_ID};
+
+    /* --- Grades --- */
+    Grd_ID    [label=<<U>GradeID</U>>];
+    Grd_Score [label="Score"];
+    Grd_Fb    [label="Feedback"];
+    Grd_At    [label="GradedAt"];
+    Grades -- {Grd_ID Grd_Score Grd_Fb Grd_At};
+
+    /* --- ForumThreads --- */
+    Th_ID    [label=<<U>ThreadID</U>>];
+    Th_Title [label="Title"];
+    Th_At    [label="CreatedAt"];
+    ForumThreads -- {Th_ID Th_Title Th_At};
+
+    /* --- ForumPosts --- */
+    Post_ID   [label=<<U>PostID</U>>];
+    Post_Cont [label="Content"];
+    Post_At   [label="CreatedAt"];
+    ForumPosts -- {Post_ID Post_Cont Post_At};
+
+    /* --- Recommendations --- */
+    Rec_ID     [label=<<U>RecommendationID</U>>];
+    Rec_Reason [label="Reason"];
+    Rec_Score  [label="Score"];
+    Rec_Status [label="Status"];
+    Rec_At     [label="CreatedAt"];
+    Recommendations -- {Rec_ID Rec_Reason Rec_Score Rec_Status Rec_At};
+
+    /* --- InteractionLogs --- */
+    Log_ID     [label=<<U>LogID</U>>];
+    Log_Sess   [label="SessionID"];
+    Log_Action [label="ActionType"];
+    Log_EType  [label="EntityType"];
+    Log_EID    [label="EntityID"];
+    Log_Dur    [label="DurationSec"];
+    Log_At     [label="CreatedAt"];
+    InteractionLogs -- {Log_ID Log_Sess Log_Action Log_EType Log_EID Log_Dur Log_At};
+
+    /* --- Certificates --- */
+    Cert_ID    [label=<<U>CertificateID</U>>];
+    Cert_Final [label="FinalScore"];
+    Cert_At    [label="IssuedAt"];
+    Cert_Code  [label="CertificateCode", style="dashed,filled", fillcolor="#f8fafc"];
+    Certificates -- {Cert_ID Cert_Final Cert_At Cert_Code};
+
+    /* ============= RELATIONSHIP edges (with cardinality) ============= */
+    edge [color="#b45309", fontcolor="#7c2d12", fontsize=11, penwidth=1.4];
+
+    Users        -- r_teaches       [label="1"];  r_teaches       -- Courses         [label="N"];
+    Categories   -- r_classifies    [label="1"];  r_classifies    -- Courses         [label="N"];
+    Courses      -- r_course_module [label="1"];  r_course_module -- Modules         [label="N"];
+    Modules      -- r_module_mat    [label="1"];  r_module_mat    -- Materials       [label="N"];
+    Users        -- r_enr_student   [label="1"];  r_enr_student   -- Enrollments     [label="N"];
+    Courses      -- r_enr_course    [label="1"];  r_enr_course    -- Enrollments     [label="N"];
+    Courses      -- r_course_assign [label="1"];  r_course_assign -- Assignments     [label="N"];
+    Assignments  -- r_assign_q      [label="1"];  r_assign_q      -- Questions       [label="N"];
+    Questions    -- r_q_option      [label="1"];  r_q_option      -- QuestionOptions [label="N"];
+    Assignments  -- r_assign_sub    [label="1"];  r_assign_sub    -- Submissions     [label="N"];
+    Users        -- r_student_sub   [label="1"];  r_student_sub   -- Submissions     [label="N"];
+    Submissions  -- r_sub_ans       [label="1"];  r_sub_ans       -- StudentAnswers  [label="N"];
+    Questions    -- r_q_ans         [label="1"];  r_q_ans         -- StudentAnswers  [label="N"];
+    QuestionOptions -- r_opt_ans    [label="1"];  r_opt_ans       -- StudentAnswers  [label="N"];
+    Submissions  -- r_sub_grade     [label="1"];  r_sub_grade     -- Grades          [label="1"];
+    Users        -- r_grader        [label="1"];  r_grader        -- Grades          [label="N"];
+    Courses      -- r_course_thread [label="1"];  r_course_thread -- ForumThreads    [label="N"];
+    Users        -- r_thread_author [label="1"];  r_thread_author -- ForumThreads    [label="N"];
+    ForumThreads -- r_thread_post   [label="1"];  r_thread_post   -- ForumPosts      [label="N"];
+    Users        -- r_post_author   [label="1"];  r_post_author   -- ForumPosts      [label="N"];
+    ForumPosts   -- r_post_reply    [label="1"];  r_post_reply    -- ForumPosts      [label="N"];
+    Users        -- r_rec_student   [label="1"];  r_rec_student   -- Recommendations [label="N"];
+    Courses      -- r_rec_course    [label="1"];  r_rec_course    -- Recommendations [label="N"];
+    Users        -- r_log_user      [label="1"];  r_log_user      -- InteractionLogs [label="N"];
+    Users        -- r_cert_student  [label="1"];  r_cert_student  -- Certificates    [label="N"];
+    Courses      -- r_cert_course   [label="1"];  r_cert_course   -- Certificates    [label="N"];
+}

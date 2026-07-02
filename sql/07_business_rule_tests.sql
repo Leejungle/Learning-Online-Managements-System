@@ -8,7 +8,7 @@ GO
 
 PRINT '--- TEST 1: duplicate enrollment must fail (UQ_Enroll) ---';
 BEGIN TRY
-    INSERT INTO Enrollments (StudentID, CourseID) VALUES (5, 1); -- already enrolled
+    INSERT INTO Enrollments (StudentID, CourseID) VALUES (5, 1);
     PRINT '  FAIL: duplicate enrollment was allowed';
 END TRY
 BEGIN CATCH
@@ -87,7 +87,6 @@ GO
 
 PRINT '--- TEST 8: manual grade by a Student must fail ---';
 BEGIN TRY
-    -- SubmissionID 1 exists from sample data; UserID 5 is a Student
     EXEC sp_GradeSubmission @SubmissionID=1, @Score=5, @Feedback=N'illegal grader', @GradedBy=5;
     PRINT '  FAIL: a student was allowed to grade';
 END TRY
@@ -100,17 +99,15 @@ PRINT '--- TEST 9: StudentAnswers option from a different question must fail ---
 BEGIN TRY
     DECLARE @sub INT, @q1 INT, @optOfOtherQ INT;
 
-    -- Use student 8 who is enrolled in DB202 (course of the Database Quiz, Assignment 4)
     EXEC sp_SubmitAssignment @AssignmentID=4, @StudentID=8, @ContentURL=NULL, @SubmissionID=@sub OUTPUT;
 
-    -- Q4 belongs to Assignment 4; pick an option that belongs to Q5 (a DIFFERENT question)
-    SELECT TOP 1 @q1 = QuestionID FROM Questions WHERE AssignmentID=4 ORDER BY QuestionID;          -- = 4
+    SELECT TOP 1 @q1 = QuestionID FROM Questions WHERE AssignmentID=4 ORDER BY QuestionID;
     SELECT TOP 1 @optOfOtherQ = OptionID FROM QuestionOptions
         WHERE QuestionID <> @q1 AND QuestionID IN (SELECT QuestionID FROM Questions WHERE AssignmentID=4)
-        ORDER BY OptionID;                                                                          -- option of Q5
+        ORDER BY OptionID;
 
     INSERT INTO StudentAnswers (SubmissionID, QuestionID, SelectedOptionID)
-    VALUES (@sub, @q1, @optOfOtherQ);   -- option belongs to another question -> must fail
+    VALUES (@sub, @q1, @optOfOtherQ);
 
     PRINT '  FAIL: mismatched option/question was accepted';
 END TRY
@@ -134,7 +131,6 @@ GO
 
 PRINT '--- TEST 11: issuing a certificate below 80% must fail ---';
 BEGIN TRY
-    -- Student 5 in PFP191 (CourseID 1) has not reached the 80% threshold
     EXEC sp_IssueCertificate @StudentID=5, @CourseID=1;
     PRINT '  FAIL: a certificate below 80% was issued';
 END TRY
@@ -146,7 +142,7 @@ GO
 PRINT '--- TEST 12: direct INSERT of a certificate below 80% must fail (CK_Cert_Pass) ---';
 BEGIN TRY
     INSERT INTO Certificates (StudentID, CourseID, FinalScore)
-    VALUES (6, 3, 55.0);   -- 55% < 80% -> CHECK constraint must block
+    VALUES (6, 3, 55.0);
     PRINT '  FAIL: CHECK constraint did not block sub-80% certificate';
     DELETE FROM Certificates WHERE StudentID=6 AND CourseID=3;
 END TRY

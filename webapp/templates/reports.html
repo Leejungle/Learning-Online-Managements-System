@@ -10,18 +10,22 @@
     <div>
         <span class="page-eyebrow"><i class="bi bi-bar-chart-line"></i> Phân tích</span>
         <h1>Báo cáo &amp; Thống kê</h1>
-        <p class="page-subtitle">6 báo cáo phân tích chạy trực tiếp từ <code>sql/06_reports.sql</code>.</p>
+        <p class="page-subtitle">{{ '5' if is_admin else '3' }} báo cáo phân tích chạy trực tiếp từ <code>sql/06_reports.sql</code>.</p>
     </div>
-    <span class="data-source"><i class="bi bi-database-fill-check"></i> Read-only · từng SELECT độc lập</span>
+    <span class="data-source">
+        <i class="bi bi-database-fill-check"></i> Read-only · từng SELECT độc lập
+        {% if not is_admin %}<br><i class="bi bi-shield-lock"></i> Vai trò Giảng viên · một số báo cáo chỉ Admin xem{% endif %}
+    </span>
 </div>
 
 <ul class="nav nav-pills flex-wrap gap-1 mb-4" role="tablist">
     <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#r1">1 · Học lực SV</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r2">2 · Hoàn thành khóa</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r3">3 · Hoạt động GV</button></li>
+    {% if is_admin %}<li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r3">3 · Hoạt động GV</button></li>{% endif %}
     <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r4">4 · Nộp bài</button></li>
+    {% if is_admin %}
     <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r5">5 · Sử dụng hệ thống</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#r6">6 · Hiệu quả gợi ý AI</button></li>
+    {% endif %}
 </ul>
 
 <div class="tab-content">
@@ -69,7 +73,8 @@
         </table></div></div>
     </div>
 
-    <!-- ===== Report 3 ===== -->
+    <!-- ===== Report 3 (CHỈ Admin) ===== -->
+    {% if is_admin %}
     <div class="tab-pane fade" id="r3">
         {% if instructor_activity %}
         <div class="chart-card mb-3"><div class="chart-box"><canvas id="chart3"></canvas></div></div>
@@ -89,6 +94,7 @@
             </tbody>
         </table></div></div>
     </div>
+    {% endif %}
 
     <!-- ===== Report 4 ===== -->
     <div class="tab-pane fade" id="r4">
@@ -115,7 +121,8 @@
         </table></div></div>
     </div>
 
-    <!-- ===== Report 5 ===== -->
+    {% if is_admin %}
+    <!-- ===== Report 5 (CHỈ Admin) ===== -->
     <div class="tab-pane fade" id="r5">
         <h2 class="h6 fw-bold mb-2">Sử dụng theo ngày</h2>
         {% if usage_daily %}
@@ -151,52 +158,7 @@
         </table></div></div>
     </div>
 
-    <!-- ===== Report 6 ===== -->
-    <div class="tab-pane fade" id="r6">
-        <h2 class="h6 fw-bold mb-2">Tổng quan hiệu quả gợi ý</h2>
-        {% if rec_overall %}
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
-                <div class="summary-value">{{ num(rec_overall.TotalShown) }}</div>
-                <div class="summary-label">Lượt hiển thị</div></div></div></div>
-            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
-                <div class="summary-value">{{ num(rec_overall.Clicked) }}</div>
-                <div class="summary-label">Đã click</div></div></div></div>
-            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
-                <div class="summary-value">{{ num(rec_overall.Enrolled) }}</div>
-                <div class="summary-label">Đã đăng ký</div></div></div></div>
-            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
-                <div class="summary-value">{{ num(rec_overall.Ignored) }}</div>
-                <div class="summary-label">Bỏ qua</div></div></div></div>
-            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
-                <div class="summary-value">{{ pct(rec_overall.ClickThroughRatePct) }}</div>
-                <div class="summary-label">CTR</div></div></div></div>
-            <div class="col-6 col-lg-2"><div class="card summary-card"><div>
-                <div class="summary-value">{{ pct(rec_overall.ConversionRatePct) }}</div>
-                <div class="summary-label">Chuyển đổi</div></div></div></div>
-        </div>
-        {% endif %}
-        <div class="row g-3 mb-3">
-            {% if rec_overall and rec_overall.TotalShown %}
-            <div class="col-lg-5"><div class="chart-card h-100"><div class="chart-box"><canvas id="chart6a"></canvas></div></div></div>
-            {% endif %}
-            {% if rec_by_course %}
-            <div class="col-lg-7"><div class="chart-card h-100"><div class="chart-box"><canvas id="chart6b"></canvas></div></div></div>
-            {% endif %}
-        </div>
-        <h2 class="h6 fw-bold mb-2">Theo khóa được gợi ý</h2>
-        <div class="grade-table"><div class="table-responsive"><table class="table table-hover align-middle">
-            <thead><tr><th>Khóa được gợi ý</th><th class="text-center">Số lần</th>
-                <th class="text-center">Chuyển đổi</th></tr></thead>
-            <tbody>
-            {% for r in rec_by_course %}
-                <tr><td class="small fw-semibold">{{ r.RecommendedCourse }}</td>
-                    <td class="text-center">{{ num(r.Times) }}</td>
-                    <td class="text-center">{{ num(r.Conversions) }}</td></tr>
-            {% endfor %}
-            </tbody>
-        </table></div></div>
-    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -245,6 +207,7 @@
         options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
     });
 
+    {% if is_admin %}
     // R3 - Hoạt động giảng viên
     mk('chart3', {
         type: 'bar',
@@ -257,6 +220,7 @@
         },
         options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
     });
+    {% endif %}
 
     // R4 - Nộp bài: đúng hạn / trễ / từ chối (stacked)
     mk('chart4', {
@@ -273,6 +237,7 @@
             scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } } } })
     });
 
+    {% if is_admin %}
     // R5 - Sử dụng theo ngày
     mk('chart5', {
         type: 'line',
@@ -285,32 +250,7 @@
         },
         options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
     });
-
-    {% if rec_overall and rec_overall.TotalShown %}
-    // R6a - Phân bổ trạng thái gợi ý
-    mk('chart6a', {
-        type: 'doughnut',
-        data: {
-            labels: ['Đã click', 'Đã đăng ký', 'Bỏ qua'],
-            datasets: [{ backgroundColor: [BRAND, GREEN, GREY],
-                data: [{{ rec_overall.Clicked or 0 }}, {{ rec_overall.Enrolled or 0 }}, {{ rec_overall.Ignored or 0 }}] }]
-        },
-        options: Object.assign({}, baseOpts, { plugins: { legend: { position: 'bottom' } } })
-    });
     {% endif %}
-
-    // R6b - Số lần gợi ý vs chuyển đổi theo khóa
-    mk('chart6b', {
-        type: 'bar',
-        data: {
-            labels: [{% for r in rec_by_course %}{{ r.RecommendedCourse|tojson }},{% endfor %}],
-            datasets: [
-                { label: 'Số lần', backgroundColor: GREY, borderRadius: 4, data: [{% for r in rec_by_course %}{{ r.Times or 0 }},{% endfor %}] },
-                { label: 'Chuyển đổi', backgroundColor: GREEN, borderRadius: 4, data: [{% for r in rec_by_course %}{{ r.Conversions or 0 }},{% endfor %}] }
-            ]
-        },
-        options: Object.assign({}, baseOpts, { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } })
-    });
 
     // Biểu đồ nằm trong tab ẩn -> resize lại khi tab được hiển thị.
     document.querySelectorAll('[data-bs-toggle="pill"]').forEach(function (btn) {

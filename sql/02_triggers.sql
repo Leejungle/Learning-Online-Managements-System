@@ -5,11 +5,6 @@
 USE LMS;
 GO
 
--------------------------------------------------------------------------
--- BR: "Each course must be created and managed by ONE instructor."
---     => The InstructorID of a course must reference a user whose
---        Role = 'Instructor'.
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_Courses_InstructorRole
 ON Courses
 AFTER INSERT, UPDATE
@@ -29,10 +24,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- BR: "A student can enroll ... " => the enrolled user must be a Student,
---     and only Published courses can be enrolled.
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_Enroll_Validate
 ON Enrollments
 AFTER INSERT, UPDATE
@@ -62,15 +53,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- BR: "Submissions after deadlines may be marked as late or rejected
---      based on policy." + "Each submission must be associated with one
---      student and one assignment" (student must be enrolled in course).
--- This trigger (runs on INSERT and UPDATE, fully set-based / multi-row safe):
---   * blocks submissions from students NOT enrolled in the course
---   * flags IsLate when SubmittedAt > Deadline
---   * sets Status = 'Rejected' when policy = 'RejectLate'
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_Submissions_Policy
 ON Submissions
 AFTER INSERT, UPDATE
@@ -79,7 +61,6 @@ BEGIN
     SET NOCOUNT ON;
     IF NOT EXISTS (SELECT 1 FROM inserted) RETURN;
 
-    -- 1) Student must be enrolled in the course that owns the assignment
     IF EXISTS (
         SELECT 1
         FROM inserted i
@@ -96,7 +77,6 @@ BEGIN
         RETURN;
     END
 
-    -- 2) Late flag
     UPDATE s
        SET s.IsLate = 1
       FROM Submissions s
@@ -104,7 +84,6 @@ BEGIN
       JOIN Assignments a ON a.AssignmentID = s.AssignmentID
      WHERE s.SubmittedAt > a.Deadline;
 
-    -- 3) Reject late submissions when policy says so
     UPDATE s
        SET s.Status = 'Rejected'
       FROM Submissions s
@@ -115,12 +94,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- BR: "Each course must contain at least one learning module or material."
---     We cannot block creating an empty course on INSERT (the first module
---     is added afterwards), so instead we forbid DELETING the last module
---     of a published course.
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_Modules_KeepAtLeastOne
 ON Modules
 AFTER DELETE
@@ -141,11 +114,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- BR: "A course can be Published only if it already has >= 1 module."
---     Runs on INSERT and UPDATE so a course cannot be created directly
---     as 'Published' without a module, nor updated to 'Published'.
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_Courses_PublishNeedsModule
 ON Courses
 AFTER INSERT, UPDATE
@@ -165,11 +133,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- BR: "Grades must be recorded for each evaluated submission."
---     When a grade is inserted, mark its submission as 'Graded'
---     (unless it was Rejected). Keeps Submissions.Status consistent.
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_Grades_MarkGraded
 ON Grades
 AFTER INSERT, UPDATE
@@ -177,8 +140,6 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- BR: the grader (if any) must be an Instructor or Admin.
-    --     GradedBy = NULL is allowed (used by the auto-grading system).
     IF EXISTS (
         SELECT 1
         FROM inserted i
@@ -192,7 +153,6 @@ BEGIN
         RETURN;
     END
 
-    -- Score must not exceed assignment MaxScore (checked before side effects)
     IF EXISTS (
         SELECT 1
         FROM inserted i
@@ -206,7 +166,6 @@ BEGIN
         RETURN;
     END
 
-    -- Mark the graded submission as 'Graded' (unless it was Rejected)
     UPDATE s
        SET s.Status = 'Graded'
       FROM Submissions s
@@ -215,11 +174,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- BR: a student's selected option must belong to the same question that
---     the answer row points to (data-integrity across StudentAnswers).
---     Runs on INSERT and UPDATE, multi-row safe. NULL option = unanswered.
--------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER trg_StudentAnswers_OptionMatchesQuestion
 ON StudentAnswers
 AFTER INSERT, UPDATE

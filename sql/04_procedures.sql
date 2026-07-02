@@ -5,9 +5,6 @@
 USE LMS;
 GO
 
--------------------------------------------------------------------------
--- sp_EnrollStudent : enroll a student into a course (idempotent-ish)
--------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_EnrollStudent
     @StudentID INT,
     @CourseID  INT
@@ -23,9 +20,8 @@ BEGIN
         END
 
         INSERT INTO Enrollments (StudentID, CourseID)
-        VALUES (@StudentID, @CourseID);     -- trigger validates role + published
+        VALUES (@StudentID, @CourseID);
 
-        -- If this course was recommended, mark the recommendation as Enrolled
         UPDATE Recommendations
            SET Status = 'Enrolled'
          WHERE StudentID = @StudentID AND CourseID = @CourseID
@@ -40,10 +36,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- sp_SubmitAssignment : create a submission (deadline/late logic handled
---                       by trg_Submissions_Policy)
--------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_SubmitAssignment
     @AssignmentID INT,
     @StudentID    INT,
@@ -72,9 +64,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- sp_GradeSubmission : instructor records a grade (manual grading)
--------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_GradeSubmission
     @SubmissionID INT,
     @Score        DECIMAL(5,2),
@@ -98,7 +87,7 @@ BEGIN
         ELSE
         BEGIN
             INSERT INTO Grades (SubmissionID, Score, Feedback, GradedBy)
-            VALUES (@SubmissionID, @Score, @Feedback, @GradedBy);  -- trigger marks Graded
+            VALUES (@SubmissionID, @Score, @Feedback, @GradedBy);
         END
 
         COMMIT TRANSACTION;
@@ -110,12 +99,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- sp_AutoGradeQuiz : System (AI module) auto-grades an objective quiz
---                    submission by comparing chosen options to the
---                    correct ones. Score is scaled to the assignment
---                    MaxScore.
--------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_AutoGradeQuiz
     @SubmissionID INT
 AS
@@ -126,21 +109,18 @@ BEGIN
 
         DECLARE @AssignmentID INT, @MaxScore DECIMAL(5,2), @AType VARCHAR(20);
 
-        -- Validate the submission exists
         IF NOT EXISTS (SELECT 1 FROM Submissions WHERE SubmissionID = @SubmissionID)
             RAISERROR('Submission not found.', 16, 1);
 
         SELECT @AssignmentID = s.AssignmentID
         FROM Submissions s WHERE s.SubmissionID = @SubmissionID;
 
-        -- Validate the related assignment exists
         IF NOT EXISTS (SELECT 1 FROM Assignments WHERE AssignmentID = @AssignmentID)
             RAISERROR('Related assignment not found.', 16, 1);
 
         SELECT @MaxScore = MaxScore, @AType = AType
         FROM Assignments WHERE AssignmentID = @AssignmentID;
 
-        -- Only objective assessments can be auto-graded
         IF @AType NOT IN ('Quiz','Exam')
             RAISERROR('Auto-grading only supports Quiz/Exam assignments.', 16, 1);
 
@@ -179,12 +159,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- sp_RecommendCourses : simple content-based recommender.
---   Suggests Published courses (not yet enrolled) in the categories the
---   student already studies, ranked by category popularity. Stores the
---   recommendations so their effectiveness can be measured later.
--------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_RecommendCourses
     @StudentID INT,
     @TopN      INT = 5
@@ -192,7 +166,6 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Recommendations are only meaningful for Student users
     IF NOT EXISTS (SELECT 1 FROM Users WHERE UserID = @StudentID AND Role = 'Student')
     BEGIN
         RAISERROR('Recommendations can only be generated for Student users.', 16, 1);
@@ -238,13 +211,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- sp_IssueCertificate : Coursera-style course completion certificate.
---   Issues ONE certificate for (student, course) ONLY IF the learner's
---   final course grade >= 80%. Also marks the enrollment as Completed.
---   Idempotent: if a certificate already exists it is simply returned.
---   Business rules enforced here AND by CK_Cert_Pass on the table.
--------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_IssueCertificate
     @StudentID INT,
     @CourseID  INT
@@ -254,15 +220,12 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- Only Students earn certificates
         IF NOT EXISTS (SELECT 1 FROM Users WHERE UserID=@StudentID AND Role='Student')
             RAISERROR('Only Student users can earn a certificate.', 16, 1);
 
-        -- Must be enrolled in the course
         IF NOT EXISTS (SELECT 1 FROM Enrollments WHERE StudentID=@StudentID AND CourseID=@CourseID)
             RAISERROR('Student is not enrolled in this course.', 16, 1);
 
-        -- Already certified? -> return existing (idempotent)
         IF EXISTS (SELECT 1 FROM Certificates WHERE StudentID=@StudentID AND CourseID=@CourseID)
         BEGIN
             COMMIT TRANSACTION;
@@ -278,7 +241,6 @@ BEGIN
 
         IF @final < 80.0
         BEGIN
-            -- NB: RAISERROR always parses '%' as a format spec, so avoid it.
             DECLARE @msg NVARCHAR(200) =
                 N'Final score ' + CAST(@final AS VARCHAR(10))
                 + N' percent is below the passing threshold of 80 percent.';
@@ -286,9 +248,8 @@ BEGIN
         END
 
         INSERT INTO Certificates (StudentID, CourseID, FinalScore)
-        VALUES (@StudentID, @CourseID, @final);     -- CK_Cert_Pass double-guards the 80%
+        VALUES (@StudentID, @CourseID, @final);
 
-        -- Passing the course completes the enrollment
         UPDATE Enrollments
            SET Status='Completed', ProgressPercent=100, CompletedAt=SYSDATETIME()
          WHERE StudentID=@StudentID AND CourseID=@CourseID;

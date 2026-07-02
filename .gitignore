@@ -63,3 +63,12 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
+
+# ---------- File nộp bài: GIỮ TRÊN MÁY, KHÔNG push GitHub ----------
+# Chỉ push mã nguồn để project chạy được; bản .docx/.pdf/.xlsx để nộp cục bộ.
+*.docx
+*.pdf
+*.xls
+*.xlsx
+# File khóa tạm của MS Office (vd ~$AI_AuditLog...xlsx)
+~$*

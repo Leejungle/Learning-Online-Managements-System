@@ -88,7 +88,6 @@ FROM InteractionLogs
 GROUP BY CAST(CreatedAt AS DATE)
 ORDER BY [Date];
 
--- Per-session duration summary
 SELECT  l.SessionID,
         u.FullName AS [User],
         MIN(l.CreatedAt) AS SessionStart,
@@ -111,7 +110,6 @@ SELECT  COUNT(*)                                                          AS Tot
              / NULLIF(COUNT(*),0) AS DECIMAL(5,2))                        AS ConversionRatePct
 FROM Recommendations;
 
--- Effectiveness broken down by course
 SELECT  c.Title AS RecommendedCourse,
         COUNT(*) AS Times,
         SUM(CASE WHEN r.Status='Enrolled' THEN 1 ELSE 0 END) AS Conversions

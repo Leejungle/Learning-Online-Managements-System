@@ -70,14 +70,13 @@ Mỗi trang web ánh xạ trực tiếp tới một object thật trong database
 | Đường dẫn | Chức năng | Object SQL tái dùng |
 |---|---|---|
 | `/health` | Kiểm tra kết nối DB (JSON) | `SELECT COUNT(*) FROM Users` |
-| `/catalog` | Danh mục khóa học + lọc (tên/level/category/status) | view `vw_CourseCatalog` |
+| `/catalog` | Danh mục khóa học + lọc (tên/level/category/status) **+ "Gợi ý cho bạn" (cá nhân hóa, SV) + "Khóa học phổ biến nhất" (top theo lượt đăng ký)** | view `vw_CourseCatalog`, `sp_RecommendCourses`, `COUNT(Enrollments)` |
 | `/courses/<id>` | Chi tiết khóa: outline module/material, đăng ký, nộp bài, **điểm & chứng chỉ**, thảo luận | `Modules`, `Materials`, `fn_CanAccessCourse`, `fn_CourseFinalGrade`, `sp_EnrollStudent`, `sp_SubmitAssignment`, `ForumThreads/Posts` |
 | `/dashboard` | Cổng **Student**: điểm + tiến độ + chứng chỉ | view `vw_Gradebook`, hàm `fn_CourseProgress`, `Certificates` |
 | `/instructor` | Cổng **Instructor**: khóa phụ trách, học viên, việc cần chấm | `Courses`, `Enrollments`, `Submissions` |
 | `/admin` | Cổng **Admin**: tổng quan hệ thống, top khóa, chứng chỉ gần đây | `COUNT`/`GROUP BY` trên toàn bộ bảng |
 | `/portal` | Điều hướng tới cổng đúng theo vai trò | (redirect) |
-| `/reports` | 6 báo cáo phân tích (tabs) **+ biểu đồ Chart.js** | các SELECT trong `06_reports.sql` |
-| `/recommendations` | Gợi ý khóa học (AI) cho sinh viên | `sp_RecommendCourses`, bảng `Recommendations` |
+| `/reports` | Báo cáo phân tích (tabs) **+ biểu đồ Chart.js**; phân quyền: Instructor xem R1/R2/R4 (3 báo cáo), Admin xem R1–R5 (5 báo cáo) | các SELECT trong `06_reports.sql` |
 | `/grading` | Instructor/Admin chấm điểm bài nộp | `sp_GradeSubmission`, trigger `trg_Grades_MarkGraded` |
 | `/certificates`, `/certificate/<id>` | Danh sách & chứng chỉ in được | `Certificates`, `sp_IssueCertificate` |
 | `/business-rules` | Showcase: cố tình vi phạm để DB chặn & hiện nguyên văn lỗi | trigger + `sp_EnrollStudent` |

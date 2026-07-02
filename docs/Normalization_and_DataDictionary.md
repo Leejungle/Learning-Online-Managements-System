@@ -13,7 +13,7 @@ Tài liệu này trình bày (A) quá trình chuẩn hóa cơ sở dữ liệu l
 ### A.0. Mô hình chưa chuẩn hóa (UNF) — xuất phát điểm
 
 Giả sử ban đầu mọi dữ liệu nằm trong **một bảng phẳng** `EnrollmentSheet` (mô phỏng
-một file Excel quản lý lớp học):
+một file Excel quản lý lớp học):    
 
 ```
 EnrollmentSheet (
@@ -123,10 +123,13 @@ Tương tự:
 | `Grades` | GradeID | GradeID → SubmissionID, Score, Feedback, GradedBy, GradedAt | ✅ |
 | `Recommendations` | RecommendationID | RecommendationID → StudentID, CourseID, Score, Status | ✅ |
 | `InteractionLogs` | LogID | LogID → UserID, SessionID, ActionType, DurationSec, CreatedAt | ✅ |
+| `Certificates` | CertificateID | CertificateID → StudentID, CourseID, FinalScore, IssuedAt | ✅ |
 
-> **Ghi chú BCNF:** các bảng đều có một khóa chính đơn và mọi định thức (determinant)
-> đều là khóa dự tuyển, nên schema cũng thỏa **BCNF**. Riêng `Users` có ràng buộc
-> `Username`/`Email` là khóa dự tuyển (UNIQUE), vẫn thỏa BCNF.
+> **Ghi chú về BCNF:** với các phụ thuộc hàm đã liệt kê (mỗi bảng có khóa chính đơn dạng
+> surrogate, các ràng buộc UNIQUE như `Users.Username`/`Email`, `Enrollments(StudentID,CourseID)`
+> đều là khóa dự tuyển), **không phát hiện** định thức nào không phải khóa dự tuyển, nên thiết kế
+> **được xem là thỏa BCNF trong phạm vi các FD này**. Đây là nhận định dựa trên tập FD nghiệp vụ
+> đã mô hình hóa, không phải chứng minh hình thức đầy đủ.
 
 ---
 
@@ -304,3 +307,14 @@ Ký hiệu: **PK** = khóa chính, **FK** = khóa ngoại, **UK** = khóa duy nh
 | EntityID | INT | NULL | Định danh đối tượng |
 | DurationSec | INT | NULL | Thời lượng (giây) |
 | CreatedAt | DATETIME2 | NN, default now | Thời điểm |
+
+### B.17. `Certificates` — Chứng chỉ hoàn thành khóa
+| Cột | Kiểu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| CertificateID | INT IDENTITY | PK | Định danh chứng chỉ |
+| StudentID | INT | NN, FK→Users | Sinh viên được cấp |
+| CourseID | INT | NN, FK→Courses | Khóa học |
+| FinalScore | DECIMAL(5,2) | NN, **CHECK ≥ 80**, 0..100 | Điểm tổng kết (%) khi cấp; khóa cứng ngưỡng đạt 80% |
+| IssuedAt | DATETIME2 | NN, default now | Thời điểm cấp |
+| CertificateCode | (computed) | — | Mã in được `LMS-CERT-#####` (suy từ CertificateID) |
+| | | **UK(StudentID, CourseID)** | Mỗi khóa tối đa 1 chứng chỉ/SV |

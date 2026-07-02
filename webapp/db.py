@@ -142,12 +142,79 @@ def sql_error_message(exc: Exception) -> str:
     matches = re.findall(r"\]([^\[\]]+?)\s*\((?:\d+)\)", raw)
     candidates = [m.strip() for m in matches if m.strip()]
     # Ưu tiên đoạn chứa thông điệp nghiệp vụ, nếu không lấy đoạn cuối cùng.
+    chosen = raw
     for c in candidates:
         if "Business rule" in c or "Invalid" in c or "already enrolled" in c:
-            return c
-    if candidates:
-        return candidates[-1]
-    return raw
+            chosen = c
+            break
+    else:
+        if candidates:
+            chosen = candidates[-1]
+    # Dịch sang tiếng Việt cho thân thiện khi demo (CHỈ ở tầng web, KHÔNG sửa DB).
+    return localize_error(chosen)
+
+
+# Bản dịch các thông điệp lỗi nghiệp vụ (nguyên văn do trigger/procedure/ràng
+# buộc trả về) sang tiếng Việt. Chỉ phục vụ hiển thị demo; database vẫn là nơi
+# thực thi và sinh ra message gốc (tiếng Anh). Khớp theo chuỗi con (substring).
+_VI_MESSAGES = [
+    # --- Trigger ---
+    ("only users with role Student can enroll",
+     "Chỉ người dùng có vai trò Student mới được đăng ký khóa học."),
+    ("students can only enroll in Published courses",
+     "Chỉ được đăng ký các khóa đã ở trạng thái Published."),
+    ("a course must be managed by a user with role Instructor",
+     "Mỗi khóa học phải do người dùng vai trò Instructor quản lý."),
+    ("student is not enrolled in the course of this assignment",
+     "Sinh viên chưa đăng ký khóa chứa bài đánh giá này nên không thể nộp bài."),
+    ("a published course must keep at least one module",
+     "Khóa đã Published phải còn ít nhất một module."),
+    ("a course needs at least one module before it can be Published",
+     "Khóa phải có ít nhất một module trước khi được Published."),
+    ("GradedBy must be Instructor or Admin",
+     "Người chấm điểm phải là Instructor hoặc Admin."),
+    ("score exceeds the assignment MaxScore",
+     "Điểm chấm vượt quá điểm tối đa (MaxScore) của bài."),
+    ("selected option does not belong to the question",
+     "Đáp án được chọn không thuộc câu hỏi tương ứng."),
+    # --- Stored procedure ---
+    ("already enrolled in this course",
+     "Sinh viên đã đăng ký khóa học này rồi."),
+    ("Submission not found",
+     "Không tìm thấy bài nộp."),
+    ("Related assignment not found",
+     "Không tìm thấy bài đánh giá liên quan."),
+    ("Auto-grading only supports Quiz/Exam",
+     "Chấm tự động chỉ áp dụng cho bài dạng Quiz/Exam."),
+    ("Recommendations can only be generated for Student",
+     "Chỉ có thể tạo gợi ý cho người dùng vai trò Student."),
+    ("Only Student users can earn a certificate",
+     "Chỉ sinh viên (Student) mới được cấp chứng chỉ."),
+    ("Student is not enrolled in this course",
+     "Sinh viên chưa đăng ký khóa học này."),
+    ("This course has no graded assignments yet",
+     "Khóa học chưa có bài đánh giá nào được chấm điểm."),
+    ("is below the passing threshold",
+     "Điểm tổng kết chưa đạt ngưỡng 80% nên chưa thể cấp chứng chỉ."),
+    # --- Ràng buộc (message gốc của SQL Server) ---
+    ("UQ_Enroll",
+     "Sinh viên đã đăng ký khóa học này rồi (trùng đăng ký)."),
+    ("CK_Cert_Pass",
+     "Điểm tổng kết phải ≥ 80% mới được cấp chứng chỉ (ràng buộc CK_Cert_Pass)."),
+    ("CK_Users_Role",
+     "Vai trò người dùng không hợp lệ (chỉ Student/Instructor/Admin)."),
+]
+
+
+def localize_error(msg: str) -> str:
+    """Đổi thông điệp lỗi nghiệp vụ sang tiếng Việt; giữ nguyên nếu không có bản dịch."""
+    if not msg:
+        return msg
+    low = msg.lower()
+    for needle, vi in _VI_MESSAGES:
+        if needle.lower() in low:
+            return vi
+    return msg
 
 
 # =====================================================================
@@ -218,6 +285,72 @@ def get_course_catalog(search=None, level=None, category=None, status=None):
 
     sql.append("ORDER BY CourseCode;")
     return query_all("\n".join(sql), tuple(params))
+
+
+def get_popular_courses(top_n: int = 4):
+    """
+    'Khóa học phổ biến nhất' kiểu Coursera: các khóa Published có lượt đăng ký
+    cao nhất. Đây KHÔNG phải gợi ý cá nhân hóa — chỉ xếp hạng theo độ phổ biến
+    thực tế (COUNT đăng ký) lấy từ view vw_CourseCatalog. Dùng để showcase ngay
+    đầu trang danh mục.
+    """
+    return query_all(
+        """
+        SELECT TOP (?) CourseID, CourseCode, Title, Level, CategoryName,
+               InstructorName, EnrolledStudents, ModuleCount
+        FROM vw_CourseCatalog
+        WHERE Status = 'Published' AND EnrolledStudents > 0
+        ORDER BY EnrolledStudents DESC, CourseCode;
+        """,
+        (top_n,),
+    )
+
+
+def has_recommendations(student_id: int) -> bool:
+    """Sinh viên đã có gợi ý đang hiển thị (Shown/Clicked) hay chưa."""
+    n = query_scalar(
+        """
+        SELECT COUNT(*) FROM Recommendations
+        WHERE StudentID = ? AND Status IN ('Shown','Clicked');
+        """,
+        (student_id,),
+    )
+    return (n or 0) > 0
+
+
+def recommend_courses(student_id: int, top_n: int = 4):
+    """
+    Gọi sp_RecommendCourses: SINH gợi ý cá nhân hóa (content-based theo danh
+    mục SV đang học) và trả về danh sách 'Shown'. Idempotent: SP tự bỏ qua khóa
+    đã được gợi ý/đăng ký. Có thể raise nếu user không phải Student.
+    """
+    _record("EXEC sp_RecommendCourses @StudentID=?, @TopN=?;", (student_id, top_n))
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("EXEC sp_RecommendCourses ?, ?", (student_id, top_n))
+        rows = _rows_to_dicts(cursor) if cursor.description else []
+        conn.commit()
+        return rows
+
+
+def get_recommended_courses(student_id: int, top_n: int = 4):
+    """
+    'Gợi ý cho bạn' (cá nhân hóa): các khóa được sp_RecommendCourses gợi ý cho
+    sinh viên, lấy từ bảng Recommendations (chỉ trạng thái còn hiệu lực). Kèm
+    thông tin khóa từ view vw_CourseCatalog để render card như Coursera.
+    """
+    return query_all(
+        """
+        SELECT TOP (?) v.CourseID, v.CourseCode, v.Title, v.Level, v.CategoryName,
+               v.InstructorName, v.EnrolledStudents, v.ModuleCount,
+               r.Score, r.Reason
+        FROM Recommendations r
+        JOIN vw_CourseCatalog v ON v.CourseID = r.CourseID
+        WHERE r.StudentID = ? AND r.Status IN ('Shown','Clicked')
+        ORDER BY r.Score DESC, v.CourseCode;
+        """,
+        (top_n, student_id),
+    )
 
 
 # ---------------------------------------------------------------------
@@ -477,38 +610,6 @@ def report_usage_sessions():
     )
 
 
-def report_recommendation_overall():
-    """Report 6 (phần 1): Hiệu quả gợi ý AI - tổng quan (1 dòng)."""
-    return query_one(
-        """
-        SELECT  COUNT(*)                                                AS TotalShown,
-                SUM(CASE WHEN Status='Clicked'  THEN 1 ELSE 0 END)      AS Clicked,
-                SUM(CASE WHEN Status='Enrolled' THEN 1 ELSE 0 END)      AS Enrolled,
-                SUM(CASE WHEN Status='Ignored'  THEN 1 ELSE 0 END)      AS Ignored,
-                CAST(100.0 * SUM(CASE WHEN Status IN ('Clicked','Enrolled') THEN 1 ELSE 0 END)
-                     / NULLIF(COUNT(*),0) AS DECIMAL(5,2))              AS ClickThroughRatePct,
-                CAST(100.0 * SUM(CASE WHEN Status='Enrolled' THEN 1 ELSE 0 END)
-                     / NULLIF(COUNT(*),0) AS DECIMAL(5,2))              AS ConversionRatePct
-        FROM Recommendations;
-        """
-    )
-
-
-def report_recommendation_by_course():
-    """Report 6 (phần 2): Hiệu quả gợi ý AI theo khóa học."""
-    return query_all(
-        """
-        SELECT  c.Title AS RecommendedCourse,
-                COUNT(*) AS Times,
-                SUM(CASE WHEN r.Status='Enrolled' THEN 1 ELSE 0 END) AS Conversions
-        FROM Recommendations r
-        JOIN Courses c ON c.CourseID = r.CourseID
-        GROUP BY c.Title
-        ORDER BY Conversions DESC;
-        """
-    )
-
-
 # ---------------------------------------------------------------------
 # Phase 4: Actions (GHI DB) - gọi stored procedure có sẵn.
 # Quan trọng: KHÔNG nuốt lỗi. Nếu trigger/procedure RAISERROR/THROW thì để
@@ -527,41 +628,6 @@ def enroll_student(student_id: int, course_id: int):
         cursor = conn.cursor()
         cursor.execute("EXEC sp_EnrollStudent ?, ?", (student_id, course_id))
         conn.commit()
-
-
-def recommend_courses(student_id: int, top_n: int = 5):
-    """
-    Gọi sp_RecommendCourses: vừa SINH gợi ý (INSERT) vừa trả về danh sách
-    gợi ý 'Shown'. Trả về list[dict]. Có thể raise nếu user không phải Student.
-    """
-    _record("EXEC sp_RecommendCourses @StudentID=?, @TopN=?;", (student_id, top_n))
-    with get_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute("EXEC sp_RecommendCourses ?, ?", (student_id, top_n))
-        rows = _rows_to_dicts(cursor) if cursor.description else []
-        conn.commit()
-        return rows
-
-
-def get_recommendations(student_id: int):
-    """Đọc các gợi ý đã lưu cho 1 sinh viên (để hiển thị trang Recommendations)."""
-    return query_all(
-        """
-        SELECT  r.RecommendationID,
-                r.CourseID,
-                c.CourseCode,
-                c.Title,
-                r.Reason,
-                r.Score,
-                r.Status,
-                r.CreatedAt
-        FROM Recommendations r
-        JOIN Courses c ON c.CourseID = r.CourseID
-        WHERE r.StudentID = ?
-        ORDER BY r.Status, r.Score DESC;
-        """,
-        (student_id,),
-    )
 
 
 def get_courses_brief():

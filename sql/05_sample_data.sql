@@ -9,12 +9,6 @@ USE LMS;
 GO
 SET NOCOUNT ON;
 
--------------------------------------------------------------------------
--- 1. USERS  (1 admin, 7 instructors, 8 students)
---   NOTE: new instructors are appended AFTER the students on purpose so
---         existing student IDs (5..12) stay stable for the data below.
---   IDs => 1 admin | 2,3,4 instructors | 5..12 students | 13..16 instructors
--------------------------------------------------------------------------
 INSERT INTO Users (Username, PasswordHash, Email, FullName, DateOfBirth, Role) VALUES
 ('admin01', 'hash_admin', 'admin@lms.edu',     N'Nguyen Quan Tri',    '1985-02-10', 'Admin'),
 ('teacher_an',  'hash_t1', 'an.le@lms.edu',     N'Le Van An',          '1982-05-21', 'Instructor'),
@@ -32,16 +26,12 @@ INSERT INTO Users (Username, PasswordHash, Email, FullName, DateOfBirth, Role) V
 ('teacher_khoa', 'hash_t5', 'khoa.vo@lms.edu',    N'Vo Dang Khoa',     '1984-08-03', 'Instructor'),
 ('teacher_lien', 'hash_t6', 'lien.dinh@lms.edu',  N'Dinh Thi Lien',    '1990-01-26', 'Instructor'),
 ('teacher_son',  'hash_t7', 'son.truong@lms.edu', N'Truong Van Son',   '1983-12-11', 'Instructor'),
--- More instructors (IDs 17..20) for the AI / SE / Soft-skill courses below
 ('teacher_tuan', 'hash_t8', 'tuan.nguyen@lms.edu',N'Nguyen Minh Tuan', '1987-03-19', 'Instructor'),
 ('teacher_haa',  'hash_t9', 'ha.tran@lms.edu',    N'Tran Thu Ha',      '1991-07-05', 'Instructor'),
 ('teacher_long', 'hash_t10','long.le@lms.edu',    N'Le Hoang Long',    '1985-10-22', 'Instructor'),
 ('teacher_maii', 'hash_t11','mai.pham@lms.edu',   N'Pham Thi Mai',     '1989-12-02', 'Instructor');
 GO
 
--------------------------------------------------------------------------
--- 2. CATEGORIES
--------------------------------------------------------------------------
 INSERT INTO Categories (CategoryName, Description) VALUES
 (N'Programming',          N'Software development & coding'),
 (N'Database',             N'Databases and data management'),
@@ -54,18 +44,6 @@ INSERT INTO Categories (CategoryName, Description) VALUES
 (N'Soft Skills',          N'Communication, teamwork, ethics & career skills');
 GO
 
--------------------------------------------------------------------------
--- 3. COURSES  (created as Draft first; published later)
--- Instructors: 2=An, 3=Binh, 4=Cuong, 13=Dao, 14=Khoa, 15=Lien, 16=Son
--- Categories : 1=Programming 2=Database 3=Data Science 4=Design
---              5=Mathematics 6=Computer Science 7=Artificial Intelligence
---              8=Software Engineering 9=Soft Skills
--- CourseID   : 1=PFP191 2=DBI202 3=DS301 4=WD110 5=UX150
---              6=CSI106 7=MAD101 8=MAE101 9=CSD201 10=CSD203 11=CEA201
---              12=ADY201m 13=ITE303c 14=MAI391 15=MAS291 16=AIL303m
---              17=CPV301 18=DAP391m 19=SWE201c 20=SSG105 21=DPL302m
---              22=DWP301c 23=OJT202 24=NLP301c 25=PMG201c 26=DAT301m
--------------------------------------------------------------------------
 INSERT INTO Courses (CourseCode, Title, Description, InstructorID, CategoryID, Level, Price, Status) VALUES
 ('PFP191', N'Programming Fundamental with Python',     N'Programming fundamentals using Python.',        2,  1, 'Beginner',     0,  'Draft'),
 ('DBI202', N'Database Systems',                        N'Relational database design, ER modeling & SQL.', 3,  2, 'Intermediate', 49, 'Draft'),
@@ -78,7 +56,6 @@ INSERT INTO Courses (CourseCode, Title, Description, InstructorID, CategoryID, L
 ('CSD201', N'Data Structures and Algorithms with C',    N'DSA implemented in the C language.',             15, 6, 'Intermediate', 0,  'Draft'),
 ('CSD203', N'Data Structures and Algorithms with Python',N'DSA implemented in Python.',                    16, 1, 'Intermediate', 0,  'Draft'),
 ('CEA201', N'Computer Organization and Architecture',   N'CPU, memory and computer architecture.',         13, 6, 'Intermediate', 0,  'Draft'),
--- AI-major curriculum courses (CourseID 12..26). Cat: 7=AI 8=SoftwareEng 9=SoftSkills
 ('ADY201m',N'AI, Data Science with Python & SQL',       N'Foundations of AI & data science with Python and SQL.', 13, 3, 'Intermediate', 0, 'Draft'),
 ('ITE303c',N'Ethics in IT',                             N'Ethical, legal and social issues in information technology.', 20, 9, 'Beginner',    0, 'Draft'),
 ('MAI391', N'Mathematics for Machine Learning',         N'Linear algebra, calculus & probability for ML.',  15, 5, 'Intermediate', 0, 'Draft'),
@@ -96,13 +73,7 @@ INSERT INTO Courses (CourseCode, Title, Description, InstructorID, CategoryID, L
 ('DAT301m',N'AI Development with TensorFlow',           N'Building and deploying models with TensorFlow.',  18, 7, 'Advanced',      0, 'Draft');
 GO
 
--------------------------------------------------------------------------
--- 4. MODULES (each course gets >= 1 module so it can be published)
--------------------------------------------------------------------------
--- Each course is a COMPLETE syllabus (~10-11 modules), ordered by OrderIndex.
--- Module titles follow real course outlines (FPT/standard curricula).
 INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
--- Course 1: PFP191 - Programming Fundamental with Python
 (1, N'Getting Started with Python',                 1),
 (1, N'Control Flow & Functions',                    2),
 (1, N'Variables, Numbers & Strings',                3),
@@ -114,7 +85,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (1, N'Error & Exception Handling',                  9),
 (1, N'Modules, Packages & Standard Library',        10),
 (1, N'Object-Oriented Programming Basics',          11),
--- Course 2: DBI202 - Database Systems
 (2, N'ER Modeling',                                 1),
 (2, N'SQL Querying',                                2),
 (2, N'The World of Database Systems & DBMS',        3),
@@ -126,7 +96,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (2, N'Stored Procedures, Functions & Triggers',     9),
 (2, N'Transactions & Concurrency (ACID)',           10),
 (2, N'Indexes, Views & Query Performance',          11),
--- Course 3: DS301 - Data Science Foundations
 (3, N'Python for Data',                             1),
 (3, N'NumPy & Numerical Computing',                 2),
 (3, N'Data Wrangling with Pandas',                  3),
@@ -137,7 +106,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (3, N'Introduction to Machine Learning',            8),
 (3, N'Regression & Classification',                 9),
 (3, N'Model Evaluation & Capstone',                 10),
--- Course 4: WD110 - Web Development Basics
 (4, N'HTML & CSS',                                  1),
 (4, N'HTML5 Semantic Structure',                    2),
 (4, N'CSS Layout: Flexbox & Grid',                  3),
@@ -148,7 +116,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (4, N'Asynchronous JS & Fetch API',                 8),
 (4, N'Version Control with Git',                    9),
 (4, N'Capstone: Portfolio Website',                 10),
--- Course 5: UX150 - UI/UX Design Principles
 (5, N'Design Thinking',                             1),
 (5, N'Fundamentals of UX',                          2),
 (5, N'User Research & Personas',                    3),
@@ -159,7 +126,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (5, N'Prototyping with Figma',                      8),
 (5, N'Usability Testing & Heuristics',              9),
 (5, N'Design Handoff & Case Study',                 10),
--- Course 6: CSI106 - Introduction to Computer Science
 (6, N'What is Computer Science?',                   1),
 (6, N'Number Systems & Data Representation',        2),
 (6, N'Boolean Logic & Gates',                       3),
@@ -170,7 +136,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (6, N'Databases & Information Management',          8),
 (6, N'Computer Networks & the Internet',            9),
 (6, N'Security, Ethics & Emerging Trends',          10),
--- Course 7: MAD101 - Discrete Mathematics
 (7, N'Logic & Set Theory',                          1),
 (7, N'Propositional Logic & Proofs',                2),
 (7, N'Predicates & Quantifiers',                    3),
@@ -182,7 +147,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (7, N'Recurrence Relations',                        9),
 (7, N'Relations & Their Properties',                10),
 (7, N'Graphs & Trees',                              11),
--- Course 8: MAE101 - Mathematics for Engineering
 (8, N'Limits & Derivatives',                        1),
 (8, N'Functions & Graphs',                          2),
 (8, N'Continuity',                                  3),
@@ -193,7 +157,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (8, N'Sequences & Series',                          8),
 (8, N'Matrices & Linear Algebra',                   9),
 (8, N'Vectors & Multivariable Basics',              10),
--- Course 9: CSD201 - Data Structures and Algorithms with C
 (9, N'Arrays, Lists & Pointers in C',               1),
 (9, N'Algorithm Analysis & Big-O',                  2),
 (9, N'Linked Lists',                                3),
@@ -205,7 +168,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (9, N'Sorting Algorithms',                          9),
 (9, N'Searching Algorithms',                        10),
 (9, N'Graphs & Graph Traversal',                    11),
--- Course 10: CSD203 - Data Structures and Algorithms with Python
 (10, N'Lists, Stacks & Queues in Python',           1),
 (10, N'Algorithm Analysis & Big-O',                 2),
 (10, N'Recursion & Backtracking',                   3),
@@ -217,7 +179,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (10, N'Searching Algorithms',                       9),
 (10, N'Graph Algorithms',                           10),
 (10, N'Dynamic Programming',                        11),
--- Course 11: CEA201 - Computer Organization and Architecture
 (11, N'CPU & Memory Organization',                  1),
 (11, N'Data Representation & Number Systems',       2),
 (11, N'Digital Logic & Boolean Algebra',            3),
@@ -229,7 +190,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (11, N'Cache Memory & Hierarchy',                   9),
 (11, N'Internal & External Memory',                 10),
 (11, N'Parallel Processing & Multicore',            11),
--- Course 12: ADY201m - AI, Data Science with Python & SQL
 (12, N'Introduction to AI & Data Science',          1),
 (12, N'Python for Data Science',                    2),
 (12, N'Working with NumPy',                         3),
@@ -240,7 +200,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (12, N'Data Cleaning & Transformation',             8),
 (12, N'Exploratory Data Analysis & Visualization',  9),
 (12, N'Mini Data Science Project',                  10),
--- Course 13: ITE303c - Ethics in IT
 (13, N'Introduction to IT Ethics',                  1),
 (13, N'Ethical Theories & Frameworks',              2),
 (13, N'Privacy & Data Protection',                  3),
@@ -251,7 +210,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (13, N'AI Ethics & Algorithmic Bias',               8),
 (13, N'Cybercrime & Law',                           9),
 (13, N'Case Studies in IT Ethics',                  10),
--- Course 14: MAI391 - Mathematics for Machine Learning
 (14, N'Linear Algebra Foundations',                 1),
 (14, N'Vectors & Vector Spaces',                    2),
 (14, N'Matrices & Linear Transformations',          3),
@@ -262,7 +220,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (14, N'Probability Foundations',                    8),
 (14, N'Statistics for Machine Learning',            9),
 (14, N'Principal Component Analysis',               10),
--- Course 15: MAS291 - Statistics & Probability
 (15, N'Descriptive Statistics',                     1),
 (15, N'Probability Fundamentals',                   2),
 (15, N'Conditional Probability & Bayes'' Theorem',  3),
@@ -273,7 +230,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (15, N'Confidence Intervals',                       8),
 (15, N'Hypothesis Testing',                         9),
 (15, N'Correlation & Regression',                   10),
--- Course 16: AIL303m - Machine Learning
 (16, N'Introduction to Machine Learning',           1),
 (16, N'Exploratory Data Analysis',                  2),
 (16, N'Data Preprocessing & Feature Engineering',   3),
@@ -285,7 +241,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (16, N'Hierarchical Clustering & DBSCAN',           9),
 (16, N'Ensemble Learning',                          10),
 (16, N'Model Evaluation & Selection',               11),
--- Course 17: CPV301 - Computer Vision
 (17, N'Introduction to Computer Vision',            1),
 (17, N'Image Formation & Representation',           2),
 (17, N'Geometric Primitives & Transformations',     3),
@@ -296,7 +251,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (17, N'Object Detection (Haar Cascades)',           8),
 (17, N'Image Segmentation & Motion',                9),
 (17, N'Deep Learning for Computer Vision',          10),
--- Course 18: DAP391m - AI-DS Project
 (18, N'Project Scoping & Problem Definition',       1),
 (18, N'Data Collection & Sourcing',                 2),
 (18, N'Data Preprocessing & EDA',                   3),
@@ -305,7 +259,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (18, N'Evaluation & Validation',                    6),
 (18, N'Deployment & Presentation',                  7),
 (18, N'Final Report & Demo',                        8),
--- Course 19: SWE201c - Introduction to Software Engineering
 (19, N'Introduction to Software Engineering',       1),
 (19, N'Software Development Life Cycle',            2),
 (19, N'Agile & Scrum',                              3),
@@ -316,7 +269,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (19, N'Software Testing & QA',                      8),
 (19, N'Configuration Management & DevOps',          9),
 (19, N'Software Maintenance & Project Wrap-up',     10),
--- Course 20: SSG105 - Communication and In-Group Working Skills
 (20, N'Introduction to Soft Skills',                1),
 (20, N'Effective Communication',                    2),
 (20, N'Active Listening',                           3),
@@ -326,7 +278,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (20, N'Time Management',                            7),
 (20, N'Leadership Basics',                          8),
 (20, N'Professional Etiquette',                     9),
--- Course 21: DPL302m - Deep Learning
 (21, N'Introduction to Deep Learning',              1),
 (21, N'Neural Network Fundamentals',                2),
 (21, N'Forward & Backpropagation',                  3),
@@ -338,7 +289,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (21, N'Attention & Transformers',                   9),
 (21, N'Generative Models',                          10),
 (21, N'Model Deployment & Error Analysis',          11),
--- Course 22: DWP301c - Web Development with Python
 (22, N'Introduction to Web Development with Python', 1),
 (22, N'HTTP & Web Fundamentals',                    2),
 (22, N'Flask Framework Basics',                     3),
@@ -349,7 +299,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (22, N'Authentication & Sessions',                  8),
 (22, N'Deployment & Web Servers',                   9),
 (22, N'Capstone Web Application',                   10),
--- Course 23: OJT202 - On the Job Training
 (23, N'Internship Orientation',                     1),
 (23, N'Workplace Professionalism',                  2),
 (23, N'Company Tools & Workflow',                   3),
@@ -358,7 +307,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (23, N'Weekly Progress Reporting',                  6),
 (23, N'Final Internship Report',                    7),
 (23, N'Performance Evaluation',                     8),
--- Course 24: NLP301c - Natural Language Processing
 (24, N'Introduction to NLP',                        1),
 (24, N'Text Preprocessing & Normalization',         2),
 (24, N'Tokenization & Lemmatization',               3),
@@ -369,7 +317,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (24, N'Text Classification & Sentiment Analysis',   8),
 (24, N'Language Modeling',                          9),
 (24, N'Sequence Labeling & Applications',           10),
--- Course 25: PMG201c - Project Management
 (25, N'Introduction to Project Management',         1),
 (25, N'Project Life Cycle',                         2),
 (25, N'Project Initiation & Charter',               3),
@@ -380,7 +327,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (25, N'Quality & Resource Management',              8),
 (25, N'Agile Project Management',                   9),
 (25, N'Project Closure & Case Study',               10),
--- Course 26: DAT301m - AI Development with TensorFlow
 (26, N'Introduction to TensorFlow',                 1),
 (26, N'Tensors & Operations',                       2),
 (26, N'Building Models with Keras',                 3),
@@ -393,12 +339,6 @@ INSERT INTO Modules (CourseID, Title, OrderIndex) VALUES
 (26, N'Capstone: Deploying an AI Model',            10);
 GO
 
--------------------------------------------------------------------------
--- 5. MATERIALS
--------------------------------------------------------------------------
--- Every module gets a COMPLETE set of 5 learning materials (slides, reading,
--- video, exercises, reference link). Generated set-based by CROSS JOIN so it
--- stays correct no matter how many modules exist (no hard-coded ModuleIDs).
 INSERT INTO Materials (ModuleID, Title, MaterialType, ContentURL, OrderIndex)
 SELECT  m.ModuleID,
         t.Prefix + N': ' + m.Title,
@@ -416,16 +356,9 @@ CROSS JOIN (VALUES
 ) AS t(Ord, Prefix, MType, Slug);
 GO
 
--------------------------------------------------------------------------
--- 6. PUBLISH the courses (now allowed: each has >= 1 module)
--------------------------------------------------------------------------
-UPDATE Courses SET Status='Published';   -- every course now has >= 1 module
+UPDATE Courses SET Status='Published';
 GO
 
--------------------------------------------------------------------------
--- 7. ENROLLMENTS (via SP so business rules are exercised)
--- StudentIDs 5..12
--------------------------------------------------------------------------
 EXEC sp_EnrollStudent @StudentID=5,  @CourseID=1;
 EXEC sp_EnrollStudent @StudentID=5,  @CourseID=2;
 EXEC sp_EnrollStudent @StudentID=6,  @CourseID=1;
@@ -440,17 +373,12 @@ EXEC sp_EnrollStudent @StudentID=11, @CourseID=2;
 EXEC sp_EnrollStudent @StudentID=12, @CourseID=3;
 GO
 
--- Mark a couple of completions for completion-rate reporting
 UPDATE Enrollments SET Status='Completed', ProgressPercent=100, CompletedAt=SYSDATETIME()
 WHERE StudentID=5 AND CourseID=1;
 UPDATE Enrollments SET Status='Dropped'
 WHERE StudentID=9 AND CourseID=4;
 GO
 
--------------------------------------------------------------------------
--- 8. ASSIGNMENTS  (deadlines required; mix of past/future)
--- CourseID 1 = PFP191, 2 = DBI202
--------------------------------------------------------------------------
 INSERT INTO Assignments (CourseID, Title, Description, AType, MaxScore, Deadline, LatePolicy, PenaltyPct) VALUES
 (1, N'Python Basics Assignment', N'Write 3 small scripts', 'Assignment', 10, '2026-06-10 23:59', 'AcceptLate', 10),
 (1, N'Python Quiz 1',            N'MCQ on syntax',         'Quiz',       10, '2026-06-15 23:59', 'RejectLate', 0),
@@ -458,26 +386,19 @@ INSERT INTO Assignments (CourseID, Title, Description, AType, MaxScore, Deadline
 (2, N'Database Quiz',            N'MCQ on ER & SQL',       'Quiz',       10, '2026-07-01 23:59', 'AcceptLate', 0);
 GO
 
--------------------------------------------------------------------------
--- 9. QUIZ QUESTIONS & OPTIONS  (Assignment 2 = Python Quiz 1)
--------------------------------------------------------------------------
 INSERT INTO Questions (AssignmentID, QuestionText, Points) VALUES
 (2, N'Which keyword defines a function in Python?', 1),
 (2, N'What is the output of print(2 ** 3)?',        1),
 (2, N'Which type is immutable?',                    1);
 GO
--- Options for Q1 (QuestionID 1)
 INSERT INTO QuestionOptions (QuestionID, OptionText, IsCorrect) VALUES
 (1, N'func',  0), (1, N'def', 1), (1, N'function', 0), (1, N'lambda', 0);
--- Q2 (QuestionID 2)
 INSERT INTO QuestionOptions (QuestionID, OptionText, IsCorrect) VALUES
 (2, N'6', 0), (2, N'8', 1), (2, N'9', 0), (2, N'23', 0);
--- Q3 (QuestionID 3)
 INSERT INTO QuestionOptions (QuestionID, OptionText, IsCorrect) VALUES
 (3, N'list', 0), (3, N'dict', 0), (3, N'tuple', 1), (3, N'set', 0);
 GO
 
--- Database Quiz (Assignment 4) questions
 INSERT INTO Questions (AssignmentID, QuestionText, Points) VALUES
 (4, N'A primary key must be ...', 1),
 (4, N'Which JOIN keeps unmatched left rows?', 1);
@@ -487,70 +408,39 @@ INSERT INTO QuestionOptions (QuestionID, OptionText, IsCorrect) VALUES
 (5, N'INNER JOIN', 0), (5, N'LEFT JOIN', 1), (5, N'CROSS JOIN', 0);
 GO
 
--------------------------------------------------------------------------
--- 10. SUBMISSIONS (via SP -> trigger flags late / rejected)
--- Note: SYSDATETIME() is "now" (after the deadlines above) so the
---       assignment submissions will be flagged late, demonstrating policy.
--------------------------------------------------------------------------
 DECLARE @sid INT;
 
--- Python Basics Assignment (AssignmentID 1, AcceptLate +10% penalty)
 EXEC sp_SubmitAssignment @AssignmentID=1, @StudentID=5,  @ContentURL='https://lms.edu/sub/5_1.zip',  @SubmissionID=@sid OUTPUT;
 EXEC sp_SubmitAssignment @AssignmentID=1, @StudentID=6,  @ContentURL='https://lms.edu/sub/6_1.zip',  @SubmissionID=@sid OUTPUT;
 EXEC sp_SubmitAssignment @AssignmentID=1, @StudentID=7,  @ContentURL='https://lms.edu/sub/7_1.zip',  @SubmissionID=@sid OUTPUT;
 
--- SQL SELECT Exercise (AssignmentID 3, Penalty policy)
 EXEC sp_SubmitAssignment @AssignmentID=3, @StudentID=5,  @ContentURL='https://lms.edu/sub/5_3.sql',  @SubmissionID=@sid OUTPUT;
 EXEC sp_SubmitAssignment @AssignmentID=3, @StudentID=8,  @ContentURL='https://lms.edu/sub/8_3.sql',  @SubmissionID=@sid OUTPUT;
 
--- Python Quiz 1 (AssignmentID 2, RejectLate) -> will be Rejected automatically
 EXEC sp_SubmitAssignment @AssignmentID=2, @StudentID=5,  @ContentURL=NULL, @SubmissionID=@sid OUTPUT;
 GO
 
--------------------------------------------------------------------------
--- 11. QUIZ ANSWERS + AUTO GRADING (Database Quiz, future deadline = on time)
--------------------------------------------------------------------------
 DECLARE @subQuiz INT;
--- Student 8 takes the Database Quiz (Assignment 4)
 EXEC sp_SubmitAssignment @AssignmentID=4, @StudentID=8, @ContentURL=NULL, @SubmissionID=@subQuiz OUTPUT;
 
--- Student 8 answers BOTH correctly (Option IDs continue from earlier inserts)
--- Q4 options: 'Unique and not null'(correct), 'Nullable', 'Always numeric'
--- Q5 options: 'INNER JOIN', 'LEFT JOIN'(correct), 'CROSS JOIN'
 INSERT INTO StudentAnswers (SubmissionID, QuestionID, SelectedOptionID)
 SELECT @subQuiz, 4, (SELECT OptionID FROM QuestionOptions WHERE QuestionID=4 AND OptionText=N'Unique and not null');
 INSERT INTO StudentAnswers (SubmissionID, QuestionID, SelectedOptionID)
 SELECT @subQuiz, 5, (SELECT OptionID FROM QuestionOptions WHERE QuestionID=5 AND OptionText=N'LEFT JOIN');
 
-EXEC sp_AutoGradeQuiz @SubmissionID=@subQuiz;   -- 2/2 correct -> 10.00 / 10
+EXEC sp_AutoGradeQuiz @SubmissionID=@subQuiz;
 GO
 
--------------------------------------------------------------------------
--- 12. MANUAL GRADING by instructors (only non-rejected submissions)
--------------------------------------------------------------------------
--- Grade the Python Basics submissions (AssignmentID 1, instructor=2 An)
 EXEC sp_GradeSubmission @SubmissionID=1, @Score=8.5, @Feedback=N'Good work, minor style issues', @GradedBy=2;
 EXEC sp_GradeSubmission @SubmissionID=2, @Score=7.0, @Feedback=N'Needs better comments',          @GradedBy=2;
 EXEC sp_GradeSubmission @SubmissionID=3, @Score=9.0, @Feedback=N'Excellent',                      @GradedBy=2;
--- Grade SQL exercise (AssignmentID 3, instructor=3 Binh)
 EXEC sp_GradeSubmission @SubmissionID=4, @Score=6.5, @Feedback=N'Late: penalty applied',          @GradedBy=3;
 EXEC sp_GradeSubmission @SubmissionID=5, @Score=8.0, @Feedback=N'Well structured',                @GradedBy=3;
 GO
 
--------------------------------------------------------------------------
--- 12b. CERTIFICATES (Coursera-style: issued only when final grade >= 80%)
--------------------------------------------------------------------------
--- Student 8 (DBI202, CourseID 2): SQL exercise 8.0/10 (=80%) + Database Quiz
--- auto-graded 10/10 (=100%)  ->  final = 90%  >= 80%  -> certificate issued.
 EXEC sp_IssueCertificate @StudentID=8, @CourseID=2;
 GO
--- (Demo of the rule: Student 5 in PFP191 has not reached 80% yet, so calling
---  sp_IssueCertificate for them would be REJECTED. We leave that as a live
---  showcase on the web app / business-rule tests instead of seeding it.)
 
--------------------------------------------------------------------------
--- 13. FORUMS / DISCUSSIONS
--------------------------------------------------------------------------
 INSERT INTO ForumThreads (CourseID, CreatedBy, Title) VALUES
 (1, 5, N'How to fix IndentationError?'),
 (2, 8, N'Difference between WHERE and HAVING?');
@@ -563,19 +453,12 @@ INSERT INTO ForumPosts (ThreadID, UserID, Content, ParentPostID) VALUES
 (2, 3, N'Use WHERE before grouping, HAVING to filter aggregates.', 4);
 GO
 
--------------------------------------------------------------------------
--- 14. AI RECOMMENDATIONS
--------------------------------------------------------------------------
-EXEC sp_RecommendCourses @StudentID=5, @TopN=3;   -- studies Programming + Database
+EXEC sp_RecommendCourses @StudentID=5, @TopN=3;
 EXEC sp_RecommendCourses @StudentID=7, @TopN=3;
--- Simulate effectiveness: one recommendation was clicked, one ignored
 UPDATE TOP (1) Recommendations SET Status='Clicked' WHERE StudentID=5 AND Status='Shown';
 UPDATE TOP (1) Recommendations SET Status='Ignored' WHERE StudentID=7 AND Status='Shown';
 GO
 
--------------------------------------------------------------------------
--- 15. INTERACTION LOGS (analytics)
--------------------------------------------------------------------------
 DECLARE @s1 UNIQUEIDENTIFIER = NEWID(), @s2 UNIQUEIDENTIFIER = NEWID(), @s3 UNIQUEIDENTIFIER = NEWID();
 INSERT INTO InteractionLogs (UserID, SessionID, ActionType, EntityType, EntityID, DurationSec, CreatedAt) VALUES
 (5,  @s1, 'Login',        NULL,         NULL, NULL, '2026-06-20 08:00'),

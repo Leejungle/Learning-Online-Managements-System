@@ -11,3 +11,5 @@
 :r 05_sample_data.sql
 :r 06_reports.sql
 :r 07_business_rule_tests.sql
+:r 08_more_sample_data.sql
+:r 09_positive_smoke_tests.sql

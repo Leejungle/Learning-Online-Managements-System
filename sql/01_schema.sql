@@ -7,9 +7,6 @@
               -> 04_procedures -> 05_sample_data -> 06_reports
    ===================================================================== */
 
--------------------------------------------------------------------------
--- 0. Create & select database
--------------------------------------------------------------------------
 IF DB_ID('LMS') IS NOT NULL
 BEGIN
     ALTER DATABASE LMS SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -21,9 +18,6 @@ GO
 USE LMS;
 GO
 
--------------------------------------------------------------------------
--- 1. USERS  (BR: each user has a unique account and ONE role)
--------------------------------------------------------------------------
 CREATE TABLE Users (
     UserID        INT IDENTITY(1,1) PRIMARY KEY,
     Username      VARCHAR(50)   NOT NULL,
@@ -34,8 +28,8 @@ CREATE TABLE Users (
     Role          VARCHAR(20)   NOT NULL,
     Status        VARCHAR(20)   NOT NULL CONSTRAINT DF_Users_Status DEFAULT ('Active'),
     CreatedAt     DATETIME2     NOT NULL CONSTRAINT DF_Users_CreatedAt DEFAULT (SYSDATETIME()),
-    CONSTRAINT UQ_Users_Username CHECK (LEN(Username) >= 3),
-    CONSTRAINT UQ_Users_Username_Unique UNIQUE (Username),
+    CONSTRAINT CK_Users_Username_Length CHECK (LEN(Username) >= 3),
+    CONSTRAINT UQ_Users_Username UNIQUE (Username),
     CONSTRAINT UQ_Users_Email UNIQUE (Email),
     CONSTRAINT CK_Users_Role   CHECK (Role   IN ('Student','Instructor','Admin')),
     CONSTRAINT CK_Users_Status CHECK (Status IN ('Active','Inactive','Banned')),
@@ -43,9 +37,6 @@ CREATE TABLE Users (
 );
 GO
 
--------------------------------------------------------------------------
--- 2. CATEGORIES (course catalog organization)
--------------------------------------------------------------------------
 CREATE TABLE Categories (
     CategoryID   INT IDENTITY(1,1) PRIMARY KEY,
     CategoryName NVARCHAR(100) NOT NULL,
@@ -54,9 +45,6 @@ CREATE TABLE Categories (
 );
 GO
 
--------------------------------------------------------------------------
--- 3. COURSES  (BR: each course is created & managed by ONE instructor)
--------------------------------------------------------------------------
 CREATE TABLE Courses (
     CourseID     INT IDENTITY(1,1) PRIMARY KEY,
     CourseCode   VARCHAR(20)   NOT NULL,
@@ -77,9 +65,6 @@ CREATE TABLE Courses (
 );
 GO
 
--------------------------------------------------------------------------
--- 4. MODULES  (BR: each course must contain >= 1 learning module)
--------------------------------------------------------------------------
 CREATE TABLE Modules (
     ModuleID    INT IDENTITY(1,1) PRIMARY KEY,
     CourseID    INT           NOT NULL,
@@ -92,9 +77,6 @@ CREATE TABLE Modules (
 );
 GO
 
--------------------------------------------------------------------------
--- 5. MATERIALS  (documents, videos, links)
--------------------------------------------------------------------------
 CREATE TABLE Materials (
     MaterialID  INT IDENTITY(1,1) PRIMARY KEY,
     ModuleID    INT           NOT NULL,
@@ -109,9 +91,6 @@ CREATE TABLE Materials (
 );
 GO
 
--------------------------------------------------------------------------
--- 6. ENROLLMENTS  (BR: many-to-many student <-> course)
--------------------------------------------------------------------------
 CREATE TABLE Enrollments (
     EnrollmentID     INT IDENTITY(1,1) PRIMARY KEY,
     StudentID        INT          NOT NULL,
@@ -122,23 +101,20 @@ CREATE TABLE Enrollments (
     CompletedAt      DATETIME2    NULL,
     CONSTRAINT FK_Enroll_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID),
     CONSTRAINT FK_Enroll_Course  FOREIGN KEY (CourseID)  REFERENCES Courses(CourseID),
-    CONSTRAINT UQ_Enroll UNIQUE (StudentID, CourseID),       -- no duplicate enrollment
+    CONSTRAINT UQ_Enroll UNIQUE (StudentID, CourseID),
     CONSTRAINT CK_Enroll_Status   CHECK (Status IN ('Active','Completed','Dropped')),
     CONSTRAINT CK_Enroll_Progress CHECK (ProgressPercent BETWEEN 0 AND 100)
 );
 GO
 
--------------------------------------------------------------------------
--- 7. ASSIGNMENTS / ASSESSMENTS  (BR: must have a defined deadline)
--------------------------------------------------------------------------
 CREATE TABLE Assignments (
     AssignmentID INT IDENTITY(1,1) PRIMARY KEY,
     CourseID     INT           NOT NULL,
     Title        NVARCHAR(200) NOT NULL,
     Description  NVARCHAR(MAX) NULL,
-    Atype        VARCHAR(20)   NOT NULL,            -- Assignment / Quiz / Exam
+    Atype        VARCHAR(20)   NOT NULL,
     MaxScore     DECIMAL(5,2)  NOT NULL CONSTRAINT DF_Assign_Max DEFAULT (10),
-    Deadline     DATETIME2     NOT NULL,            -- deadline is REQUIRED
+    Deadline     DATETIME2     NOT NULL,
     LatePolicy   VARCHAR(20)   NOT NULL CONSTRAINT DF_Assign_Late DEFAULT ('AcceptLate'),
     PenaltyPct   DECIMAL(5,2)  NOT NULL CONSTRAINT DF_Assign_Penalty DEFAULT (0),
     CreatedAt    DATETIME2     NOT NULL CONSTRAINT DF_Assign_Created DEFAULT (SYSDATETIME()),
@@ -151,9 +127,6 @@ CREATE TABLE Assignments (
 );
 GO
 
--------------------------------------------------------------------------
--- 8. QUIZ QUESTIONS & OPTIONS  (for automated grading of objective tests)
--------------------------------------------------------------------------
 CREATE TABLE Questions (
     QuestionID   INT IDENTITY(1,1) PRIMARY KEY,
     AssignmentID INT           NOT NULL,
@@ -175,9 +148,6 @@ CREATE TABLE QuestionOptions (
 );
 GO
 
--------------------------------------------------------------------------
--- 9. SUBMISSIONS  (BR: one submission = one student + one assignment)
--------------------------------------------------------------------------
 CREATE TABLE Submissions (
     SubmissionID INT IDENTITY(1,1) PRIMARY KEY,
     AssignmentID INT           NOT NULL,
@@ -194,7 +164,6 @@ CREATE TABLE Submissions (
 );
 GO
 
--- Answers chosen by students for quiz questions (used by auto-grading)
 CREATE TABLE StudentAnswers (
     AnswerID         INT IDENTITY(1,1) PRIMARY KEY,
     SubmissionID     INT NOT NULL,
@@ -208,27 +177,21 @@ CREATE TABLE StudentAnswers (
 );
 GO
 
--------------------------------------------------------------------------
--- 10. GRADES  (BR: a grade is recorded for each evaluated submission)
--------------------------------------------------------------------------
 CREATE TABLE Grades (
     GradeID      INT IDENTITY(1,1) PRIMARY KEY,
     SubmissionID INT           NOT NULL,
     Score        DECIMAL(5,2)  NOT NULL,
     Feedback     NVARCHAR(MAX) NULL,
-    GradedBy     INT           NULL,           -- NULL => auto-graded by system
+    GradedBy     INT           NULL,
     GradedAt     DATETIME2     NOT NULL CONSTRAINT DF_Grade_At DEFAULT (SYSDATETIME()),
     CONSTRAINT FK_Grade_Submission FOREIGN KEY (SubmissionID)
         REFERENCES Submissions(SubmissionID) ON DELETE CASCADE,
     CONSTRAINT FK_Grade_GradedBy FOREIGN KEY (GradedBy) REFERENCES Users(UserID),
-    CONSTRAINT UQ_Grade UNIQUE (SubmissionID),   -- one grade per submission
+    CONSTRAINT UQ_Grade UNIQUE (SubmissionID),
     CONSTRAINT CK_Grade_Score CHECK (Score >= 0)
 );
 GO
 
--------------------------------------------------------------------------
--- 11. DISCUSSIONS / FORUMS
--------------------------------------------------------------------------
 CREATE TABLE ForumThreads (
     ThreadID  INT IDENTITY(1,1) PRIMARY KEY,
     CourseID  INT           NOT NULL,
@@ -253,15 +216,12 @@ CREATE TABLE ForumPosts (
 );
 GO
 
--------------------------------------------------------------------------
--- 12. AI MODULE: recommendations & interaction logs
--------------------------------------------------------------------------
 CREATE TABLE Recommendations (
     RecommendationID INT IDENTITY(1,1) PRIMARY KEY,
     StudentID   INT           NOT NULL,
     CourseID    INT           NOT NULL,
     Reason      NVARCHAR(300) NULL,
-    Score       DECIMAL(5,4)  NOT NULL CONSTRAINT DF_Rec_Score DEFAULT (0), -- confidence 0..1
+    Score       DECIMAL(5,4)  NOT NULL CONSTRAINT DF_Rec_Score DEFAULT (0),
     Status      VARCHAR(20)   NOT NULL CONSTRAINT DF_Rec_Status DEFAULT ('Shown'),
     CreatedAt   DATETIME2     NOT NULL CONSTRAINT DF_Rec_At DEFAULT (SYSDATETIME()),
     CONSTRAINT FK_Rec_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID),
@@ -275,8 +235,8 @@ CREATE TABLE InteractionLogs (
     LogID      BIGINT IDENTITY(1,1) PRIMARY KEY,
     UserID     INT          NULL,
     SessionID  UNIQUEIDENTIFIER NOT NULL,
-    ActionType VARCHAR(50)  NOT NULL,        -- Login, ViewMaterial, Submit, ...
-    EntityType VARCHAR(50)  NULL,            -- Course, Material, Assignment ...
+    ActionType VARCHAR(50)  NOT NULL,
+    EntityType VARCHAR(50)  NULL,
     EntityID   INT          NULL,
     DurationSec INT         NULL,
     CreatedAt  DATETIME2    NOT NULL CONSTRAINT DF_Log_At DEFAULT (SYSDATETIME()),
@@ -284,32 +244,21 @@ CREATE TABLE InteractionLogs (
 );
 GO
 
--------------------------------------------------------------------------
--- 13. CERTIFICATES  (BR: issued only when course final score >= 80%)
---     Coursera-style: a learner who passes the graded assessments of a
---     course (final score >= passing threshold) earns ONE certificate.
---     The CHECK constraint guarantees the 80% rule at the data level, so
---     even a direct INSERT cannot create a certificate below the bar.
--------------------------------------------------------------------------
 CREATE TABLE Certificates (
     CertificateID INT IDENTITY(1,1) PRIMARY KEY,
     StudentID     INT          NOT NULL,
     CourseID      INT          NOT NULL,
-    FinalScore    DECIMAL(5,2) NOT NULL,        -- percentage 0..100
+    FinalScore    DECIMAL(5,2) NOT NULL,
     IssuedAt      DATETIME2    NOT NULL CONSTRAINT DF_Cert_At DEFAULT (SYSDATETIME()),
-    -- Human-friendly serial, derived from the identity (computed, no storage)
     CertificateCode AS ('LMS-CERT-' + RIGHT('00000' + CAST(CertificateID AS VARCHAR(10)), 5)),
     CONSTRAINT FK_Cert_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID),
     CONSTRAINT FK_Cert_Course  FOREIGN KEY (CourseID)  REFERENCES Courses(CourseID),
-    CONSTRAINT UQ_Cert UNIQUE (StudentID, CourseID),         -- one certificate per course
-    CONSTRAINT CK_Cert_Pass  CHECK (FinalScore >= 80.0),     -- passing threshold = 80%
+    CONSTRAINT UQ_Cert UNIQUE (StudentID, CourseID),
+    CONSTRAINT CK_Cert_Pass  CHECK (FinalScore >= 80.0),
     CONSTRAINT CK_Cert_Range CHECK (FinalScore BETWEEN 0 AND 100)
 );
 GO
 
--------------------------------------------------------------------------
--- 14. Helpful indexes for reporting / lookups
--------------------------------------------------------------------------
 CREATE INDEX IX_Courses_Instructor ON Courses(InstructorID);
 CREATE INDEX IX_Enroll_Course      ON Enrollments(CourseID);
 CREATE INDEX IX_Enroll_Student     ON Enrollments(StudentID);

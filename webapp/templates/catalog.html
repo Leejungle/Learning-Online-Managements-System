@@ -54,6 +54,95 @@
     </div>
 </div>
 
+<!-- Gợi ý cho bạn (cá nhân hóa) - từ sp_RecommendCourses + bảng Recommendations -->
+{% if recommended_courses %}
+<section class="rec-section mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <h2 class="rec-title mb-0"><i class="bi bi-stars me-1"></i>Gợi ý cho bạn</h2>
+        <span class="data-source small">
+            <i class="bi bi-database-fill-check"></i> Cá nhân hóa qua <code>sp_RecommendCourses</code>
+        </span>
+    </div>
+    <p class="text-muted small mb-3">
+        Gợi ý dựa trên danh mục bạn đang theo học (content-based), lưu ở bảng
+        <code>Recommendations</code> — đây là gợi ý <strong>riêng cho bạn</strong>,
+        khác với "phổ biến nhất" bên dưới.
+    </p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+        {% for course in recommended_courses %}
+        <div class="col">
+            <a class="card rec-card h-100 text-decoration-none"
+               href="{{ url_for('course_detail', course_id=course.CourseID) }}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="rec-badge"><i class="bi bi-magic me-1"></i>Gợi ý</span>
+                        {% if course.Score is not none %}
+                        <span class="rec-score">{{ '%.0f' % (course.Score * 100) }}% hợp</span>
+                        {% endif %}
+                    </div>
+                    <span class="code-chip mb-2 d-inline-block">{{ course.CourseCode }}</span>
+                    <h6 class="rec-card-title">{{ course.Title }}</h6>
+                    <p class="instructor small mb-0">
+                        <i class="bi bi-person-workspace me-1"></i>{{ course.InstructorName }}
+                    </p>
+                </div>
+                <div class="card-footer d-flex flex-wrap gap-2">
+                    <span class="meta-chip"><i class="bi bi-bar-chart-steps"></i>{{ course.Level }}</span>
+                    {% if course.CategoryName %}
+                        <span class="meta-chip"><i class="bi bi-tag"></i>{{ course.CategoryName }}</span>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Khóa học phổ biến nhất (kiểu Coursera) - xếp theo lượt đăng ký thực tế -->
+{% if popular_courses %}
+<section class="popular-section mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <h2 class="popular-title mb-0"><i class="bi bi-fire me-1"></i>Khóa học phổ biến nhất</h2>
+        <span class="data-source small">
+            <i class="bi bi-database-fill-check"></i> Xếp theo lượt đăng ký nhiều nhất
+        </span>
+    </div>
+    <p class="text-muted small mb-3">
+        Top {{ popular_courses|length }} khóa được học viên đăng ký nhiều nhất trong hệ thống
+        (xếp hạng theo <code>COUNT(Enrollments)</code>, không phải gợi ý cá nhân hóa).
+    </p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+        {% for course in popular_courses %}
+        <div class="col">
+            <a class="card popular-card h-100 text-decoration-none"
+               href="{{ url_for('course_detail', course_id=course.CourseID) }}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="popular-rank">#{{ loop.index }}</span>
+                        <span class="popular-enroll">
+                            <i class="bi bi-people-fill me-1"></i>{{ course.EnrolledStudents }} đăng ký
+                        </span>
+                    </div>
+                    <span class="code-chip mb-2 d-inline-block">{{ course.CourseCode }}</span>
+                    <h6 class="popular-card-title">{{ course.Title }}</h6>
+                    <p class="instructor small mb-0">
+                        <i class="bi bi-person-workspace me-1"></i>{{ course.InstructorName }}
+                    </p>
+                </div>
+                <div class="card-footer d-flex flex-wrap gap-2">
+                    <span class="meta-chip"><i class="bi bi-bar-chart-steps"></i>{{ course.Level }}</span>
+                    {% if course.CategoryName %}
+                        <span class="meta-chip"><i class="bi bi-tag"></i>{{ course.CategoryName }}</span>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
 <!-- Bộ lọc -->
 <form class="card filter-card shadow-sm mb-4" method="get">
     <div class="row g-3 align-items-end">

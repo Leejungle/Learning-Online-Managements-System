@@ -4,10 +4,6 @@
 USE LMS;
 GO
 
--------------------------------------------------------------------------
--- FUNCTION: check whether a student can access a course
---           (BR: students can only access courses they are enrolled in)
--------------------------------------------------------------------------
 CREATE OR ALTER FUNCTION dbo.fn_CanAccessCourse (@StudentID INT, @CourseID INT)
 RETURNS BIT
 AS
@@ -24,10 +20,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- FUNCTION: weighted course progress of a student
---           (ratio of graded assignments over total assignments)
--------------------------------------------------------------------------
 CREATE OR ALTER FUNCTION dbo.fn_CourseProgress (@StudentID INT, @CourseID INT)
 RETURNS DECIMAL(5,2)
 AS
@@ -48,14 +40,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- FUNCTION: final course grade of a student (Coursera-style, percent 0..100)
---   = average over ALL graded assignments of the course of
---     (best graded score / MaxScore * 100).
---   A missing or rejected (ungraded) assignment counts as 0, so a learner
---   must actually complete the graded work to reach the passing bar.
---   Returns NULL when the course has no assignments (nothing to grade yet).
--------------------------------------------------------------------------
 CREATE OR ALTER FUNCTION dbo.fn_CourseFinalGrade (@StudentID INT, @CourseID INT)
 RETURNS DECIMAL(5,2)
 AS
@@ -76,14 +60,10 @@ BEGIN
         GROUP BY a.AssignmentID
     ) AS perAssignment;
 
-    RETURN @grade;   -- NULL if the course has no assignments
+    RETURN @grade;
 END
 GO
 
--------------------------------------------------------------------------
--- FUNCTION: has the student passed the course? (final grade >= 80%)
---   Returns 1 only when there is a final grade AND it meets the threshold.
--------------------------------------------------------------------------
 CREATE OR ALTER FUNCTION dbo.fn_HasPassedCourse (@StudentID INT, @CourseID INT)
 RETURNS BIT
 AS
@@ -93,9 +73,6 @@ BEGIN
 END
 GO
 
--------------------------------------------------------------------------
--- TABLE-VALUED FUNCTION: materials a given student is allowed to see
--------------------------------------------------------------------------
 CREATE OR ALTER FUNCTION dbo.fn_AccessibleMaterials (@StudentID INT)
 RETURNS TABLE
 AS
@@ -112,9 +89,6 @@ RETURN
 );
 GO
 
--------------------------------------------------------------------------
--- VIEW: course catalog with instructor & enrollment counts
--------------------------------------------------------------------------
 CREATE OR ALTER VIEW vw_CourseCatalog
 AS
 SELECT  c.CourseID,
@@ -135,9 +109,6 @@ GROUP BY c.CourseID, c.CourseCode, c.Title, c.Level, c.Status,
          cat.CategoryName, u.FullName;
 GO
 
--------------------------------------------------------------------------
--- VIEW: gradebook (one row per graded submission)
--------------------------------------------------------------------------
 CREATE OR ALTER VIEW vw_Gradebook
 AS
 SELECT  c.CourseID, c.Title AS CourseTitle,

@@ -13,16 +13,31 @@ sql/
 ├── 02_triggers.sql            -- Trigger thực thi các quy tắc nghiệp vụ
 ├── 03_functions_views.sql     -- Hàm (function) và view phục vụ truy vấn/báo cáo
 ├── 04_procedures.sql          -- Stored procedure (đăng ký, nộp bài, chấm điểm, gợi ý...)
-├── 05_sample_data.sql         -- Dữ liệu mẫu
+├── 05_sample_data.sql         -- Dữ liệu mẫu (nền)
 ├── 06_reports.sql             -- 6 truy vấn báo cáo/thống kê theo yêu cầu
-├── 07_business_rule_tests.sql -- Kiểm thử các quy tắc nghiệp vụ (negative tests)
+├── 07_business_rule_tests.sql -- Kiểm thử quy tắc nghiệp vụ (12 negative tests)
+├── 08_more_sample_data.sql    -- Làm giàu dữ liệu mẫu (idempotent, chạy lại không nhân đôi)
+├── 09_positive_smoke_tests.sql-- Smoke test luồng hợp lệ (chạy trong transaction + ROLLBACK, an toàn)
+├── 10_lab5_query_workbook.sql -- Workbook Lab 5: 68 nhóm truy vấn [Q01..Q68], NON-DESTRUCTIVE (mọi thao tác ghi đều ROLLBACK)
 ├── run_all.sql                -- Chạy tất cả theo thứ tự (đường dẫn TƯƠNG ĐỐI, SQLCMD mode)
 └── run_all_local.sql          -- Chạy tất cả với đường dẫn TUYỆT ĐỐI (tiện chạy trong SSMS trên máy này)
 docs/
-├── erd.mmd / erd.png                    -- Sơ đồ ERD (mermaid source + ảnh)
+├── erd.mmd / erd.png                     -- Sơ đồ ERD (mermaid source + ảnh)
 ├── block_diagram.mmd / block_diagram.png -- Sơ đồ khối kiến trúc hệ thống
-├── flowchart_submission.mmd / .png      -- Lưu đồ quy trình nộp & chấm bài
-└── Normalization_and_DataDictionary.md  -- Chuẩn hóa 1NF/2NF/3NF + Data dictionary
+├── flowchart_submission.mmd / .png       -- Lưu đồ quy trình nộp & chấm bài
+├── Normalization_and_DataDictionary.md   -- Chuẩn hóa 1NF/2NF/3NF + Data dictionary
+├── PROJECT_REVIEW.md / .pdf              -- Bản tự rà soát/đánh giá tổng thể dự án
+├── Lab 1..5 *.docx                       -- Đề bài gốc (template) của 5 lab từ giảng viên
+├── reports/                              -- Báo cáo 5 lab để nộp + phụ trợ (xem mục 1b)
+│   ├── lab1_data_models.md / .docx
+│   ├── lab2_entities_fds_keys.md / .docx
+│   ├── lab3_anomalies_and_normalization.md / .docx
+│   ├── lab4_relational_design_process.md / .docx
+│   ├── lab5_sql_programming.md / .docx
+│   ├── lab5_execution_output.txt         -- Log chạy thật của workbook Lab 5 (bằng chứng)
+│   ├── _build_lab_docx.py                -- Script build 5 .md -> .docx (python-docx)
+│   └── _build_lab_pdfs.py                -- Script build 5 .md -> .pdf
+└── screenshots/                          -- Ảnh chụp web app (minh họa cho Lab 5 / Final Report)
 webapp/                          -- Web app demo (Flask + pyodbc) kết nối SQL Server thật
 ├── app.py                       -- Route Flask
 ├── db.py                        -- Lớp truy cập DB (parameterized, chỉ đọc/gọi SP có sẵn)
@@ -39,6 +54,34 @@ README.md
 > Sơ đồ ERD: [`docs/erd.png`](docs/erd.png).
 > Hướng dẫn web app demo: [`webapp/README.md`](webapp/README.md).
 
+## 1b. Báo cáo các lab & workbook (docs/reports/)
+
+Năm bài lab của môn được viết trong `docs/reports/` (mỗi lab có bản `.md` nguồn và bản
+`.docx` để nộp). Trang bìa để placeholder — nhóm điền `[GROUP NAME]`,
+`[FULL NAME — STUDENT ID]`, `[CLASS CODE]`, `[SUBMISSION DATE]` trước khi nộp.
+
+| Lab | Nội dung | File |
+|-----|----------|------|
+| Lab 1 | Study of Data Models (so sánh các mô hình dữ liệu, biện minh chọn mô hình quan hệ) | `lab1_data_models.md` / `.docx` |
+| Lab 2 | Entities, attributes, functional dependencies, keys (17 thực thể) | `lab2_entities_fds_keys.md` / `.docx` |
+| Lab 3 | Anomalies + chuẩn hóa 1NF→2NF→3NF (ghi chú BCNF) | `lab3_anomalies_and_normalization.md` / `.docx` |
+| Lab 4 | Quy trình thiết kế CSDL quan hệ (ERD → logical → physical → constraints) | `lab4_relational_design_process.md` / `.docx` |
+| Lab 5 | SQL cơ bản → nâng cao + view/index/function/procedure/trigger | `lab5_sql_programming.md` / `.docx` |
+
+- **Workbook Lab 5** (`sql/10_lab5_query_workbook.sql`): 68 nhóm truy vấn `[Q01..Q68]` phủ
+  cả 17 bảng + truy vấn nâng cao + demo view/function/index/procedure/trigger. **An toàn chạy
+  lại nhiều lần** — mọi thao tác ghi (procedure/trigger) đều bọc trong transaction và `ROLLBACK`,
+  KHÔNG thay đổi dữ liệu mẫu. Chạy độc lập (sau khi đã build DB bằng `run_all`):
+
+  ```powershell
+  cd sql
+  sqlcmd -S localhost -E -C -d LMS -i 10_lab5_query_workbook.sql -o ..\docs\reports\lab5_execution_output.txt -W
+  ```
+
+  File `docs/reports/lab5_execution_output.txt` là log chạy thật của workbook (bằng chứng cho Lab 5).
+- **Build lại tài liệu:** `python docs/reports/_build_lab_docx.py` (ra `.docx`),
+  `python docs/reports/_build_lab_pdfs.py` (ra `.pdf`).
+
 ## 2. Cách chạy database
 
 > ⚠️ **Quan trọng:** `run_all.sql` / `run_all_local.sql` sẽ **DROP và tạo lại** database `LMS`
@@ -53,16 +96,16 @@ README.md
 3. Đổi database trên thanh công cụ sang **`master`** (KHÔNG để là `LMS`). Vì script drop/tạo
    lại `LMS`, nếu cửa sổ query đang đứng trong `LMS` thì sẽ tự khóa chính mình → lỗi kết nối.
 4. Nhấn **F5 (Execute)**. Tab *Messages* sẽ in lần lượt `... created successfully`,
-   `Sample data inserted successfully`, các REPORT, và `TEST 1..10: PASS`.
+   `Sample data inserted successfully`, các REPORT, và `TEST 1..12: PASS`.
 
 > Nếu chạy trên máy khác: sửa đường dẫn trong `run_all_local.sql`, hoặc mở từng file
-> `01 → 07` theo đúng thứ tự và Execute lần lượt (cách này không cần SQLCMD Mode).
+> `01 → 09` theo đúng thứ tự và Execute lần lượt (cách này không cần SQLCMD Mode).
 
 ### 2.2. Cách B — dòng lệnh (sqlcmd)
 
 ```powershell
 cd sql
-sqlcmd -S localhost -E -C -i 01_schema.sql -i 02_triggers.sql -i 03_functions_views.sql -i 04_procedures.sql -i 05_sample_data.sql -i 06_reports.sql -i 07_business_rule_tests.sql
+sqlcmd -S localhost -E -C -i 01_schema.sql -i 02_triggers.sql -i 03_functions_views.sql -i 04_procedures.sql -i 05_sample_data.sql -i 06_reports.sql -i 07_business_rule_tests.sql -i 08_more_sample_data.sql -i 09_positive_smoke_tests.sql
 ```
 
 > `-E` = Windows Authentication, `-C` = trust server certificate. Thay `-S` bằng
@@ -73,11 +116,12 @@ sqlcmd -S localhost -E -C -i 01_schema.sql -i 02_triggers.sql -i 03_functions_vi
 1. **Tắt web app** nếu đang chạy (Ctrl+C ở cửa sổ chạy Flask). Web app dùng pyodbc mở/đóng
    kết nối theo từng request nên thường không giữ `LMS`, nhưng tắt hẳn cho chắc.
 2. Đóng các tab query SSMS đang nối vào `LMS` (hoặc chuyển chúng sang `master`).
-3. Chạy `run_all_local.sql` (theo mục 2.1) → đợi `TEST 10: PASS`.
+3. Chạy `run_all_local.sql` (theo mục 2.1) → đợi `TEST 1..12: PASS` (và `SMOKE: PASS`).
 4. Bật lại web app khi cần demo.
 
-> Các file SQL **phải chạy đúng thứ tự** `01 → 07` (qua runner script hoặc thủ công),
-> vì file sau phụ thuộc object do file trước tạo.
+> Các file SQL **phải chạy đúng thứ tự** `01 → 09` (qua runner script hoặc thủ công),
+> vì file sau phụ thuộc object do file trước tạo. File `09` (smoke test) chạy trong
+> transaction và **ROLLBACK** nên không làm thay đổi dữ liệu mẫu.
 
 ## 2b. Vai trò của web app demo
 
@@ -164,12 +208,22 @@ erDiagram
 | Khóa `Published` phải có ≥ 1 module (cả khi INSERT lẫn UPDATE) | trigger `trg_Courses_PublishNeedsModule`, `trg_Modules_KeepAtLeastOne` |
 | Chứng chỉ chỉ cấp khi điểm tổng kết khóa ≥ 80% (Coursera-style) | `CHECK CK_Cert_Pass` + `sp_IssueCertificate` + `fn_CourseFinalGrade` |
 
-## 6. Tính năng AI / xử lý dữ liệu
+## 6. Tính năng "AI" / xử lý dữ liệu
 
-- `sp_RecommendCourses` — gợi ý khóa học theo danh mục sinh viên đang học (content-based), lưu lại để đo hiệu quả.
-- `sp_AutoGradeQuiz` — tự động chấm quiz/exam trắc nghiệm, quy đổi về thang điểm `MaxScore`.
+> **Làm rõ về thuật ngữ "AI":** module gợi ý ở đây là **bộ gợi ý content-based gọn nhẹ viết bằng SQL thuần**,
+> **không phải mô hình máy học (ML) được huấn luyện**. Nó xếp hạng khóa học theo danh mục sinh viên đang
+> theo học và độ phổ biến. Cách đặt tên "AI module" chỉ mang tính mô tả tính năng; giá trị học thuật nằm ở
+> phần **thực thi bằng truy vấn/stored procedure trong SQL Server** phục vụ minh họa cơ sở dữ liệu.
+
+- `sp_RecommendCourses` — gợi ý khóa học theo danh mục sinh viên đang học (content-based, SQL thuần), lưu lại để đo hiệu quả.
+- `sp_AutoGradeQuiz` — tự động chấm quiz/exam trắc nghiệm theo đáp án đúng, quy đổi về thang điểm `MaxScore` (luật rõ ràng, không phải ML).
 - `InteractionLogs` — ghi nhận hành vi để phân tích (active users, session duration).
 - **Chứng chỉ (Coursera-style):** `fn_CourseFinalGrade` tính điểm tổng kết khóa (%), `fn_HasPassedCourse` xác định đạt ≥ 80%; `sp_IssueCertificate` cấp chứng chỉ và đánh dấu hoàn thành khóa. Ngưỡng 80% được khóa cứng bởi `CHECK CK_Cert_Pass` trên bảng `Certificates`.
+
+> **Tiến độ học — hai khái niệm khác nhau (tránh nhầm):**
+> - `fn_CourseProgress(StudentID, CourseID)` — **tính trực tiếp (live)** tỷ lệ bài đánh giá đã được chấm / tổng số bài của khóa. Web dashboard dùng hàm này để hiển thị tiến độ theo thời gian thực.
+> - `Enrollments.ProgressPercent` — **giá trị lưu sẵn (snapshot)** trên bản ghi đăng ký; mặc định 0 và được `sp_IssueCertificate` cập nhật thành `100` (kèm `Status='Completed'`, `CompletedAt`) khi học viên đạt và được cấp chứng chỉ.
+> Hai giá trị phục vụ mục đích khác nhau và **cố ý không đồng bộ realtime** để giữ thiết kế đơn giản.
 
 ## 7. Báo cáo (`06_reports.sql`)
 
@@ -178,10 +232,14 @@ erDiagram
 3. Hoạt động giảng viên & hiệu quả khóa học
 4. Thống kê nộp bài đúng hạn vs trễ hạn
 5. Phân tích sử dụng hệ thống (người dùng hoạt động, thời lượng phiên)
-6. Hiệu quả gợi ý của AI (CTR, tỷ lệ chuyển đổi)
+6. Hiệu quả gợi ý khóa học (CTR, tỷ lệ chuyển đổi)
 
-> Trang `/reports` của web app hiển thị 6 báo cáo này **kèm biểu đồ trực quan** (Chart.js),
-> dữ liệu đẩy thẳng từ các truy vấn trên — không có số liệu giả ở frontend.
+> **Phân tầng báo cáo (để tránh nhầm "6" với "5/3"):**
+> - **Tầng SQL** (`06_reports.sql`): cung cấp **đủ 6** truy vấn báo cáo nêu trên — đây là phần được chấm điểm.
+> - **Tầng web** (`/reports`): chỉ là lớp trình bày, hiển thị **một tập con theo vai trò** đang chọn:
+>   **Instructor** thấy báo cáo **1, 2, 4** (3 báo cáo liên quan giảng dạy); **Admin** thấy báo cáo **1–5** (5 báo cáo).
+>   Báo cáo **số 6 (hiệu quả gợi ý)** vẫn nằm trong `06_reports.sql` nhưng **không đưa lên web** (đồng bộ với việc đã bỏ trang gợi ý riêng).
+> Biểu đồ trên web (Chart.js) lấy dữ liệu **trực tiếp từ các truy vấn trên**, không có số liệu giả ở frontend.
 
 ## 8. Ghi chú thiết kế: mô hình vai trò đơn giản hóa (Role model)
 

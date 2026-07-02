@@ -1,0 +1,2478 @@
+Changed database context to 'LMS'.
+--- [Q01] Users ---
+UserID Username FullName Role Status
+------ -------- -------- ---- ------
+1 admin01 Nguyen Quan Tri Admin Active
+2 teacher_an Le Van An Instructor Active
+3 teacher_binh Tran Thi Binh Instructor Active
+4 teacher_cuong Pham Van Cuong Instructor Active
+5 sv_dung Hoang Van Dung Student Active
+6 sv_giang Do Thi Giang Student Active
+7 sv_hai Vu Van Hai Student Active
+8 sv_lan Ngo Thi Lan Student Active
+9 sv_minh Bui Van Minh Student Active
+10 sv_nga Dang Thi Nga Student Active
+--- [Q02] Categories ---
+CategoryID CategoryName Description
+---------- ------------ -----------
+1 Programming Software development & coding
+2 Database Databases and data management
+3 Data Science Data analysis, ML & AI
+4 Design UI/UX and graphic design
+5 Mathematics Foundational and applied mathematics
+6 Computer Science Core computer science fundamentals
+7 Artificial Intelligence Machine learning, deep learning, CV & NLP
+8 Software Engineering Software process, design & project management
+9 Soft Skills Communication, teamwork, ethics & career skills
+--- [Q03] Courses ---
+CourseID CourseCode Title Level Status Price
+-------- ---------- ----- ----- ------ -----
+1 PFP191 Programming Fundamental with Python Beginner Published .00
+2 DBI202 Database Systems Intermediate Published 49.00
+3 DS301 Data Science Foundations Advanced Published 79.00
+4 WD110 Web Development Basics Beginner Published .00
+5 UX150 UI/UX Design Principles Beginner Published 29.00
+6 CSI106 Introduction to Computer Science Beginner Published .00
+7 MAD101 Discrete Mathematics Intermediate Published .00
+8 MAE101 Mathematics for Engineering Beginner Published .00
+9 CSD201 Data Structures and Algorithms with C Intermediate Published .00
+10 CSD203 Data Structures and Algorithms with Python Intermediate Published .00
+--- [Q04] Modules ---
+ModuleID CourseID Title OrderIndex
+-------- -------- ----- ----------
+1 1 Getting Started with Python 1
+2 1 Control Flow & Functions 2
+3 1 Variables, Numbers & Strings 3
+4 1 Operators & Expressions 4
+5 1 Lists, Tuples & Sets 5
+6 1 Dictionaries & Comprehensions 6
+7 1 Functions, Scope & Recursion 7
+8 1 File Input/Output 8
+9 1 Error & Exception Handling 9
+10 1 Modules, Packages & Standard Library 10
+--- [Q05] Materials ---
+MaterialID ModuleID Title MaterialType
+---------- -------- ----- ------------
+1 1 Lecture Slides: Getting Started with Python Slide
+2 1 Reading Material: Getting Started with Python Document
+3 1 Video Lecture: Getting Started with Python Video
+4 1 Practice Exercises: Getting Started with Python Document
+5 1 Reference Link: Getting Started with Python Link
+6 2 Lecture Slides: Control Flow & Functions Slide
+7 2 Reading Material: Control Flow & Functions Document
+8 2 Video Lecture: Control Flow & Functions Video
+9 2 Practice Exercises: Control Flow & Functions Document
+10 2 Reference Link: Control Flow & Functions Link
+--- [Q06] Enrollments ---
+EnrollmentID StudentID CourseID Status ProgressPercent
+------------ --------- -------- ------ ---------------
+1 5 1 Completed 100.00
+2 5 2 Active .00
+3 6 1 Active .00
+4 6 3 Dropped .00
+5 7 1 Active .00
+6 7 2 Dropped .00
+7 8 2 Completed 100.00
+8 9 4 Dropped .00
+9 10 1 Active .00
+10 10 5 Completed 100.00
+--- [Q07] Assignments ---
+AssignmentID CourseID Title AType MaxScore Deadline
+------------ -------- ----- ----- -------- --------
+1 1 Python Basics Assignment Assignment 10.00 2026-06-10 23:59:00.0000000
+2 1 Python Quiz 1 Quiz 10.00 2026-06-15 23:59:00.0000000
+3 2 SQL SELECT Exercise Assignment 10.00 2026-06-12 23:59:00.0000000
+4 2 Database Quiz Quiz 10.00 2026-07-01 23:59:00.0000000
+5 12 Course Assignment 1 Assignment 10.00 2026-12-31 23:59:00.0000000
+6 12 Course Quiz 1 Quiz 10.00 2026-12-31 23:59:00.0000000
+7 16 Course Assignment 1 Assignment 10.00 2026-12-31 23:59:00.0000000
+8 16 Course Quiz 1 Quiz 10.00 2026-12-31 23:59:00.0000000
+9 17 Course Assignment 1 Assignment 10.00 2026-12-31 23:59:00.0000000
+10 17 Course Quiz 1 Quiz 10.00 2026-12-31 23:59:00.0000000
+--- [Q08] Questions ---
+QuestionID AssignmentID Points QuestionPreview
+---------- ------------ ------ ---------------
+1 2 1.00 Which keyword defines a function in Python?
+2 2 1.00 What is the output of print(2 ** 3)?
+3 2 1.00 Which type is immutable?
+4 4 1.00 A primary key must be ...
+5 4 1.00 Which JOIN keeps unmatched left rows?
+--- [Q09] QuestionOptions ---
+OptionID QuestionID IsCorrect OptionPreview
+-------- ---------- --------- -------------
+1 1 0 func
+2 1 1 def
+3 1 0 function
+4 1 0 lambda
+5 2 0 6
+6 2 1 8
+7 2 0 9
+8 2 0 23
+9 3 0 list
+10 3 0 dict
+--- [Q10] Submissions ---
+SubmissionID AssignmentID StudentID Status IsLate Attempt
+------------ ------------ --------- ------ ------ -------
+1 1 5 Graded 1 1
+2 1 6 Graded 1 1
+3 1 7 Graded 1 1
+4 3 5 Graded 1 1
+5 3 8 Graded 1 1
+6 2 5 Rejected 1 1
+7 4 8 Graded 0 1
+9 4 8 Submitted 0 2
+10 15 6 Graded 0 1
+11 16 6 Graded 0 1
+--- [Q11] StudentAnswers ---
+AnswerID SubmissionID QuestionID SelectedOptionID
+-------- ------------ ---------- ----------------
+1 7 4 13
+2 7 5 17
+--- [Q12] Grades ---
+GradeID SubmissionID Score GradedBy GradedAt
+------- ------------ ----- -------- --------
+1 7 10.00 NULL 2026-06-27 15:38:18.6873077
+2 1 8.50 2 2026-06-27 15:38:18.7774104
+3 2 7.00 2 2026-06-27 15:38:18.7796028
+4 3 9.00 2 2026-06-27 15:38:18.7806130
+5 4 6.50 3 2026-06-27 15:38:18.7817474
+6 5 8.00 3 2026-06-27 15:38:18.7827672
+7 10 8.00 4 2026-06-27 15:38:20.0625043
+8 11 6.00 4 2026-06-27 15:38:20.0625043
+9 12 9.00 3 2026-06-27 15:38:20.0625043
+10 13 9.00 3 2026-06-27 15:38:20.0625043
+--- [Q13] ForumThreads ---
+ThreadID CourseID CreatedBy Title
+-------- -------- --------- -----
+1 1 5 How to fix IndentationError?
+2 2 8 Difference between WHERE and HAVING?
+3 12 13 THÔNG BÁO
+--- [Q14] ForumPosts ---
+PostID ThreadID UserID ParentPostID ContentPreview
+------ -------- ------ ------------ --------------
+1 1 5 NULL I keep getting an IndentationError, any tips?
+2 1 2 1 Make sure you use consistent spaces (4) for each b
+3 1 6 1 Configuring your editor to show whitespace helps a
+4 2 8 NULL When should I use HAVING instead of WHERE?
+5 2 3 4 Use WHERE before grouping, HAVING to filter aggreg
+6 3 13 NULL Các em ph?i hoàn thành Course Assignment 1 tru?c n
+--- [Q15] Recommendations ---
+RecommendationID StudentID CourseID Score Status
+---------------- --------- -------- ----- ------
+1 5 4 .7500 Clicked
+2 5 10 .5000 Shown
+3 5 22 .5000 Shown
+4 7 4 .7500 Ignored
+5 7 10 .5000 Shown
+6 7 22 .5000 Shown
+7 22 14 .9444 Clicked
+8 22 22 .9286 Clicked
+9 22 1 .9286 Clicked
+10 26 3 .9444 Shown
+--- [Q16] InteractionLogs ---
+LogID UserID ActionType EntityType DurationSec CreatedAt
+----- ------ ---------- ---------- ----------- ---------
+1 5 Login NULL NULL 2026-06-20 08:00:00.0000000
+2 5 ViewMaterial Material 120 2026-06-20 08:02:00.0000000
+3 5 ViewMaterial Material 300 2026-06-20 08:05:00.0000000
+4 5 Submit Assignment 45 2026-06-20 08:20:00.0000000
+5 6 Login NULL NULL 2026-06-20 09:00:00.0000000
+6 6 ViewMaterial Material 90 2026-06-20 09:01:00.0000000
+7 8 Login NULL NULL 2026-06-21 10:00:00.0000000
+8 8 ViewMaterial Material 200 2026-06-21 10:03:00.0000000
+9 8 Submit Assignment 600 2026-06-21 10:15:00.0000000
+10 22 Login NULL NULL 2026-06-22 08:00:00.0000000
+--- [Q17] Certificates ---
+CertificateID CertificateCode StudentID CourseID FinalScore
+------------- --------------- --------- -------- ----------
+1 LMS-CERT-00001 8 2 90.00
+3 LMS-CERT-00003 8 3 90.00
+4 LMS-CERT-00004 9 3 90.00
+5 LMS-CERT-00005 10 3 85.00
+6 LMS-CERT-00006 10 4 90.00
+7 LMS-CERT-00007 11 4 85.00
+8 LMS-CERT-00008 24 4 90.00
+9 LMS-CERT-00009 11 5 90.00
+10 LMS-CERT-00010 12 5 85.00
+11 LMS-CERT-00011 10 5 90.00
+--- [Q18] Published courses, most expensive first (WHERE + ORDER BY) ---
+CourseCode Title Price Level
+---------- ----- ----- -----
+DS301 Data Science Foundations 79.00 Advanced
+DBI202 Database Systems 49.00 Intermediate
+UX150 UI/UX Design Principles 29.00 Beginner
+DAT301m AI Development with TensorFlow .00 Advanced
+ADY201m AI, Data Science with Python & SQL .00 Intermediate
+DAP391m AI-DS Project .00 Advanced
+SSG105 Communication and In-Group Working Skills .00 Beginner
+CEA201 Computer Organization and Architecture .00 Intermediate
+CPV301 Computer Vision .00 Advanced
+CSD201 Data Structures and Algorithms with C .00 Intermediate
+CSD203 Data Structures and Algorithms with Python .00 Intermediate
+DPL302m Deep Learning .00 Advanced
+MAD101 Discrete Mathematics .00 Intermediate
+ITE303c Ethics in IT .00 Beginner
+CSI106 Introduction to Computer Science .00 Beginner
+SWE201c Introduction to Software Engineering .00 Intermediate
+AIL303m Machine Learning .00 Advanced
+MAE101 Mathematics for Engineering .00 Beginner
+MAI391 Mathematics for Machine Learning .00 Intermediate
+NLP301c Natural Language Processing .00 Advanced
+OJT202 On the Job Training .00 Advanced
+PFP191 Programming Fundamental with Python .00 Beginner
+PMG201c Project Management .00 Intermediate
+MAS291 Statistics & Probability .00 Intermediate
+WD110 Web Development Basics .00 Beginner
+DWP301c Web Development with Python .00 Intermediate
+--- [Q19] Active students only (WHERE on enumerated columns) ---
+UserID FullName Email
+------ -------- -----
+28 Bui Tan Loc n07@student.lms.edu
+9 Bui Van Minh minh@student.lms.edu
+36 Cao Van Vinh n15@student.lms.edu
+27 Dang Thi Kieu n06@student.lms.edu
+10 Dang Thi Nga nga@student.lms.edu
+35 Dinh Thi Uyen n14@student.lms.edu
+6 Do Thi Giang giang@student.lms.edu
+34 Duong Van Tai n13@student.lms.edu
+29 Ho Thi My n08@student.lms.edu
+12 Ho Thi Quyen quyen@student.lms.edu
+5 Hoang Van Dung dung@student.lms.edu
+23 Le Thi Cam n02@student.lms.edu
+33 Ly Thi Quynh n12@student.lms.edu
+11 Ly Van Phuc phuc@student.lms.edu
+32 Ngo Quang Phu n11@student.lms.edu
+8 Ngo Thi Lan lan@student.lms.edu
+25 Nguyen Thi Diu n04@student.lms.edu
+24 Pham Hoang Duc n03@student.lms.edu
+30 Phan Van Nam n09@student.lms.edu
+22 Tran Quoc Bao n01@student.lms.edu
+31 Truong Thi Oanh n10@student.lms.edu
+26 Vo Minh Khang n05@student.lms.edu
+7 Vu Van Hai hai@student.lms.edu
+--- [Q20] Distinct material types in use (DISTINCT) ---
+MaterialType
+------------
+Document
+Link
+Slide
+Video
+--- [Q21] Assignments with a deadline this year, by deadline (WHERE date + ORDER BY) ---
+AssignmentID Title AType Deadline
+------------ ----- ----- --------
+1 Python Basics Assignment Assignment 2026-06-10 23:59:00.0000000
+3 SQL SELECT Exercise Assignment 2026-06-12 23:59:00.0000000
+2 Python Quiz 1 Quiz 2026-06-15 23:59:00.0000000
+4 Database Quiz Quiz 2026-07-01 23:59:00.0000000
+5 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+6 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+7 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+8 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+9 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+10 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+11 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+12 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+13 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+14 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+15 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+16 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+17 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+18 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+19 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+20 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+21 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+22 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+23 Course Assignment 1 Assignment 2026-12-31 23:59:00.0000000
+24 Course Quiz 1 Quiz 2026-12-31 23:59:00.0000000
+--- [Q22] Late submissions only (BIT filter) ---
+SubmissionID AssignmentID StudentID Status
+------------ ------------ --------- ------
+1 1 5 Graded
+2 1 6 Graded
+3 1 7 Graded
+4 3 5 Graded
+5 3 8 Graded
+6 2 5 Rejected
+--- [Q23] Row counts of every table (UNION ALL of COUNT(*)) ---
+TableName Rows
+--------- ----
+Assignments 24
+Categories 9
+Certificates 36
+Courses 26
+Enrollments 159
+ForumPosts 6
+ForumThreads 3
+Grades 128
+InteractionLogs 21
+Materials 1315
+Modules 263
+QuestionOptions 18
+Questions 5
+Recommendations 26
+StudentAnswers 2
+Submissions 130
+Users 39
+--- [Q24] Users per role (GROUP BY + COUNT) ---
+Role UserCount
+---- ---------
+Student 23
+Instructor 15
+Admin 1
+--- [Q25] Course price statistics by level (MIN/MAX/AVG) ---
+Level Courses MinPrice MaxPrice AvgPrice
+----- ------- -------- -------- --------
+Advanced 8 .00 79.00 9.88
+Beginner 7 .00 29.00 4.14
+Intermediate 11 .00 49.00 4.45
+--- [Q26] Enrollments per course (GROUP BY + COUNT) ---
+CourseCode Title Enrollments
+---------- ----- -----------
+DS301 Data Science Foundations 9
+WD110 Web Development Basics 8
+CSD201 Data Structures and Algorithms with C 8
+MAI391 Mathematics for Machine Learning 8
+SWE201c Introduction to Software Engineering 8
+NLP301c Natural Language Processing 8
+OJT202 On the Job Training 7
+DAP391m AI-DS Project 7
+MAE101 Mathematics for Engineering 7
+ITE303c Ethics in IT 7
+DBI202 Database Systems 7
+PFP191 Programming Fundamental with Python 6
+MAD101 Discrete Mathematics 6
+ADY201m AI, Data Science with Python & SQL 6
+CPV301 Computer Vision 6
+DWP301c Web Development with Python 6
+DPL302m Deep Learning 5
+DAT301m AI Development with TensorFlow 5
+AIL303m Machine Learning 5
+CEA201 Computer Organization and Architecture 5
+CSI106 Introduction to Computer Science 5
+CSD203 Data Structures and Algorithms with Python 4
+UX150 UI/UX Design Principles 4
+MAS291 Statistics & Probability 4
+SSG105 Communication and In-Group Working Skills 4
+PMG201c Project Management 4
+--- [Q27] Average grade per assignment (GROUP BY + AVG) ---
+AssignmentID Title GradedCount AvgScore
+------------ ----- ----------- --------
+1 Python Basics Assignment 3 8.17
+2 Python Quiz 1 0 NULL
+3 SQL SELECT Exercise 2 7.25
+4 Database Quiz 1 10.00
+5 Course Assignment 1 6 8.33
+6 Course Quiz 1 6 8.17
+7 Course Assignment 1 5 8.20
+8 Course Quiz 1 5 8.20
+9 Course Assignment 1 6 7.83
+10 Course Quiz 1 6 8.33
+11 Course Assignment 1 8 8.00
+12 Course Quiz 1 8 8.00
+13 Course Assignment 1 5 9.00
+14 Course Quiz 1 5 8.60
+15 Course Assignment 1 8 7.63
+16 Course Quiz 1 8 8.13
+17 Course Assignment 1 4 8.00
+18 Course Quiz 1 4 8.00
+19 Course Assignment 1 8 8.13
+20 Course Quiz 1 8 8.50
+21 Course Assignment 1 4 8.25
+22 Course Quiz 1 4 8.75
+23 Course Assignment 1 7 7.86
+24 Course Quiz 1 7 8.00
+--- [Q28] Courses with their instructor and category (3-table INNER/LEFT JOIN) ---
+CourseCode Title Instructor CategoryName
+---------- ----- ---------- ------------
+ADY201m AI, Data Science with Python & SQL Nguyen Thi Dao Data Science
+AIL303m Machine Learning Nguyen Minh Tuan Artificial Intelligence
+CEA201 Computer Organization and Architecture Nguyen Thi Dao Computer Science
+CPV301 Computer Vision Tran Thu Ha Artificial Intelligence
+CSD201 Data Structures and Algorithms with C Dinh Thi Lien Computer Science
+CSD203 Data Structures and Algorithms with Python Truong Van Son Programming
+CSI106 Introduction to Computer Science Pham Van Cuong Computer Science
+DAP391m AI-DS Project Nguyen Minh Tuan Artificial Intelligence
+DAT301m AI Development with TensorFlow Tran Thu Ha Artificial Intelligence
+DBI202 Database Systems Tran Thi Binh Database
+DPL302m Deep Learning Tran Thu Ha Artificial Intelligence
+DS301 Data Science Foundations Pham Van Cuong Data Science
+DWP301c Web Development with Python Le Van An Programming
+ITE303c Ethics in IT Pham Thi Mai Soft Skills
+MAD101 Discrete Mathematics Nguyen Thi Dao Mathematics
+MAE101 Mathematics for Engineering Vo Dang Khoa Mathematics
+MAI391 Mathematics for Machine Learning Dinh Thi Lien Mathematics
+MAS291 Statistics & Probability Vo Dang Khoa Mathematics
+NLP301c Natural Language Processing Nguyen Minh Tuan Artificial Intelligence
+OJT202 On the Job Training Le Hoang Long Soft Skills
+PFP191 Programming Fundamental with Python Le Van An Programming
+PMG201c Project Management Le Hoang Long Software Engineering
+SSG105 Communication and In-Group Working Skills Pham Thi Mai Soft Skills
+SWE201c Introduction to Software Engineering Le Hoang Long Software Engineering
+UX150 UI/UX Design Principles Tran Thi Binh Design
+WD110 Web Development Basics Le Van An Programming
+--- [Q29] Student enrollments with course titles (JOIN through junction table) ---
+Student Course Status ProgressPercent
+------- ------ ------ ---------------
+Bui Tan Loc AI, Data Science with Python & SQL Completed 100.00
+Bui Tan Loc Computer Organization and Architecture Active .00
+Bui Tan Loc Data Science Foundations Active .00
+Bui Tan Loc Data Structures and Algorithms with C Active .00
+Bui Tan Loc Ethics in IT Active .00
+Bui Tan Loc Mathematics for Machine Learning Active .00
+Bui Tan Loc Statistics & Probability Completed 100.00
+Bui Van Minh AI Development with TensorFlow Active .00
+Bui Van Minh Data Science Foundations Completed 100.00
+Bui Van Minh Database Systems Active .00
+Bui Van Minh Natural Language Processing Active .00
+Bui Van Minh On the Job Training Active .00
+Bui Van Minh Programming Fundamental with Python Active .00
+Bui Van Minh Project Management Active .00
+Bui Van Minh UI/UX Design Principles Active .00
+Bui Van Minh Web Development Basics Dropped .00
+Cao Van Vinh AI-DS Project Active .00
+Cao Van Vinh Communication and In-Group Working Skills Active .00
+Cao Van Vinh Deep Learning Completed 100.00
+Cao Van Vinh Introduction to Software Engineering Completed 100.00
+Cao Van Vinh On the Job Training Active .00
+Cao Van Vinh Web Development with Python Active .00
+Dang Thi Kieu AI, Data Science with Python & SQL Dropped .00
+Dang Thi Kieu Computer Organization and Architecture Active .00
+Dang Thi Kieu Data Structures and Algorithms with C Completed 100.00
+Dang Thi Kieu Ethics in IT Active .00
+Dang Thi Kieu Mathematics for Engineering Active .00
+Dang Thi Kieu Mathematics for Machine Learning Active .00
+Dang Thi Nga AI Development with TensorFlow Active .00
+Dang Thi Nga Data Science Foundations Completed 100.00
+Dang Thi Nga Database Systems Dropped .00
+Dang Thi Nga Introduction to Computer Science Active .00
+Dang Thi Nga Natural Language Processing Active .00
+Dang Thi Nga On the Job Training Active .00
+Dang Thi Nga Programming Fundamental with Python Active .00
+Dang Thi Nga UI/UX Design Principles Completed 100.00
+Dang Thi Nga Web Development Basics Completed 100.00
+Dinh Thi Uyen AI-DS Project Active .00
+Dinh Thi Uyen Communication and In-Group Working Skills Active .00
+Dinh Thi Uyen Computer Vision Active .00
+Dinh Thi Uyen Deep Learning Completed 100.00
+Dinh Thi Uyen Introduction to Software Engineering Dropped .00
+Dinh Thi Uyen Web Development with Python Active .00
+Do Thi Giang Data Science Foundations Dropped .00
+Do Thi Giang Database Systems Active .00
+Do Thi Giang Deep Learning Completed 100.00
+Do Thi Giang Introduction to Software Engineering Completed 100.00
+Do Thi Giang Natural Language Processing Active .00
+Do Thi Giang On the Job Training Active .00
+Do Thi Giang Programming Fundamental with Python Active .00
+Do Thi Giang Project Management Active .00
+Do Thi Giang Web Development with Python Active .00
+Duong Van Tai AI-DS Project Active .00
+Duong Van Tai Communication and In-Group Working Skills Active .00
+Duong Van Tai Computer Vision Dropped .00
+Duong Van Tai Deep Learning Completed 100.00
+Duong Van Tai Introduction to Software Engineering Active .00
+Duong Van Tai Mathematics for Machine Learning Active .00
+Ho Thi My AI, Data Science with Python & SQL Completed 100.00
+Ho Thi My Data Structures and Algorithms with C Active .00
+Ho Thi My Ethics in IT Active .00
+Ho Thi My Machine Learning Completed 100.00
+Ho Thi My Mathematics for Machine Learning Active .00
+Ho Thi My Statistics & Probability Completed 100.00
+Ho Thi Quyen Data Science Foundations Dropped .00
+Ho Thi Quyen Discrete Mathematics Active .00
+Ho Thi Quyen Introduction to Computer Science Active .00
+Ho Thi Quyen Mathematics for Engineering Active .00
+Ho Thi Quyen Natural Language Processing Active .00
+Ho Thi Quyen UI/UX Design Principles Completed 100.00
+Ho Thi Quyen Web Development Basics Active .00
+Hoang Van Dung AI-DS Project Active .00
+Hoang Van Dung Database Systems Active .00
+Hoang Van Dung Deep Learning Completed 100.00
+Hoang Van Dung Introduction to Software Engineering Dropped .00
+Hoang Van Dung Natural Language Processing Active .00
+Hoang Van Dung On the Job Training Active .00
+Hoang Van Dung Programming Fundamental with Python Completed 100.00
+Hoang Van Dung Web Development with Python Active .00
+Le Thi Cam Data Structures and Algorithms with C Active .00
+Le Thi Cam Data Structures and Algorithms with Python Active .00
+Le Thi Cam Discrete Mathematics Active .00
+Le Thi Cam Introduction to Computer Science Active .00
+Le Thi Cam Mathematics for Engineering Active .00
+Le Thi Cam Web Development Basics Dropped .00
+Ly Thi Quynh AI-DS Project Active .00
+Ly Thi Quynh Communication and In-Group Working Skills Active .00
+Ly Thi Quynh Computer Vision Completed 100.00
+Ly Thi Quynh Introduction to Software Engineering Completed 100.00
+Ly Thi Quynh Machine Learning Completed 100.00
+Ly Thi Quynh Mathematics for Machine Learning Active .00
+Ly Van Phuc AI Development with TensorFlow Active .00
+Ly Van Phuc Data Science Foundations Active .00
+Ly Van Phuc Database Systems Active .00
+Ly Van Phuc Discrete Mathematics Active .00
+Ly Van Phuc Introduction to Computer Science Active .00
+Ly Van Phuc Natural Language Processing Active .00
+Ly Van Phuc UI/UX Design Principles Completed 100.00
+Ly Van Phuc Web Development Basics Completed 100.00
+Ngo Quang Phu AI-DS Project Active .00
+Ngo Quang Phu Computer Vision Completed 100.00
+Ngo Quang Phu Ethics in IT Active .00
+Ngo Quang Phu Introduction to Software Engineering Completed 100.00
+Ngo Quang Phu Machine Learning Completed 100.00
+Ngo Quang Phu Mathematics for Machine Learning Active .00
+Ngo Thi Lan AI Development with TensorFlow Active .00
+Ngo Thi Lan Data Science Foundations Completed 100.00
+Ngo Thi Lan Database Systems Completed 100.00
+Ngo Thi Lan Natural Language Processing Active .00
+Ngo Thi Lan On the Job Training Active .00
+Ngo Thi Lan Programming Fundamental with Python Dropped .00
+Ngo Thi Lan Project Management Active .00
+Ngo Thi Lan Web Development Basics Dropped .00
+Ngo Thi Lan Web Development with Python Active .00
+Nguyen Thi Diu AI, Data Science with Python & SQL Completed 100.00
+Nguyen Thi Diu Computer Organization and Architecture Active .00
+Nguyen Thi Diu Data Structures and Algorithms with C Completed 100.00
+Nguyen Thi Diu Data Structures and Algorithms with Python Active .00
+Nguyen Thi Diu Discrete Mathematics Active .00
+Nguyen Thi Diu Mathematics for Engineering Active .00
+Pham Hoang Duc Computer Organization and Architecture Active .00
+Pham Hoang Duc Data Structures and Algorithms with C Dropped .00
+Pham Hoang Duc Data Structures and Algorithms with Python Active .00
+Pham Hoang Duc Discrete Mathematics Active .00
+Pham Hoang Duc Mathematics for Engineering Active .00
+Pham Hoang Duc Web Development Basics Completed 100.00
+Phan Van Nam AI, Data Science with Python & SQL Completed 100.00
+Phan Van Nam Computer Vision Active .00
+Phan Van Nam Ethics in IT Active .00
+Phan Van Nam Machine Learning Active .00
+Phan Van Nam Mathematics for Machine Learning Active .00
+Phan Van Nam Statistics & Probability Dropped .00
+Tran Quoc Bao Data Science Foundations Active .00
+Tran Quoc Bao Data Structures and Algorithms with C Completed 100.00
+Tran Quoc Bao Discrete Mathematics Active .00
+Tran Quoc Bao Introduction to Computer Science Active .00
+Tran Quoc Bao Mathematics for Engineering Active .00
+Tran Quoc Bao Web Development Basics Active .00
+Truong Thi Oanh AI-DS Project Active .00
+Truong Thi Oanh Computer Vision Completed 100.00
+Truong Thi Oanh Ethics in IT Active .00
+Truong Thi Oanh Machine Learning Active .00
+Truong Thi Oanh Mathematics for Machine Learning Active .00
+Truong Thi Oanh Statistics & Probability Active .00
+Vo Minh Khang AI, Data Science with Python & SQL Active .00
+Vo Minh Khang Computer Organization and Architecture Active .00
+Vo Minh Khang Data Structures and Algorithms with C Completed 100.00
+Vo Minh Khang Data Structures and Algorithms with Python Active .00
+Vo Minh Khang Ethics in IT Active .00
+Vo Minh Khang Mathematics for Engineering Active .00
+Vu Van Hai AI Development with TensorFlow Active .00
+Vu Van Hai Data Science Foundations Active .00
+Vu Van Hai Database Systems Dropped .00
+Vu Van Hai Introduction to Software Engineering Completed 100.00
+Vu Van Hai Natural Language Processing Active .00
+Vu Van Hai On the Job Training Active .00
+Vu Van Hai Programming Fundamental with Python Active .00
+Vu Van Hai Project Management Active .00
+Vu Van Hai Web Development with Python Active .00
+--- [Q30] Full grade trail: student -> submission -> grade (multi-JOIN) ---
+Student Assignment Status Score
+------- ---------- ------ -----
+Bui Tan Loc Course Assignment 1 Graded 8.00
+Bui Tan Loc Course Assignment 1 Graded 9.00
+Bui Tan Loc Course Assignment 1 Graded 9.00
+Bui Tan Loc Course Quiz 1 Graded 9.00
+Bui Tan Loc Course Quiz 1 Graded 9.00
+Bui Tan Loc Course Quiz 1 Graded 6.00
+Bui Van Minh Course Assignment 1 Graded 9.00
+Bui Van Minh Course Assignment 1 Graded 6.00
+Bui Van Minh Course Quiz 1 Graded 9.00
+Bui Van Minh Course Quiz 1 Graded 9.00
+Cao Van Vinh Course Assignment 1 Graded 9.00
+Cao Van Vinh Course Assignment 1 Graded 9.00
+Cao Van Vinh Course Quiz 1 Graded 8.00
+Cao Van Vinh Course Quiz 1 Graded 9.00
+Dang Thi Kieu Course Assignment 1 Graded 6.00
+Dang Thi Kieu Course Assignment 1 Graded 9.00
+Dang Thi Kieu Course Quiz 1 Graded 8.00
+Dang Thi Kieu Course Quiz 1 Graded 9.00
+Dang Thi Nga Course Assignment 1 Graded 9.00
+Dang Thi Nga Course Assignment 1 Graded 9.00
+Dang Thi Nga Course Assignment 1 Graded 9.00
+Dang Thi Nga Course Quiz 1 Graded 9.00
+Dang Thi Nga Course Quiz 1 Graded 9.00
+Dang Thi Nga Course Quiz 1 Graded 8.00
+Dinh Thi Uyen Course Assignment 1 Graded 9.00
+Dinh Thi Uyen Course Assignment 1 Graded 6.00
+Dinh Thi Uyen Course Assignment 1 Graded 6.00
+Dinh Thi Uyen Course Quiz 1 Graded 9.00
+Dinh Thi Uyen Course Quiz 1 Graded 9.00
+Dinh Thi Uyen Course Quiz 1 Graded 9.00
+Do Thi Giang Course Assignment 1 Graded 9.00
+Do Thi Giang Course Assignment 1 Graded 9.00
+Do Thi Giang Course Assignment 1 Graded 8.00
+Do Thi Giang Course Quiz 1 Graded 6.00
+Do Thi Giang Course Quiz 1 Graded 9.00
+Do Thi Giang Course Quiz 1 Graded 8.00
+Do Thi Giang Python Basics Assignment Graded 7.00
+Duong Van Tai Course Assignment 1 Graded 8.00
+Duong Van Tai Course Assignment 1 Graded 9.00
+Duong Van Tai Course Assignment 1 Graded 8.00
+Duong Van Tai Course Quiz 1 Graded 6.00
+Duong Van Tai Course Quiz 1 Graded 9.00
+Duong Van Tai Course Quiz 1 Graded 6.00
+Ho Thi My Course Assignment 1 Graded 6.00
+Ho Thi My Course Assignment 1 Graded 9.00
+Ho Thi My Course Assignment 1 Graded 9.00
+Ho Thi My Course Assignment 1 Graded 9.00
+Ho Thi My Course Quiz 1 Graded 8.00
+Ho Thi My Course Quiz 1 Graded 8.00
+Ho Thi My Course Quiz 1 Graded 9.00
+Ho Thi My Course Quiz 1 Graded 9.00
+Ho Thi Quyen Course Assignment 1 Graded 6.00
+Ho Thi Quyen Course Assignment 1 Graded 9.00
+Ho Thi Quyen Course Assignment 1 Graded 8.00
+Ho Thi Quyen Course Quiz 1 Graded 6.00
+Ho Thi Quyen Course Quiz 1 Graded 8.00
+Ho Thi Quyen Course Quiz 1 Graded 9.00
+Hoang Van Dung Course Assignment 1 Graded 6.00
+Hoang Van Dung Course Assignment 1 Graded 9.00
+Hoang Van Dung Course Quiz 1 Graded 9.00
+Hoang Van Dung Course Quiz 1 Graded 9.00
+Hoang Van Dung Python Basics Assignment Graded 8.50
+Hoang Van Dung Python Quiz 1 Rejected NULL
+Hoang Van Dung SQL SELECT Exercise Graded 6.50
+Le Thi Cam Course Assignment 1 Graded 6.00
+Le Thi Cam Course Assignment 1 Graded 8.00
+Le Thi Cam Course Quiz 1 Graded 6.00
+Le Thi Cam Course Quiz 1 Graded 9.00
+Ly Thi Quynh Course Assignment 1 Graded 9.00
+Ly Thi Quynh Course Assignment 1 Graded 9.00
+Ly Thi Quynh Course Assignment 1 Graded 9.00
+Ly Thi Quynh Course Quiz 1 Graded 8.00
+Ly Thi Quynh Course Quiz 1 Graded 9.00
+Ly Thi Quynh Course Quiz 1 Graded 8.00
+Ly Van Phuc Course Assignment 1 Graded 8.00
+Ly Van Phuc Course Assignment 1 Graded 9.00
+Ly Van Phuc Course Assignment 1 Graded 9.00
+Ly Van Phuc Course Quiz 1 Graded 9.00
+Ly Van Phuc Course Quiz 1 Graded 8.00
+Ly Van Phuc Course Quiz 1 Graded 6.00
+Ngo Quang Phu Course Assignment 1 Graded 9.00
+Ngo Quang Phu Course Assignment 1 Graded 9.00
+Ngo Quang Phu Course Assignment 1 Graded 9.00
+Ngo Quang Phu Course Quiz 1 Graded 9.00
+Ngo Quang Phu Course Quiz 1 Graded 9.00
+Ngo Quang Phu Course Quiz 1 Graded 9.00
+Ngo Thi Lan Course Assignment 1 Graded 9.00
+Ngo Thi Lan Course Assignment 1 Graded 6.00
+Ngo Thi Lan Course Quiz 1 Graded 9.00
+Ngo Thi Lan Course Quiz 1 Graded 9.00
+Ngo Thi Lan Database Quiz Graded 10.00
+Ngo Thi Lan Database Quiz Submitted NULL
+Ngo Thi Lan SQL SELECT Exercise Graded 8.00
+Nguyen Thi Diu Course Assignment 1 Graded 9.00
+Nguyen Thi Diu Course Assignment 1 Graded 9.00
+Nguyen Thi Diu Course Quiz 1 Graded 8.00
+Nguyen Thi Diu Course Quiz 1 Graded 9.00
+Pham Hoang Duc Course Assignment 1 Graded 6.00
+Pham Hoang Duc Course Assignment 1 Graded 9.00
+Pham Hoang Duc Course Quiz 1 Graded 9.00
+Pham Hoang Duc Course Quiz 1 Graded 9.00
+Phan Van Nam Course Assignment 1 Graded 9.00
+Phan Van Nam Course Assignment 1 Graded 8.00
+Phan Van Nam Course Assignment 1 Graded 6.00
+Phan Van Nam Course Assignment 1 Graded 8.00
+Phan Van Nam Course Quiz 1 Graded 6.00
+Phan Van Nam Course Quiz 1 Graded 9.00
+Phan Van Nam Course Quiz 1 Graded 6.00
+Phan Van Nam Course Quiz 1 Graded 8.00
+Tran Quoc Bao Course Assignment 1 Graded 9.00
+Tran Quoc Bao Course Assignment 1 Graded 6.00
+Tran Quoc Bao Course Assignment 1 Graded 8.00
+Tran Quoc Bao Course Quiz 1 Graded 6.00
+Tran Quoc Bao Course Quiz 1 Graded 9.00
+Tran Quoc Bao Course Quiz 1 Graded 8.00
+Truong Thi Oanh Course Assignment 1 Graded 6.00
+Truong Thi Oanh Course Assignment 1 Graded 6.00
+Truong Thi Oanh Course Assignment 1 Graded 9.00
+Truong Thi Oanh Course Quiz 1 Graded 9.00
+Truong Thi Oanh Course Quiz 1 Graded 9.00
+Truong Thi Oanh Course Quiz 1 Graded 9.00
+Vo Minh Khang Course Assignment 1 Graded 8.00
+Vo Minh Khang Course Assignment 1 Graded 9.00
+Vo Minh Khang Course Quiz 1 Graded 9.00
+Vo Minh Khang Course Quiz 1 Graded 6.00
+Vu Van Hai Course Assignment 1 Graded 9.00
+Vu Van Hai Course Assignment 1 Graded 6.00
+Vu Van Hai Course Quiz 1 Graded 9.00
+Vu Van Hai Course Quiz 1 Graded 9.00
+Vu Van Hai Python Basics Assignment Graded 9.00
+--- [Q31] Modules and their materials (parent-child JOIN) ---
+Course Module Material MaterialType
+------ ------ -------- ------------
+AI Development with TensorFlow Introduction to TensorFlow Lecture Slides: Introduction to TensorFlow Slide
+AI Development with TensorFlow Introduction to TensorFlow Reading Material: Introduction to TensorFlow Document
+AI Development with TensorFlow Introduction to TensorFlow Video Lecture: Introduction to TensorFlow Video
+AI Development with TensorFlow Introduction to TensorFlow Practice Exercises: Introduction to TensorFlow Document
+AI Development with TensorFlow Introduction to TensorFlow Reference Link: Introduction to TensorFlow Link
+AI Development with TensorFlow Tensors & Operations Lecture Slides: Tensors & Operations Slide
+AI Development with TensorFlow Tensors & Operations Reading Material: Tensors & Operations Document
+AI Development with TensorFlow Tensors & Operations Video Lecture: Tensors & Operations Video
+AI Development with TensorFlow Tensors & Operations Practice Exercises: Tensors & Operations Document
+AI Development with TensorFlow Tensors & Operations Reference Link: Tensors & Operations Link
+AI Development with TensorFlow Building Models with Keras Lecture Slides: Building Models with Keras Slide
+AI Development with TensorFlow Building Models with Keras Reading Material: Building Models with Keras Document
+AI Development with TensorFlow Building Models with Keras Video Lecture: Building Models with Keras Video
+AI Development with TensorFlow Building Models with Keras Practice Exercises: Building Models with Keras Document
+AI Development with TensorFlow Building Models with Keras Reference Link: Building Models with Keras Link
+AI Development with TensorFlow Training & Evaluation Workflow Lecture Slides: Training & Evaluation Workflow Slide
+AI Development with TensorFlow Training & Evaluation Workflow Reading Material: Training & Evaluation Workflow Document
+AI Development with TensorFlow Training & Evaluation Workflow Video Lecture: Training & Evaluation Workflow Video
+AI Development with TensorFlow Training & Evaluation Workflow Practice Exercises: Training & Evaluation Workflow Document
+AI Development with TensorFlow Training & Evaluation Workflow Reference Link: Training & Evaluation Workflow Link
+AI Development with TensorFlow Convolutional Networks in TensorFlow Lecture Slides: Convolutional Networks in TensorFlow Slide
+AI Development with TensorFlow Convolutional Networks in TensorFlow Reading Material: Convolutional Networks in TensorFlow Document
+AI Development with TensorFlow Convolutional Networks in TensorFlow Video Lecture: Convolutional Networks in TensorFlow Video
+AI Development with TensorFlow Convolutional Networks in TensorFlow Practice Exercises: Convolutional Networks in TensorFlow Document
+AI Development with TensorFlow Convolutional Networks in TensorFlow Reference Link: Convolutional Networks in TensorFlow Link
+AI Development with TensorFlow Working with Image Data Lecture Slides: Working with Image Data Slide
+AI Development with TensorFlow Working with Image Data Reading Material: Working with Image Data Document
+AI Development with TensorFlow Working with Image Data Video Lecture: Working with Image Data Video
+AI Development with TensorFlow Working with Image Data Practice Exercises: Working with Image Data Document
+AI Development with TensorFlow Working with Image Data Reference Link: Working with Image Data Link
+AI Development with TensorFlow Sequence Models & Text Lecture Slides: Sequence Models & Text Slide
+AI Development with TensorFlow Sequence Models & Text Reading Material: Sequence Models & Text Document
+AI Development with TensorFlow Sequence Models & Text Video Lecture: Sequence Models & Text Video
+AI Development with TensorFlow Sequence Models & Text Practice Exercises: Sequence Models & Text Document
+AI Development with TensorFlow Sequence Models & Text Reference Link: Sequence Models & Text Link
+AI Development with TensorFlow Transfer Learning Lecture Slides: Transfer Learning Slide
+AI Development with TensorFlow Transfer Learning Reading Material: Transfer Learning Document
+AI Development with TensorFlow Transfer Learning Video Lecture: Transfer Learning Video
+AI Development with TensorFlow Transfer Learning Practice Exercises: Transfer Learning Document
+AI Development with TensorFlow Transfer Learning Reference Link: Transfer Learning Link
+AI Development with TensorFlow Saving, Loading & TensorFlow Serving Lecture Slides: Saving, Loading & TensorFlow Serving Slide
+AI Development with TensorFlow Saving, Loading & TensorFlow Serving Reading Material: Saving, Loading & TensorFlow Serving Document
+AI Development with TensorFlow Saving, Loading & TensorFlow Serving Video Lecture: Saving, Loading & TensorFlow Serving Video
+AI Development with TensorFlow Saving, Loading & TensorFlow Serving Practice Exercises: Saving, Loading & TensorFlow Serving Document
+AI Development with TensorFlow Saving, Loading & TensorFlow Serving Reference Link: Saving, Loading & TensorFlow Serving Link
+AI Development with TensorFlow Capstone: Deploying an AI Model Lecture Slides: Capstone: Deploying an AI Model Slide
+AI Development with TensorFlow Capstone: Deploying an AI Model Reading Material: Capstone: Deploying an AI Model Document
+AI Development with TensorFlow Capstone: Deploying an AI Model Video Lecture: Capstone: Deploying an AI Model Video
+AI Development with TensorFlow Capstone: Deploying an AI Model Practice Exercises: Capstone: Deploying an AI Model Document
+AI Development with TensorFlow Capstone: Deploying an AI Model Reference Link: Capstone: Deploying an AI Model Link
+AI, Data Science with Python & SQL Introduction to AI & Data Science Lecture Slides: Introduction to AI & Data Science Slide
+AI, Data Science with Python & SQL Introduction to AI & Data Science Reading Material: Introduction to AI & Data Science Document
+AI, Data Science with Python & SQL Introduction to AI & Data Science Video Lecture: Introduction to AI & Data Science Video
+AI, Data Science with Python & SQL Introduction to AI & Data Science Practice Exercises: Introduction to AI & Data Science Document
+AI, Data Science with Python & SQL Introduction to AI & Data Science Reference Link: Introduction to AI & Data Science Link
+AI, Data Science with Python & SQL Python for Data Science Lecture Slides: Python for Data Science Slide
+AI, Data Science with Python & SQL Python for Data Science Reading Material: Python for Data Science Document
+AI, Data Science with Python & SQL Python for Data Science Video Lecture: Python for Data Science Video
+AI, Data Science with Python & SQL Python for Data Science Practice Exercises: Python for Data Science Document
+AI, Data Science with Python & SQL Python for Data Science Reference Link: Python for Data Science Link
+AI, Data Science with Python & SQL Working with NumPy Lecture Slides: Working with NumPy Slide
+AI, Data Science with Python & SQL Working with NumPy Reading Material: Working with NumPy Document
+AI, Data Science with Python & SQL Working with NumPy Video Lecture: Working with NumPy Video
+AI, Data Science with Python & SQL Working with NumPy Practice Exercises: Working with NumPy Document
+AI, Data Science with Python & SQL Working with NumPy Reference Link: Working with NumPy Link
+AI, Data Science with Python & SQL Data Manipulation with Pandas Lecture Slides: Data Manipulation with Pandas Slide
+AI, Data Science with Python & SQL Data Manipulation with Pandas Reading Material: Data Manipulation with Pandas Document
+AI, Data Science with Python & SQL Data Manipulation with Pandas Video Lecture: Data Manipulation with Pandas Video
+AI, Data Science with Python & SQL Data Manipulation with Pandas Practice Exercises: Data Manipulation with Pandas Document
+AI, Data Science with Python & SQL Data Manipulation with Pandas Reference Link: Data Manipulation with Pandas Link
+AI, Data Science with Python & SQL Relational Databases & SQL Basics Lecture Slides: Relational Databases & SQL Basics Slide
+AI, Data Science with Python & SQL Relational Databases & SQL Basics Reading Material: Relational Databases & SQL Basics Document
+AI, Data Science with Python & SQL Relational Databases & SQL Basics Video Lecture: Relational Databases & SQL Basics Video
+AI, Data Science with Python & SQL Relational Databases & SQL Basics Practice Exercises: Relational Databases & SQL Basics Document
+AI, Data Science with Python & SQL Relational Databases & SQL Basics Reference Link: Relational Databases & SQL Basics Link
+AI, Data Science with Python & SQL Advanced SQL Queries & Joins Lecture Slides: Advanced SQL Queries & Joins Slide
+AI, Data Science with Python & SQL Advanced SQL Queries & Joins Reading Material: Advanced SQL Queries & Joins Document
+AI, Data Science with Python & SQL Advanced SQL Queries & Joins Video Lecture: Advanced SQL Queries & Joins Video
+AI, Data Science with Python & SQL Advanced SQL Queries & Joins Practice Exercises: Advanced SQL Queries & Joins Document
+AI, Data Science with Python & SQL Advanced SQL Queries & Joins Reference Link: Advanced SQL Queries & Joins Link
+AI, Data Science with Python & SQL Connecting Python to Databases Lecture Slides: Connecting Python to Databases Slide
+AI, Data Science with Python & SQL Connecting Python to Databases Reading Material: Connecting Python to Databases Document
+AI, Data Science with Python & SQL Connecting Python to Databases Video Lecture: Connecting Python to Databases Video
+AI, Data Science with Python & SQL Connecting Python to Databases Practice Exercises: Connecting Python to Databases Document
+AI, Data Science with Python & SQL Connecting Python to Databases Reference Link: Connecting Python to Databases Link
+AI, Data Science with Python & SQL Data Cleaning & Transformation Lecture Slides: Data Cleaning & Transformation Slide
+AI, Data Science with Python & SQL Data Cleaning & Transformation Reading Material: Data Cleaning & Transformation Document
+AI, Data Science with Python & SQL Data Cleaning & Transformation Video Lecture: Data Cleaning & Transformation Video
+AI, Data Science with Python & SQL Data Cleaning & Transformation Practice Exercises: Data Cleaning & Transformation Document
+AI, Data Science with Python & SQL Data Cleaning & Transformation Reference Link: Data Cleaning & Transformation Link
+AI, Data Science with Python & SQL Exploratory Data Analysis & Visualization Lecture Slides: Exploratory Data Analysis & Visualization Slide
+AI, Data Science with Python & SQL Exploratory Data Analysis & Visualization Reading Material: Exploratory Data Analysis & Visualization Document
+AI, Data Science with Python & SQL Exploratory Data Analysis & Visualization Video Lecture: Exploratory Data Analysis & Visualization Video
+AI, Data Science with Python & SQL Exploratory Data Analysis & Visualization Practice Exercises: Exploratory Data Analysis & Visualization Document
+AI, Data Science with Python & SQL Exploratory Data Analysis & Visualization Reference Link: Exploratory Data Analysis & Visualization Link
+AI, Data Science with Python & SQL Mini Data Science Project Lecture Slides: Mini Data Science Project Slide
+AI, Data Science with Python & SQL Mini Data Science Project Reading Material: Mini Data Science Project Document
+AI, Data Science with Python & SQL Mini Data Science Project Video Lecture: Mini Data Science Project Video
+AI, Data Science with Python & SQL Mini Data Science Project Practice Exercises: Mini Data Science Project Document
+AI, Data Science with Python & SQL Mini Data Science Project Reference Link: Mini Data Science Project Link
+AI-DS Project Project Scoping & Problem Definition Lecture Slides: Project Scoping & Problem Definition Slide
+AI-DS Project Project Scoping & Problem Definition Reading Material: Project Scoping & Problem Definition Document
+AI-DS Project Project Scoping & Problem Definition Video Lecture: Project Scoping & Problem Definition Video
+AI-DS Project Project Scoping & Problem Definition Practice Exercises: Project Scoping & Problem Definition Document
+AI-DS Project Project Scoping & Problem Definition Reference Link: Project Scoping & Problem Definition Link
+AI-DS Project Data Collection & Sourcing Lecture Slides: Data Collection & Sourcing Slide
+AI-DS Project Data Collection & Sourcing Reading Material: Data Collection & Sourcing Document
+AI-DS Project Data Collection & Sourcing Video Lecture: Data Collection & Sourcing Video
+AI-DS Project Data Collection & Sourcing Practice Exercises: Data Collection & Sourcing Document
+AI-DS Project Data Collection & Sourcing Reference Link: Data Collection & Sourcing Link
+AI-DS Project Data Preprocessing & EDA Lecture Slides: Data Preprocessing & EDA Slide
+AI-DS Project Data Preprocessing & EDA Reading Material: Data Preprocessing & EDA Document
+AI-DS Project Data Preprocessing & EDA Video Lecture: Data Preprocessing & EDA Video
+AI-DS Project Data Preprocessing & EDA Practice Exercises: Data Preprocessing & EDA Document
+AI-DS Project Data Preprocessing & EDA Reference Link: Data Preprocessing & EDA Link
+AI-DS Project Model Selection & Baseline Lecture Slides: Model Selection & Baseline Slide
+AI-DS Project Model Selection & Baseline Reading Material: Model Selection & Baseline Document
+AI-DS Project Model Selection & Baseline Video Lecture: Model Selection & Baseline Video
+AI-DS Project Model Selection & Baseline Practice Exercises: Model Selection & Baseline Document
+AI-DS Project Model Selection & Baseline Reference Link: Model Selection & Baseline Link
+AI-DS Project Model Training & Tuning Lecture Slides: Model Training & Tuning Slide
+AI-DS Project Model Training & Tuning Reading Material: Model Training & Tuning Document
+AI-DS Project Model Training & Tuning Video Lecture: Model Training & Tuning Video
+AI-DS Project Model Training & Tuning Practice Exercises: Model Training & Tuning Document
+AI-DS Project Model Training & Tuning Reference Link: Model Training & Tuning Link
+AI-DS Project Evaluation & Validation Lecture Slides: Evaluation & Validation Slide
+AI-DS Project Evaluation & Validation Reading Material: Evaluation & Validation Document
+AI-DS Project Evaluation & Validation Video Lecture: Evaluation & Validation Video
+AI-DS Project Evaluation & Validation Practice Exercises: Evaluation & Validation Document
+AI-DS Project Evaluation & Validation Reference Link: Evaluation & Validation Link
+AI-DS Project Deployment & Presentation Lecture Slides: Deployment & Presentation Slide
+AI-DS Project Deployment & Presentation Reading Material: Deployment & Presentation Document
+AI-DS Project Deployment & Presentation Video Lecture: Deployment & Presentation Video
+AI-DS Project Deployment & Presentation Practice Exercises: Deployment & Presentation Document
+AI-DS Project Deployment & Presentation Reference Link: Deployment & Presentation Link
+AI-DS Project Final Report & Demo Lecture Slides: Final Report & Demo Slide
+AI-DS Project Final Report & Demo Reading Material: Final Report & Demo Document
+AI-DS Project Final Report & Demo Video Lecture: Final Report & Demo Video
+AI-DS Project Final Report & Demo Practice Exercises: Final Report & Demo Document
+AI-DS Project Final Report & Demo Reference Link: Final Report & Demo Link
+Communication and In-Group Working Skills Introduction to Soft Skills Lecture Slides: Introduction to Soft Skills Slide
+Communication and In-Group Working Skills Introduction to Soft Skills Reading Material: Introduction to Soft Skills Document
+Communication and In-Group Working Skills Introduction to Soft Skills Video Lecture: Introduction to Soft Skills Video
+Communication and In-Group Working Skills Introduction to Soft Skills Practice Exercises: Introduction to Soft Skills Document
+Communication and In-Group Working Skills Introduction to Soft Skills Reference Link: Introduction to Soft Skills Link
+Communication and In-Group Working Skills Effective Communication Lecture Slides: Effective Communication Slide
+Communication and In-Group Working Skills Effective Communication Reading Material: Effective Communication Document
+Communication and In-Group Working Skills Effective Communication Video Lecture: Effective Communication Video
+Communication and In-Group Working Skills Effective Communication Practice Exercises: Effective Communication Document
+Communication and In-Group Working Skills Effective Communication Reference Link: Effective Communication Link
+Communication and In-Group Working Skills Active Listening Lecture Slides: Active Listening Slide
+Communication and In-Group Working Skills Active Listening Reading Material: Active Listening Document
+Communication and In-Group Working Skills Active Listening Video Lecture: Active Listening Video
+Communication and In-Group Working Skills Active Listening Practice Exercises: Active Listening Document
+Communication and In-Group Working Skills Active Listening Reference Link: Active Listening Link
+Communication and In-Group Working Skills Presentation Skills Lecture Slides: Presentation Skills Slide
+Communication and In-Group Working Skills Presentation Skills Reading Material: Presentation Skills Document
+Communication and In-Group Working Skills Presentation Skills Video Lecture: Presentation Skills Video
+Communication and In-Group Working Skills Presentation Skills Practice Exercises: Presentation Skills Document
+Communication and In-Group Working Skills Presentation Skills Reference Link: Presentation Skills Link
+Communication and In-Group Working Skills Teamwork & Collaboration Lecture Slides: Teamwork & Collaboration Slide
+Communication and In-Group Working Skills Teamwork & Collaboration Reading Material: Teamwork & Collaboration Document
+Communication and In-Group Working Skills Teamwork & Collaboration Video Lecture: Teamwork & Collaboration Video
+Communication and In-Group Working Skills Teamwork & Collaboration Practice Exercises: Teamwork & Collaboration Document
+Communication and In-Group Working Skills Teamwork & Collaboration Reference Link: Teamwork & Collaboration Link
+Communication and In-Group Working Skills Conflict Resolution Lecture Slides: Conflict Resolution Slide
+Communication and In-Group Working Skills Conflict Resolution Reading Material: Conflict Resolution Document
+Communication and In-Group Working Skills Conflict Resolution Video Lecture: Conflict Resolution Video
+Communication and In-Group Working Skills Conflict Resolution Practice Exercises: Conflict Resolution Document
+Communication and In-Group Working Skills Conflict Resolution Reference Link: Conflict Resolution Link
+Communication and In-Group Working Skills Time Management Lecture Slides: Time Management Slide
+Communication and In-Group Working Skills Time Management Reading Material: Time Management Document
+Communication and In-Group Working Skills Time Management Video Lecture: Time Management Video
+Communication and In-Group Working Skills Time Management Practice Exercises: Time Management Document
+Communication and In-Group Working Skills Time Management Reference Link: Time Management Link
+Communication and In-Group Working Skills Leadership Basics Lecture Slides: Leadership Basics Slide
+Communication and In-Group Working Skills Leadership Basics Reading Material: Leadership Basics Document
+Communication and In-Group Working Skills Leadership Basics Video Lecture: Leadership Basics Video
+Communication and In-Group Working Skills Leadership Basics Practice Exercises: Leadership Basics Document
+Communication and In-Group Working Skills Leadership Basics Reference Link: Leadership Basics Link
+Communication and In-Group Working Skills Professional Etiquette Lecture Slides: Professional Etiquette Slide
+Communication and In-Group Working Skills Professional Etiquette Reading Material: Professional Etiquette Document
+Communication and In-Group Working Skills Professional Etiquette Video Lecture: Professional Etiquette Video
+Communication and In-Group Working Skills Professional Etiquette Practice Exercises: Professional Etiquette Document
+Communication and In-Group Working Skills Professional Etiquette Reference Link: Professional Etiquette Link
+Computer Organization and Architecture CPU & Memory Organization Lecture Slides: CPU & Memory Organization Slide
+Computer Organization and Architecture CPU & Memory Organization Reading Material: CPU & Memory Organization Document
+Computer Organization and Architecture CPU & Memory Organization Video Lecture: CPU & Memory Organization Video
+Computer Organization and Architecture CPU & Memory Organization Practice Exercises: CPU & Memory Organization Document
+Computer Organization and Architecture CPU & Memory Organization Reference Link: CPU & Memory Organization Link
+Computer Organization and Architecture Data Representation & Number Systems Lecture Slides: Data Representation & Number Systems Slide
+Computer Organization and Architecture Data Representation & Number Systems Reading Material: Data Representation & Number Systems Document
+Computer Organization and Architecture Data Representation & Number Systems Video Lecture: Data Representation & Number Systems Video
+Computer Organization and Architecture Data Representation & Number Systems Practice Exercises: Data Representation & Number Systems Document
+Computer Organization and Architecture Data Representation & Number Systems Reference Link: Data Representation & Number Systems Link
+Computer Organization and Architecture Digital Logic & Boolean Algebra Lecture Slides: Digital Logic & Boolean Algebra Slide
+Computer Organization and Architecture Digital Logic & Boolean Algebra Reading Material: Digital Logic & Boolean Algebra Document
+Computer Organization and Architecture Digital Logic & Boolean Algebra Video Lecture: Digital Logic & Boolean Algebra Video
+Computer Organization and Architecture Digital Logic & Boolean Algebra Practice Exercises: Digital Logic & Boolean Algebra Document
+Computer Organization and Architecture Digital Logic & Boolean Algebra Reference Link: Digital Logic & Boolean Algebra Link
+Computer Organization and Architecture Combinational & Sequential Circuits Lecture Slides: Combinational & Sequential Circuits Slide
+Computer Organization and Architecture Combinational & Sequential Circuits Reading Material: Combinational & Sequential Circuits Document
+Computer Organization and Architecture Combinational & Sequential Circuits Video Lecture: Combinational & Sequential Circuits Video
+Computer Organization and Architecture Combinational & Sequential Circuits Practice Exercises: Combinational & Sequential Circuits Document
+Computer Organization and Architecture Combinational & Sequential Circuits Reference Link: Combinational & Sequential Circuits Link
+Computer Organization and Architecture The von Neumann Model Lecture Slides: The von Neumann Model Slide
+Computer Organization and Architecture The von Neumann Model Reading Material: The von Neumann Model Document
+Computer Organization and Architecture The von Neumann Model Video Lecture: The von Neumann Model Video
+Computer Organization and Architecture The von Neumann Model Practice Exercises: The von Neumann Model Document
+Computer Organization and Architecture The von Neumann Model Reference Link: The von Neumann Model Link
+Computer Organization and Architecture Instruction Sets & Addressing Modes Lecture Slides: Instruction Sets & Addressing Modes Slide
+Computer Organization and Architecture Instruction Sets & Addressing Modes Reading Material: Instruction Sets & Addressing Modes Document
+Computer Organization and Architecture Instruction Sets & Addressing Modes Video Lecture: Instruction Sets & Addressing Modes Video
+Computer Organization and Architecture Instruction Sets & Addressing Modes Practice Exercises: Instruction Sets & Addressing Modes Document
+Computer Organization and Architecture Instruction Sets & Addressing Modes Reference Link: Instruction Sets & Addressing Modes Link
+Computer Organization and Architecture Assembly Language Programming Lecture Slides: Assembly Language Programming Slide
+Computer Organization and Architecture Assembly Language Programming Reading Material: Assembly Language Programming Document
+Computer Organization and Architecture Assembly Language Programming Video Lecture: Assembly Language Programming Video
+Computer Organization and Architecture Assembly Language Programming Practice Exercises: Assembly Language Programming Document
+Computer Organization and Architecture Assembly Language Programming Reference Link: Assembly Language Programming Link
+Computer Organization and Architecture Processor Structure & Function Lecture Slides: Processor Structure & Function Slide
+Computer Organization and Architecture Processor Structure & Function Reading Material: Processor Structure & Function Document
+Computer Organization and Architecture Processor Structure & Function Video Lecture: Processor Structure & Function Video
+Computer Organization and Architecture Processor Structure & Function Practice Exercises: Processor Structure & Function Document
+Computer Organization and Architecture Processor Structure & Function Reference Link: Processor Structure & Function Link
+Computer Organization and Architecture Cache Memory & Hierarchy Lecture Slides: Cache Memory & Hierarchy Slide
+Computer Organization and Architecture Cache Memory & Hierarchy Reading Material: Cache Memory & Hierarchy Document
+Computer Organization and Architecture Cache Memory & Hierarchy Video Lecture: Cache Memory & Hierarchy Video
+Computer Organization and Architecture Cache Memory & Hierarchy Practice Exercises: Cache Memory & Hierarchy Document
+Computer Organization and Architecture Cache Memory & Hierarchy Reference Link: Cache Memory & Hierarchy Link
+Computer Organization and Architecture Internal & External Memory Lecture Slides: Internal & External Memory Slide
+Computer Organization and Architecture Internal & External Memory Reading Material: Internal & External Memory Document
+Computer Organization and Architecture Internal & External Memory Video Lecture: Internal & External Memory Video
+Computer Organization and Architecture Internal & External Memory Practice Exercises: Internal & External Memory Document
+Computer Organization and Architecture Internal & External Memory Reference Link: Internal & External Memory Link
+Computer Organization and Architecture Parallel Processing & Multicore Lecture Slides: Parallel Processing & Multicore Slide
+Computer Organization and Architecture Parallel Processing & Multicore Reading Material: Parallel Processing & Multicore Document
+Computer Organization and Architecture Parallel Processing & Multicore Video Lecture: Parallel Processing & Multicore Video
+Computer Organization and Architecture Parallel Processing & Multicore Practice Exercises: Parallel Processing & Multicore Document
+Computer Organization and Architecture Parallel Processing & Multicore Reference Link: Parallel Processing & Multicore Link
+Computer Vision Introduction to Computer Vision Lecture Slides: Introduction to Computer Vision Slide
+Computer Vision Introduction to Computer Vision Reading Material: Introduction to Computer Vision Document
+Computer Vision Introduction to Computer Vision Video Lecture: Introduction to Computer Vision Video
+Computer Vision Introduction to Computer Vision Practice Exercises: Introduction to Computer Vision Document
+Computer Vision Introduction to Computer Vision Reference Link: Introduction to Computer Vision Link
+Computer Vision Image Formation & Representation Lecture Slides: Image Formation & Representation Slide
+Computer Vision Image Formation & Representation Reading Material: Image Formation & Representation Document
+Computer Vision Image Formation & Representation Video Lecture: Image Formation & Representation Video
+Computer Vision Image Formation & Representation Practice Exercises: Image Formation & Representation Document
+Computer Vision Image Formation & Representation Reference Link: Image Formation & Representation Link
+Computer Vision Geometric Primitives & Transformations Lecture Slides: Geometric Primitives & Transformations Slide
+Computer Vision Geometric Primitives & Transformations Reading Material: Geometric Primitives & Transformations Document
+Computer Vision Geometric Primitives & Transformations Video Lecture: Geometric Primitives & Transformations Video
+Computer Vision Geometric Primitives & Transformations Practice Exercises: Geometric Primitives & Transformations Document
+Computer Vision Geometric Primitives & Transformations Reference Link: Geometric Primitives & Transformations Link
+Computer Vision Image Processing & Filtering Lecture Slides: Image Processing & Filtering Slide
+Computer Vision Image Processing & Filtering Reading Material: Image Processing & Filtering Document
+Computer Vision Image Processing & Filtering Video Lecture: Image Processing & Filtering Video
+Computer Vision Image Processing & Filtering Practice Exercises: Image Processing & Filtering Document
+Computer Vision Image Processing & Filtering Reference Link: Image Processing & Filtering Link
+Computer Vision Histogram & Color Processing Lecture Slides: Histogram & Color Processing Slide
+Computer Vision Histogram & Color Processing Reading Material: Histogram & Color Processing Document
+Computer Vision Histogram & Color Processing Video Lecture: Histogram & Color Processing Video
+Computer Vision Histogram & Color Processing Practice Exercises: Histogram & Color Processing Document
+Computer Vision Histogram & Color Processing Reference Link: Histogram & Color Processing Link
+Computer Vision Feature Detection & Matching Lecture Slides: Feature Detection & Matching Slide
+Computer Vision Feature Detection & Matching Reading Material: Feature Detection & Matching Document
+Computer Vision Feature Detection & Matching Video Lecture: Feature Detection & Matching Video
+Computer Vision Feature Detection & Matching Practice Exercises: Feature Detection & Matching Document
+Computer Vision Feature Detection & Matching Reference Link: Feature Detection & Matching Link
+Computer Vision Feature-Based Alignment (RANSAC) Lecture Slides: Feature-Based Alignment (RANSAC) Slide
+Computer Vision Feature-Based Alignment (RANSAC) Reading Material: Feature-Based Alignment (RANSAC) Document
+Computer Vision Feature-Based Alignment (RANSAC) Video Lecture: Feature-Based Alignment (RANSAC) Video
+Computer Vision Feature-Based Alignment (RANSAC) Practice Exercises: Feature-Based Alignment (RANSAC) Document
+Computer Vision Feature-Based Alignment (RANSAC) Reference Link: Feature-Based Alignment (RANSAC) Link
+Computer Vision Object Detection (Haar Cascades) Lecture Slides: Object Detection (Haar Cascades) Slide
+Computer Vision Object Detection (Haar Cascades) Reading Material: Object Detection (Haar Cascades) Document
+Computer Vision Object Detection (Haar Cascades) Video Lecture: Object Detection (Haar Cascades) Video
+Computer Vision Object Detection (Haar Cascades) Practice Exercises: Object Detection (Haar Cascades) Document
+Computer Vision Object Detection (Haar Cascades) Reference Link: Object Detection (Haar Cascades) Link
+Computer Vision Image Segmentation & Motion Lecture Slides: Image Segmentation & Motion Slide
+Computer Vision Image Segmentation & Motion Reading Material: Image Segmentation & Motion Document
+Computer Vision Image Segmentation & Motion Video Lecture: Image Segmentation & Motion Video
+Computer Vision Image Segmentation & Motion Practice Exercises: Image Segmentation & Motion Document
+Computer Vision Image Segmentation & Motion Reference Link: Image Segmentation & Motion Link
+Computer Vision Deep Learning for Computer Vision Lecture Slides: Deep Learning for Computer Vision Slide
+Computer Vision Deep Learning for Computer Vision Reading Material: Deep Learning for Computer Vision Document
+Computer Vision Deep Learning for Computer Vision Video Lecture: Deep Learning for Computer Vision Video
+Computer Vision Deep Learning for Computer Vision Practice Exercises: Deep Learning for Computer Vision Document
+Computer Vision Deep Learning for Computer Vision Reference Link: Deep Learning for Computer Vision Link
+Data Science Foundations Python for Data Lecture Slides: Python for Data Slide
+Data Science Foundations Python for Data Reading Material: Python for Data Document
+Data Science Foundations Python for Data Video Lecture: Python for Data Video
+Data Science Foundations Python for Data Practice Exercises: Python for Data Document
+Data Science Foundations Python for Data Reference Link: Python for Data Link
+Data Science Foundations NumPy & Numerical Computing Lecture Slides: NumPy & Numerical Computing Slide
+Data Science Foundations NumPy & Numerical Computing Reading Material: NumPy & Numerical Computing Document
+Data Science Foundations NumPy & Numerical Computing Video Lecture: NumPy & Numerical Computing Video
+Data Science Foundations NumPy & Numerical Computing Practice Exercises: NumPy & Numerical Computing Document
+Data Science Foundations NumPy & Numerical Computing Reference Link: NumPy & Numerical Computing Link
+Data Science Foundations Data Wrangling with Pandas Lecture Slides: Data Wrangling with Pandas Slide
+Data Science Foundations Data Wrangling with Pandas Reading Material: Data Wrangling with Pandas Document
+Data Science Foundations Data Wrangling with Pandas Video Lecture: Data Wrangling with Pandas Video
+Data Science Foundations Data Wrangling with Pandas Practice Exercises: Data Wrangling with Pandas Document
+Data Science Foundations Data Wrangling with Pandas Reference Link: Data Wrangling with Pandas Link
+Data Science Foundations Data Cleaning & Preparation Lecture Slides: Data Cleaning & Preparation Slide
+Data Science Foundations Data Cleaning & Preparation Reading Material: Data Cleaning & Preparation Document
+Data Science Foundations Data Cleaning & Preparation Video Lecture: Data Cleaning & Preparation Video
+Data Science Foundations Data Cleaning & Preparation Practice Exercises: Data Cleaning & Preparation Document
+Data Science Foundations Data Cleaning & Preparation Reference Link: Data Cleaning & Preparation Link
+Data Science Foundations Descriptive Statistics & Probability Lecture Slides: Descriptive Statistics & Probability Slide
+Data Science Foundations Descriptive Statistics & Probability Reading Material: Descriptive Statistics & Probability Document
+Data Science Foundations Descriptive Statistics & Probability Video Lecture: Descriptive Statistics & Probability Video
+Data Science Foundations Descriptive Statistics & Probability Practice Exercises: Descriptive Statistics & Probability Document
+Data Science Foundations Descriptive Statistics & Probability Reference Link: Descriptive Statistics & Probability Link
+Data Science Foundations Data Visualization Lecture Slides: Data Visualization Slide
+Data Science Foundations Data Visualization Reading Material: Data Visualization Document
+Data Science Foundations Data Visualization Video Lecture: Data Visualization Video
+Data Science Foundations Data Visualization Practice Exercises: Data Visualization Document
+Data Science Foundations Data Visualization Reference Link: Data Visualization Link
+Data Science Foundations Exploratory Data Analysis Lecture Slides: Exploratory Data Analysis Slide
+Data Science Foundations Exploratory Data Analysis Reading Material: Exploratory Data Analysis Document
+Data Science Foundations Exploratory Data Analysis Video Lecture: Exploratory Data Analysis Video
+Data Science Foundations Exploratory Data Analysis Practice Exercises: Exploratory Data Analysis Document
+Data Science Foundations Exploratory Data Analysis Reference Link: Exploratory Data Analysis Link
+Data Science Foundations Introduction to Machine Learning Lecture Slides: Introduction to Machine Learning Slide
+Data Science Foundations Introduction to Machine Learning Reading Material: Introduction to Machine Learning Document
+Data Science Foundations Introduction to Machine Learning Video Lecture: Introduction to Machine Learning Video
+Data Science Foundations Introduction to Machine Learning Practice Exercises: Introduction to Machine Learning Document
+Data Science Foundations Introduction to Machine Learning Reference Link: Introduction to Machine Learning Link
+Data Science Foundations Regression & Classification Lecture Slides: Regression & Classification Slide
+Data Science Foundations Regression & Classification Reading Material: Regression & Classification Document
+Data Science Foundations Regression & Classification Video Lecture: Regression & Classification Video
+Data Science Foundations Regression & Classification Practice Exercises: Regression & Classification Document
+Data Science Foundations Regression & Classification Reference Link: Regression & Classification Link
+Data Science Foundations Model Evaluation & Capstone Lecture Slides: Model Evaluation & Capstone Slide
+Data Science Foundations Model Evaluation & Capstone Reading Material: Model Evaluation & Capstone Document
+Data Science Foundations Model Evaluation & Capstone Video Lecture: Model Evaluation & Capstone Video
+Data Science Foundations Model Evaluation & Capstone Practice Exercises: Model Evaluation & Capstone Document
+Data Science Foundations Model Evaluation & Capstone Reference Link: Model Evaluation & Capstone Link
+Data Structures and Algorithms with C Arrays, Lists & Pointers in C Lecture Slides: Arrays, Lists & Pointers in C Slide
+Data Structures and Algorithms with C Arrays, Lists & Pointers in C Reading Material: Arrays, Lists & Pointers in C Document
+Data Structures and Algorithms with C Arrays, Lists & Pointers in C Video Lecture: Arrays, Lists & Pointers in C Video
+Data Structures and Algorithms with C Arrays, Lists & Pointers in C Practice Exercises: Arrays, Lists & Pointers in C Document
+Data Structures and Algorithms with C Arrays, Lists & Pointers in C Reference Link: Arrays, Lists & Pointers in C Link
+Data Structures and Algorithms with C Algorithm Analysis & Big-O Lecture Slides: Algorithm Analysis & Big-O Slide
+Data Structures and Algorithms with C Algorithm Analysis & Big-O Reading Material: Algorithm Analysis & Big-O Document
+Data Structures and Algorithms with C Algorithm Analysis & Big-O Video Lecture: Algorithm Analysis & Big-O Video
+Data Structures and Algorithms with C Algorithm Analysis & Big-O Practice Exercises: Algorithm Analysis & Big-O Document
+Data Structures and Algorithms with C Algorithm Analysis & Big-O Reference Link: Algorithm Analysis & Big-O Link
+Data Structures and Algorithms with C Linked Lists Lecture Slides: Linked Lists Slide
+Data Structures and Algorithms with C Linked Lists Reading Material: Linked Lists Document
+Data Structures and Algorithms with C Linked Lists Video Lecture: Linked Lists Video
+Data Structures and Algorithms with C Linked Lists Practice Exercises: Linked Lists Document
+Data Structures and Algorithms with C Linked Lists Reference Link: Linked Lists Link
+Data Structures and Algorithms with C Stacks & Queues Lecture Slides: Stacks & Queues Slide
+Data Structures and Algorithms with C Stacks & Queues Reading Material: Stacks & Queues Document
+Data Structures and Algorithms with C Stacks & Queues Video Lecture: Stacks & Queues Video
+Data Structures and Algorithms with C Stacks & Queues Practice Exercises: Stacks & Queues Document
+Data Structures and Algorithms with C Stacks & Queues Reference Link: Stacks & Queues Link
+Data Structures and Algorithms with C Recursion Lecture Slides: Recursion Slide
+Data Structures and Algorithms with C Recursion Reading Material: Recursion Document
+Data Structures and Algorithms with C Recursion Video Lecture: Recursion Video
+Data Structures and Algorithms with C Recursion Practice Exercises: Recursion Document
+Data Structures and Algorithms with C Recursion Reference Link: Recursion Link
+Data Structures and Algorithms with C Trees & Binary Search Trees Lecture Slides: Trees & Binary Search Trees Slide
+Data Structures and Algorithms with C Trees & Binary Search Trees Reading Material: Trees & Binary Search Trees Document
+Data Structures and Algorithms with C Trees & Binary Search Trees Video Lecture: Trees & Binary Search Trees Video
+Data Structures and Algorithms with C Trees & Binary Search Trees Practice Exercises: Trees & Binary Search Trees Document
+Data Structures and Algorithms with C Trees & Binary Search Trees Reference Link: Trees & Binary Search Trees Link
+Data Structures and Algorithms with C Heaps & Priority Queues Lecture Slides: Heaps & Priority Queues Slide
+Data Structures and Algorithms with C Heaps & Priority Queues Reading Material: Heaps & Priority Queues Document
+Data Structures and Algorithms with C Heaps & Priority Queues Video Lecture: Heaps & Priority Queues Video
+Data Structures and Algorithms with C Heaps & Priority Queues Practice Exercises: Heaps & Priority Queues Document
+Data Structures and Algorithms with C Heaps & Priority Queues Reference Link: Heaps & Priority Queues Link
+Data Structures and Algorithms with C Hash Tables Lecture Slides: Hash Tables Slide
+Data Structures and Algorithms with C Hash Tables Reading Material: Hash Tables Document
+Data Structures and Algorithms with C Hash Tables Video Lecture: Hash Tables Video
+Data Structures and Algorithms with C Hash Tables Practice Exercises: Hash Tables Document
+Data Structures and Algorithms with C Hash Tables Reference Link: Hash Tables Link
+Data Structures and Algorithms with C Sorting Algorithms Lecture Slides: Sorting Algorithms Slide
+Data Structures and Algorithms with C Sorting Algorithms Reading Material: Sorting Algorithms Document
+Data Structures and Algorithms with C Sorting Algorithms Video Lecture: Sorting Algorithms Video
+Data Structures and Algorithms with C Sorting Algorithms Practice Exercises: Sorting Algorithms Document
+Data Structures and Algorithms with C Sorting Algorithms Reference Link: Sorting Algorithms Link
+Data Structures and Algorithms with C Searching Algorithms Lecture Slides: Searching Algorithms Slide
+Data Structures and Algorithms with C Searching Algorithms Reading Material: Searching Algorithms Document
+Data Structures and Algorithms with C Searching Algorithms Video Lecture: Searching Algorithms Video
+Data Structures and Algorithms with C Searching Algorithms Practice Exercises: Searching Algorithms Document
+Data Structures and Algorithms with C Searching Algorithms Reference Link: Searching Algorithms Link
+Data Structures and Algorithms with C Graphs & Graph Traversal Lecture Slides: Graphs & Graph Traversal Slide
+Data Structures and Algorithms with C Graphs & Graph Traversal Reading Material: Graphs & Graph Traversal Document
+Data Structures and Algorithms with C Graphs & Graph Traversal Video Lecture: Graphs & Graph Traversal Video
+Data Structures and Algorithms with C Graphs & Graph Traversal Practice Exercises: Graphs & Graph Traversal Document
+Data Structures and Algorithms with C Graphs & Graph Traversal Reference Link: Graphs & Graph Traversal Link
+Data Structures and Algorithms with Python Lists, Stacks & Queues in Python Lecture Slides: Lists, Stacks & Queues in Python Slide
+Data Structures and Algorithms with Python Lists, Stacks & Queues in Python Reading Material: Lists, Stacks & Queues in Python Document
+Data Structures and Algorithms with Python Lists, Stacks & Queues in Python Video Lecture: Lists, Stacks & Queues in Python Video
+Data Structures and Algorithms with Python Lists, Stacks & Queues in Python Practice Exercises: Lists, Stacks & Queues in Python Document
+Data Structures and Algorithms with Python Lists, Stacks & Queues in Python Reference Link: Lists, Stacks & Queues in Python Link
+Data Structures and Algorithms with Python Algorithm Analysis & Big-O Lecture Slides: Algorithm Analysis & Big-O Slide
+Data Structures and Algorithms with Python Algorithm Analysis & Big-O Reading Material: Algorithm Analysis & Big-O Document
+Data Structures and Algorithms with Python Algorithm Analysis & Big-O Video Lecture: Algorithm Analysis & Big-O Video
+Data Structures and Algorithms with Python Algorithm Analysis & Big-O Practice Exercises: Algorithm Analysis & Big-O Document
+Data Structures and Algorithms with Python Algorithm Analysis & Big-O Reference Link: Algorithm Analysis & Big-O Link
+Data Structures and Algorithms with Python Recursion & Backtracking Lecture Slides: Recursion & Backtracking Slide
+Data Structures and Algorithms with Python Recursion & Backtracking Reading Material: Recursion & Backtracking Document
+Data Structures and Algorithms with Python Recursion & Backtracking Video Lecture: Recursion & Backtracking Video
+Data Structures and Algorithms with Python Recursion & Backtracking Practice Exercises: Recursion & Backtracking Document
+Data Structures and Algorithms with Python Recursion & Backtracking Reference Link: Recursion & Backtracking Link
+Data Structures and Algorithms with Python Linked Lists in Python Lecture Slides: Linked Lists in Python Slide
+Data Structures and Algorithms with Python Linked Lists in Python Reading Material: Linked Lists in Python Document
+Data Structures and Algorithms with Python Linked Lists in Python Video Lecture: Linked Lists in Python Video
+Data Structures and Algorithms with Python Linked Lists in Python Practice Exercises: Linked Lists in Python Document
+Data Structures and Algorithms with Python Linked Lists in Python Reference Link: Linked Lists in Python Link
+Data Structures and Algorithms with Python Trees & Binary Search Trees Lecture Slides: Trees & Binary Search Trees Slide
+Data Structures and Algorithms with Python Trees & Binary Search Trees Reading Material: Trees & Binary Search Trees Document
+Data Structures and Algorithms with Python Trees & Binary Search Trees Video Lecture: Trees & Binary Search Trees Video
+Data Structures and Algorithms with Python Trees & Binary Search Trees Practice Exercises: Trees & Binary Search Trees Document
+Data Structures and Algorithms with Python Trees & Binary Search Trees Reference Link: Trees & Binary Search Trees Link
+Data Structures and Algorithms with Python Heaps & Priority Queues Lecture Slides: Heaps & Priority Queues Slide
+Data Structures and Algorithms with Python Heaps & Priority Queues Reading Material: Heaps & Priority Queues Document
+Data Structures and Algorithms with Python Heaps & Priority Queues Video Lecture: Heaps & Priority Queues Video
+Data Structures and Algorithms with Python Heaps & Priority Queues Practice Exercises: Heaps & Priority Queues Document
+Data Structures and Algorithms with Python Heaps & Priority Queues Reference Link: Heaps & Priority Queues Link
+Data Structures and Algorithms with Python Hashing & Dictionaries Lecture Slides: Hashing & Dictionaries Slide
+Data Structures and Algorithms with Python Hashing & Dictionaries Reading Material: Hashing & Dictionaries Document
+Data Structures and Algorithms with Python Hashing & Dictionaries Video Lecture: Hashing & Dictionaries Video
+Data Structures and Algorithms with Python Hashing & Dictionaries Practice Exercises: Hashing & Dictionaries Document
+Data Structures and Algorithms with Python Hashing & Dictionaries Reference Link: Hashing & Dictionaries Link
+Data Structures and Algorithms with Python Sorting Algorithms Lecture Slides: Sorting Algorithms Slide
+Data Structures and Algorithms with Python Sorting Algorithms Reading Material: Sorting Algorithms Document
+Data Structures and Algorithms with Python Sorting Algorithms Video Lecture: Sorting Algorithms Video
+Data Structures and Algorithms with Python Sorting Algorithms Practice Exercises: Sorting Algorithms Document
+Data Structures and Algorithms with Python Sorting Algorithms Reference Link: Sorting Algorithms Link
+Data Structures and Algorithms with Python Searching Algorithms Lecture Slides: Searching Algorithms Slide
+Data Structures and Algorithms with Python Searching Algorithms Reading Material: Searching Algorithms Document
+Data Structures and Algorithms with Python Searching Algorithms Video Lecture: Searching Algorithms Video
+Data Structures and Algorithms with Python Searching Algorithms Practice Exercises: Searching Algorithms Document
+Data Structures and Algorithms with Python Searching Algorithms Reference Link: Searching Algorithms Link
+Data Structures and Algorithms with Python Graph Algorithms Lecture Slides: Graph Algorithms Slide
+Data Structures and Algorithms with Python Graph Algorithms Reading Material: Graph Algorithms Document
+Data Structures and Algorithms with Python Graph Algorithms Video Lecture: Graph Algorithms Video
+Data Structures and Algorithms with Python Graph Algorithms Practice Exercises: Graph Algorithms Document
+Data Structures and Algorithms with Python Graph Algorithms Reference Link: Graph Algorithms Link
+Data Structures and Algorithms with Python Dynamic Programming Lecture Slides: Dynamic Programming Slide
+Data Structures and Algorithms with Python Dynamic Programming Reading Material: Dynamic Programming Document
+Data Structures and Algorithms with Python Dynamic Programming Video Lecture: Dynamic Programming Video
+Data Structures and Algorithms with Python Dynamic Programming Practice Exercises: Dynamic Programming Document
+Data Structures and Algorithms with Python Dynamic Programming Reference Link: Dynamic Programming Link
+Database Systems ER Modeling Lecture Slides: ER Modeling Slide
+Database Systems ER Modeling Reading Material: ER Modeling Document
+Database Systems ER Modeling Video Lecture: ER Modeling Video
+Database Systems ER Modeling Practice Exercises: ER Modeling Document
+Database Systems ER Modeling Reference Link: ER Modeling Link
+Database Systems SQL Querying Lecture Slides: SQL Querying Slide
+Database Systems SQL Querying Reading Material: SQL Querying Document
+Database Systems SQL Querying Video Lecture: SQL Querying Video
+Database Systems SQL Querying Practice Exercises: SQL Querying Document
+Database Systems SQL Querying Reference Link: SQL Querying Link
+Database Systems The World of Database Systems & DBMS Lecture Slides: The World of Database Systems & DBMS Slide
+Database Systems The World of Database Systems & DBMS Reading Material: The World of Database Systems & DBMS Document
+Database Systems The World of Database Systems & DBMS Video Lecture: The World of Database Systems & DBMS Video
+Database Systems The World of Database Systems & DBMS Practice Exercises: The World of Database Systems & DBMS Document
+Database Systems The World of Database Systems & DBMS Reference Link: The World of Database Systems & DBMS Link
+Database Systems The Relational Model & Keys Lecture Slides: The Relational Model & Keys Slide
+Database Systems The Relational Model & Keys Reading Material: The Relational Model & Keys Document
+Database Systems The Relational Model & Keys Video Lecture: The Relational Model & Keys Video
+Database Systems The Relational Model & Keys Practice Exercises: The Relational Model & Keys Document
+Database Systems The Relational Model & Keys Reference Link: The Relational Model & Keys Link
+Database Systems Relational Algebra Lecture Slides: Relational Algebra Slide
+Database Systems Relational Algebra Reading Material: Relational Algebra Document
+Database Systems Relational Algebra Video Lecture: Relational Algebra Video
+Database Systems Relational Algebra Practice Exercises: Relational Algebra Document
+Database Systems Relational Algebra Reference Link: Relational Algebra Link
+Database Systems Mapping ERD to Relational Schema Lecture Slides: Mapping ERD to Relational Schema Slide
+Database Systems Mapping ERD to Relational Schema Reading Material: Mapping ERD to Relational Schema Document
+Database Systems Mapping ERD to Relational Schema Video Lecture: Mapping ERD to Relational Schema Video
+Database Systems Mapping ERD to Relational Schema Practice Exercises: Mapping ERD to Relational Schema Document
+Database Systems Mapping ERD to Relational Schema Reference Link: Mapping ERD to Relational Schema Link
+Database Systems Functional Dependencies & Normalization Lecture Slides: Functional Dependencies & Normalization Slide
+Database Systems Functional Dependencies & Normalization Reading Material: Functional Dependencies & Normalization Document
+Database Systems Functional Dependencies & Normalization Video Lecture: Functional Dependencies & Normalization Video
+Database Systems Functional Dependencies & Normalization Practice Exercises: Functional Dependencies & Normalization Document
+Database Systems Functional Dependencies & Normalization Reference Link: Functional Dependencies & Normalization Link
+Database Systems Joins, Subqueries & Aggregation Lecture Slides: Joins, Subqueries & Aggregation Slide
+Database Systems Joins, Subqueries & Aggregation Reading Material: Joins, Subqueries & Aggregation Document
+Database Systems Joins, Subqueries & Aggregation Video Lecture: Joins, Subqueries & Aggregation Video
+Database Systems Joins, Subqueries & Aggregation Practice Exercises: Joins, Subqueries & Aggregation Document
+Database Systems Joins, Subqueries & Aggregation Reference Link: Joins, Subqueries & Aggregation Link
+Database Systems Stored Procedures, Functions & Triggers Lecture Slides: Stored Procedures, Functions & Triggers Slide
+Database Systems Stored Procedures, Functions & Triggers Reading Material: Stored Procedures, Functions & Triggers Document
+Database Systems Stored Procedures, Functions & Triggers Video Lecture: Stored Procedures, Functions & Triggers Video
+Database Systems Stored Procedures, Functions & Triggers Practice Exercises: Stored Procedures, Functions & Triggers Document
+Database Systems Stored Procedures, Functions & Triggers Reference Link: Stored Procedures, Functions & Triggers Link
+Database Systems Transactions & Concurrency (ACID) Lecture Slides: Transactions & Concurrency (ACID) Slide
+Database Systems Transactions & Concurrency (ACID) Reading Material: Transactions & Concurrency (ACID) Document
+Database Systems Transactions & Concurrency (ACID) Video Lecture: Transactions & Concurrency (ACID) Video
+Database Systems Transactions & Concurrency (ACID) Practice Exercises: Transactions & Concurrency (ACID) Document
+Database Systems Transactions & Concurrency (ACID) Reference Link: Transactions & Concurrency (ACID) Link
+Database Systems Indexes, Views & Query Performance Lecture Slides: Indexes, Views & Query Performance Slide
+Database Systems Indexes, Views & Query Performance Reading Material: Indexes, Views & Query Performance Document
+Database Systems Indexes, Views & Query Performance Video Lecture: Indexes, Views & Query Performance Video
+Database Systems Indexes, Views & Query Performance Practice Exercises: Indexes, Views & Query Performance Document
+Database Systems Indexes, Views & Query Performance Reference Link: Indexes, Views & Query Performance Link
+Deep Learning Introduction to Deep Learning Lecture Slides: Introduction to Deep Learning Slide
+Deep Learning Introduction to Deep Learning Reading Material: Introduction to Deep Learning Document
+Deep Learning Introduction to Deep Learning Video Lecture: Introduction to Deep Learning Video
+Deep Learning Introduction to Deep Learning Practice Exercises: Introduction to Deep Learning Document
+Deep Learning Introduction to Deep Learning Reference Link: Introduction to Deep Learning Link
+Deep Learning Neural Network Fundamentals Lecture Slides: Neural Network Fundamentals Slide
+Deep Learning Neural Network Fundamentals Reading Material: Neural Network Fundamentals Document
+Deep Learning Neural Network Fundamentals Video Lecture: Neural Network Fundamentals Video
+Deep Learning Neural Network Fundamentals Practice Exercises: Neural Network Fundamentals Document
+Deep Learning Neural Network Fundamentals Reference Link: Neural Network Fundamentals Link
+Deep Learning Forward & Backpropagation Lecture Slides: Forward & Backpropagation Slide
+Deep Learning Forward & Backpropagation Reading Material: Forward & Backpropagation Document
+Deep Learning Forward & Backpropagation Video Lecture: Forward & Backpropagation Video
+Deep Learning Forward & Backpropagation Practice Exercises: Forward & Backpropagation Document
+Deep Learning Forward & Backpropagation Reference Link: Forward & Backpropagation Link
+Deep Learning Activation Functions & Loss Lecture Slides: Activation Functions & Loss Slide
+Deep Learning Activation Functions & Loss Reading Material: Activation Functions & Loss Document
+Deep Learning Activation Functions & Loss Video Lecture: Activation Functions & Loss Video
+Deep Learning Activation Functions & Loss Practice Exercises: Activation Functions & Loss Document
+Deep Learning Activation Functions & Loss Reference Link: Activation Functions & Loss Link
+Deep Learning Optimization & Gradient Descent Lecture Slides: Optimization & Gradient Descent Slide
+Deep Learning Optimization & Gradient Descent Reading Material: Optimization & Gradient Descent Document
+Deep Learning Optimization & Gradient Descent Video Lecture: Optimization & Gradient Descent Video
+Deep Learning Optimization & Gradient Descent Practice Exercises: Optimization & Gradient Descent Document
+Deep Learning Optimization & Gradient Descent Reference Link: Optimization & Gradient Descent Link
+Deep Learning Regularization & Weight Decay Lecture Slides: Regularization & Weight Decay Slide
+Deep Learning Regularization & Weight Decay Reading Material: Regularization & Weight Decay Document
+Deep Learning Regularization & Weight Decay Video Lecture: Regularization & Weight Decay Video
+Deep Learning Regularization & Weight Decay Practice Exercises: Regularization & Weight Decay Document
+Deep Learning Regularization & Weight Decay Reference Link: Regularization & Weight Decay Link
+Deep Learning Convolutional Neural Networks Lecture Slides: Convolutional Neural Networks Slide
+Deep Learning Convolutional Neural Networks Reading Material: Convolutional Neural Networks Document
+Deep Learning Convolutional Neural Networks Video Lecture: Convolutional Neural Networks Video
+Deep Learning Convolutional Neural Networks Practice Exercises: Convolutional Neural Networks Document
+Deep Learning Convolutional Neural Networks Reference Link: Convolutional Neural Networks Link
+Deep Learning Recurrent Neural Networks & LSTM Lecture Slides: Recurrent Neural Networks & LSTM Slide
+Deep Learning Recurrent Neural Networks & LSTM Reading Material: Recurrent Neural Networks & LSTM Document
+Deep Learning Recurrent Neural Networks & LSTM Video Lecture: Recurrent Neural Networks & LSTM Video
+Deep Learning Recurrent Neural Networks & LSTM Practice Exercises: Recurrent Neural Networks & LSTM Document
+Deep Learning Recurrent Neural Networks & LSTM Reference Link: Recurrent Neural Networks & LSTM Link
+Deep Learning Attention & Transformers Lecture Slides: Attention & Transformers Slide
+Deep Learning Attention & Transformers Reading Material: Attention & Transformers Document
+Deep Learning Attention & Transformers Video Lecture: Attention & Transformers Video
+Deep Learning Attention & Transformers Practice Exercises: Attention & Transformers Document
+Deep Learning Attention & Transformers Reference Link: Attention & Transformers Link
+Deep Learning Generative Models Lecture Slides: Generative Models Slide
+Deep Learning Generative Models Reading Material: Generative Models Document
+Deep Learning Generative Models Video Lecture: Generative Models Video
+Deep Learning Generative Models Practice Exercises: Generative Models Document
+Deep Learning Generative Models Reference Link: Generative Models Link
+Deep Learning Model Deployment & Error Analysis Lecture Slides: Model Deployment & Error Analysis Slide
+Deep Learning Model Deployment & Error Analysis Reading Material: Model Deployment & Error Analysis Document
+Deep Learning Model Deployment & Error Analysis Video Lecture: Model Deployment & Error Analysis Video
+Deep Learning Model Deployment & Error Analysis Practice Exercises: Model Deployment & Error Analysis Document
+Deep Learning Model Deployment & Error Analysis Reference Link: Model Deployment & Error Analysis Link
+Discrete Mathematics Logic & Set Theory Lecture Slides: Logic & Set Theory Slide
+Discrete Mathematics Logic & Set Theory Reading Material: Logic & Set Theory Document
+Discrete Mathematics Logic & Set Theory Video Lecture: Logic & Set Theory Video
+Discrete Mathematics Logic & Set Theory Practice Exercises: Logic & Set Theory Document
+Discrete Mathematics Logic & Set Theory Reference Link: Logic & Set Theory Link
+Discrete Mathematics Propositional Logic & Proofs Lecture Slides: Propositional Logic & Proofs Slide
+Discrete Mathematics Propositional Logic & Proofs Reading Material: Propositional Logic & Proofs Document
+Discrete Mathematics Propositional Logic & Proofs Video Lecture: Propositional Logic & Proofs Video
+Discrete Mathematics Propositional Logic & Proofs Practice Exercises: Propositional Logic & Proofs Document
+Discrete Mathematics Propositional Logic & Proofs Reference Link: Propositional Logic & Proofs Link
+Discrete Mathematics Predicates & Quantifiers Lecture Slides: Predicates & Quantifiers Slide
+Discrete Mathematics Predicates & Quantifiers Reading Material: Predicates & Quantifiers Document
+Discrete Mathematics Predicates & Quantifiers Video Lecture: Predicates & Quantifiers Video
+Discrete Mathematics Predicates & Quantifiers Practice Exercises: Predicates & Quantifiers Document
+Discrete Mathematics Predicates & Quantifiers Reference Link: Predicates & Quantifiers Link
+Discrete Mathematics Sets, Functions & Sequences Lecture Slides: Sets, Functions & Sequences Slide
+Discrete Mathematics Sets, Functions & Sequences Reading Material: Sets, Functions & Sequences Document
+Discrete Mathematics Sets, Functions & Sequences Video Lecture: Sets, Functions & Sequences Video
+Discrete Mathematics Sets, Functions & Sequences Practice Exercises: Sets, Functions & Sequences Document
+Discrete Mathematics Sets, Functions & Sequences Reference Link: Sets, Functions & Sequences Link
+Discrete Mathematics Algorithms & Complexity Lecture Slides: Algorithms & Complexity Slide
+Discrete Mathematics Algorithms & Complexity Reading Material: Algorithms & Complexity Document
+Discrete Mathematics Algorithms & Complexity Video Lecture: Algorithms & Complexity Video
+Discrete Mathematics Algorithms & Complexity Practice Exercises: Algorithms & Complexity Document
+Discrete Mathematics Algorithms & Complexity Reference Link: Algorithms & Complexity Link
+Discrete Mathematics Number Theory & Cryptography Lecture Slides: Number Theory & Cryptography Slide
+Discrete Mathematics Number Theory & Cryptography Reading Material: Number Theory & Cryptography Document
+Discrete Mathematics Number Theory & Cryptography Video Lecture: Number Theory & Cryptography Video
+Discrete Mathematics Number Theory & Cryptography Practice Exercises: Number Theory & Cryptography Document
+Discrete Mathematics Number Theory & Cryptography Reference Link: Number Theory & Cryptography Link
+Discrete Mathematics Mathematical Induction & Recursion Lecture Slides: Mathematical Induction & Recursion Slide
+Discrete Mathematics Mathematical Induction & Recursion Reading Material: Mathematical Induction & Recursion Document
+Discrete Mathematics Mathematical Induction & Recursion Video Lecture: Mathematical Induction & Recursion Video
+Discrete Mathematics Mathematical Induction & Recursion Practice Exercises: Mathematical Induction & Recursion Document
+Discrete Mathematics Mathematical Induction & Recursion Reference Link: Mathematical Induction & Recursion Link
+Discrete Mathematics Counting & Combinatorics Lecture Slides: Counting & Combinatorics Slide
+Discrete Mathematics Counting & Combinatorics Reading Material: Counting & Combinatorics Document
+Discrete Mathematics Counting & Combinatorics Video Lecture: Counting & Combinatorics Video
+Discrete Mathematics Counting & Combinatorics Practice Exercises: Counting & Combinatorics Document
+Discrete Mathematics Counting & Combinatorics Reference Link: Counting & Combinatorics Link
+Discrete Mathematics Recurrence Relations Lecture Slides: Recurrence Relations Slide
+Discrete Mathematics Recurrence Relations Reading Material: Recurrence Relations Document
+Discrete Mathematics Recurrence Relations Video Lecture: Recurrence Relations Video
+Discrete Mathematics Recurrence Relations Practice Exercises: Recurrence Relations Document
+Discrete Mathematics Recurrence Relations Reference Link: Recurrence Relations Link
+Discrete Mathematics Relations & Their Properties Lecture Slides: Relations & Their Properties Slide
+Discrete Mathematics Relations & Their Properties Reading Material: Relations & Their Properties Document
+Discrete Mathematics Relations & Their Properties Video Lecture: Relations & Their Properties Video
+Discrete Mathematics Relations & Their Properties Practice Exercises: Relations & Their Properties Document
+Discrete Mathematics Relations & Their Properties Reference Link: Relations & Their Properties Link
+Discrete Mathematics Graphs & Trees Lecture Slides: Graphs & Trees Slide
+Discrete Mathematics Graphs & Trees Reading Material: Graphs & Trees Document
+Discrete Mathematics Graphs & Trees Video Lecture: Graphs & Trees Video
+Discrete Mathematics Graphs & Trees Practice Exercises: Graphs & Trees Document
+Discrete Mathematics Graphs & Trees Reference Link: Graphs & Trees Link
+Ethics in IT Introduction to IT Ethics Lecture Slides: Introduction to IT Ethics Slide
+Ethics in IT Introduction to IT Ethics Reading Material: Introduction to IT Ethics Document
+Ethics in IT Introduction to IT Ethics Video Lecture: Introduction to IT Ethics Video
+Ethics in IT Introduction to IT Ethics Practice Exercises: Introduction to IT Ethics Document
+Ethics in IT Introduction to IT Ethics Reference Link: Introduction to IT Ethics Link
+Ethics in IT Ethical Theories & Frameworks Lecture Slides: Ethical Theories & Frameworks Slide
+Ethics in IT Ethical Theories & Frameworks Reading Material: Ethical Theories & Frameworks Document
+Ethics in IT Ethical Theories & Frameworks Video Lecture: Ethical Theories & Frameworks Video
+Ethics in IT Ethical Theories & Frameworks Practice Exercises: Ethical Theories & Frameworks Document
+Ethics in IT Ethical Theories & Frameworks Reference Link: Ethical Theories & Frameworks Link
+Ethics in IT Privacy & Data Protection Lecture Slides: Privacy & Data Protection Slide
+Ethics in IT Privacy & Data Protection Reading Material: Privacy & Data Protection Document
+Ethics in IT Privacy & Data Protection Video Lecture: Privacy & Data Protection Video
+Ethics in IT Privacy & Data Protection Practice Exercises: Privacy & Data Protection Document
+Ethics in IT Privacy & Data Protection Reference Link: Privacy & Data Protection Link
+Ethics in IT Intellectual Property & Copyright Lecture Slides: Intellectual Property & Copyright Slide
+Ethics in IT Intellectual Property & Copyright Reading Material: Intellectual Property & Copyright Document
+Ethics in IT Intellectual Property & Copyright Video Lecture: Intellectual Property & Copyright Video
+Ethics in IT Intellectual Property & Copyright Practice Exercises: Intellectual Property & Copyright Document
+Ethics in IT Intellectual Property & Copyright Reference Link: Intellectual Property & Copyright Link
+Ethics in IT Cybersecurity Ethics Lecture Slides: Cybersecurity Ethics Slide
+Ethics in IT Cybersecurity Ethics Reading Material: Cybersecurity Ethics Document
+Ethics in IT Cybersecurity Ethics Video Lecture: Cybersecurity Ethics Video
+Ethics in IT Cybersecurity Ethics Practice Exercises: Cybersecurity Ethics Document
+Ethics in IT Cybersecurity Ethics Reference Link: Cybersecurity Ethics Link
+Ethics in IT Professional Codes of Conduct Lecture Slides: Professional Codes of Conduct Slide
+Ethics in IT Professional Codes of Conduct Reading Material: Professional Codes of Conduct Document
+Ethics in IT Professional Codes of Conduct Video Lecture: Professional Codes of Conduct Video
+Ethics in IT Professional Codes of Conduct Practice Exercises: Professional Codes of Conduct Document
+Ethics in IT Professional Codes of Conduct Reference Link: Professional Codes of Conduct Link
+Ethics in IT Social Media & Digital Citizenship Lecture Slides: Social Media & Digital Citizenship Slide
+Ethics in IT Social Media & Digital Citizenship Reading Material: Social Media & Digital Citizenship Document
+Ethics in IT Social Media & Digital Citizenship Video Lecture: Social Media & Digital Citizenship Video
+Ethics in IT Social Media & Digital Citizenship Practice Exercises: Social Media & Digital Citizenship Document
+Ethics in IT Social Media & Digital Citizenship Reference Link: Social Media & Digital Citizenship Link
+Ethics in IT AI Ethics & Algorithmic Bias Lecture Slides: AI Ethics & Algorithmic Bias Slide
+Ethics in IT AI Ethics & Algorithmic Bias Reading Material: AI Ethics & Algorithmic Bias Document
+Ethics in IT AI Ethics & Algorithmic Bias Video Lecture: AI Ethics & Algorithmic Bias Video
+Ethics in IT AI Ethics & Algorithmic Bias Practice Exercises: AI Ethics & Algorithmic Bias Document
+Ethics in IT AI Ethics & Algorithmic Bias Reference Link: AI Ethics & Algorithmic Bias Link
+Ethics in IT Cybercrime & Law Lecture Slides: Cybercrime & Law Slide
+Ethics in IT Cybercrime & Law Reading Material: Cybercrime & Law Document
+Ethics in IT Cybercrime & Law Video Lecture: Cybercrime & Law Video
+Ethics in IT Cybercrime & Law Practice Exercises: Cybercrime & Law Document
+Ethics in IT Cybercrime & Law Reference Link: Cybercrime & Law Link
+Ethics in IT Case Studies in IT Ethics Lecture Slides: Case Studies in IT Ethics Slide
+Ethics in IT Case Studies in IT Ethics Reading Material: Case Studies in IT Ethics Document
+Ethics in IT Case Studies in IT Ethics Video Lecture: Case Studies in IT Ethics Video
+Ethics in IT Case Studies in IT Ethics Practice Exercises: Case Studies in IT Ethics Document
+Ethics in IT Case Studies in IT Ethics Reference Link: Case Studies in IT Ethics Link
+Introduction to Computer Science What is Computer Science? Lecture Slides: What is Computer Science? Slide
+Introduction to Computer Science What is Computer Science? Reading Material: What is Computer Science? Document
+Introduction to Computer Science What is Computer Science? Video Lecture: What is Computer Science? Video
+Introduction to Computer Science What is Computer Science? Practice Exercises: What is Computer Science? Document
+Introduction to Computer Science What is Computer Science? Reference Link: What is Computer Science? Link
+Introduction to Computer Science Number Systems & Data Representation Lecture Slides: Number Systems & Data Representation Slide
+Introduction to Computer Science Number Systems & Data Representation Reading Material: Number Systems & Data Representation Document
+Introduction to Computer Science Number Systems & Data Representation Video Lecture: Number Systems & Data Representation Video
+Introduction to Computer Science Number Systems & Data Representation Practice Exercises: Number Systems & Data Representation Document
+Introduction to Computer Science Number Systems & Data Representation Reference Link: Number Systems & Data Representation Link
+Introduction to Computer Science Boolean Logic & Gates Lecture Slides: Boolean Logic & Gates Slide
+Introduction to Computer Science Boolean Logic & Gates Reading Material: Boolean Logic & Gates Document
+Introduction to Computer Science Boolean Logic & Gates Video Lecture: Boolean Logic & Gates Video
+Introduction to Computer Science Boolean Logic & Gates Practice Exercises: Boolean Logic & Gates Document
+Introduction to Computer Science Boolean Logic & Gates Reference Link: Boolean Logic & Gates Link
+Introduction to Computer Science Computer Hardware & the CPU Lecture Slides: Computer Hardware & the CPU Slide
+Introduction to Computer Science Computer Hardware & the CPU Reading Material: Computer Hardware & the CPU Document
+Introduction to Computer Science Computer Hardware & the CPU Video Lecture: Computer Hardware & the CPU Video
+Introduction to Computer Science Computer Hardware & the CPU Practice Exercises: Computer Hardware & the CPU Document
+Introduction to Computer Science Computer Hardware & the CPU Reference Link: Computer Hardware & the CPU Link
+Introduction to Computer Science Operating Systems Basics Lecture Slides: Operating Systems Basics Slide
+Introduction to Computer Science Operating Systems Basics Reading Material: Operating Systems Basics Document
+Introduction to Computer Science Operating Systems Basics Video Lecture: Operating Systems Basics Video
+Introduction to Computer Science Operating Systems Basics Practice Exercises: Operating Systems Basics Document
+Introduction to Computer Science Operating Systems Basics Reference Link: Operating Systems Basics Link
+Introduction to Computer Science Programming Concepts & Algorithms Lecture Slides: Programming Concepts & Algorithms Slide
+Introduction to Computer Science Programming Concepts & Algorithms Reading Material: Programming Concepts & Algorithms Document
+Introduction to Computer Science Programming Concepts & Algorithms Video Lecture: Programming Concepts & Algorithms Video
+Introduction to Computer Science Programming Concepts & Algorithms Practice Exercises: Programming Concepts & Algorithms Document
+Introduction to Computer Science Programming Concepts & Algorithms Reference Link: Programming Concepts & Algorithms Link
+Introduction to Computer Science Data Structures Overview Lecture Slides: Data Structures Overview Slide
+Introduction to Computer Science Data Structures Overview Reading Material: Data Structures Overview Document
+Introduction to Computer Science Data Structures Overview Video Lecture: Data Structures Overview Video
+Introduction to Computer Science Data Structures Overview Practice Exercises: Data Structures Overview Document
+Introduction to Computer Science Data Structures Overview Reference Link: Data Structures Overview Link
+Introduction to Computer Science Databases & Information Management Lecture Slides: Databases & Information Management Slide
+Introduction to Computer Science Databases & Information Management Reading Material: Databases & Information Management Document
+Introduction to Computer Science Databases & Information Management Video Lecture: Databases & Information Management Video
+Introduction to Computer Science Databases & Information Management Practice Exercises: Databases & Information Management Document
+Introduction to Computer Science Databases & Information Management Reference Link: Databases & Information Management Link
+Introduction to Computer Science Computer Networks & the Internet Lecture Slides: Computer Networks & the Internet Slide
+Introduction to Computer Science Computer Networks & the Internet Reading Material: Computer Networks & the Internet Document
+Introduction to Computer Science Computer Networks & the Internet Video Lecture: Computer Networks & the Internet Video
+Introduction to Computer Science Computer Networks & the Internet Practice Exercises: Computer Networks & the Internet Document
+Introduction to Computer Science Computer Networks & the Internet Reference Link: Computer Networks & the Internet Link
+Introduction to Computer Science Security, Ethics & Emerging Trends Lecture Slides: Security, Ethics & Emerging Trends Slide
+Introduction to Computer Science Security, Ethics & Emerging Trends Reading Material: Security, Ethics & Emerging Trends Document
+Introduction to Computer Science Security, Ethics & Emerging Trends Video Lecture: Security, Ethics & Emerging Trends Video
+Introduction to Computer Science Security, Ethics & Emerging Trends Practice Exercises: Security, Ethics & Emerging Trends Document
+Introduction to Computer Science Security, Ethics & Emerging Trends Reference Link: Security, Ethics & Emerging Trends Link
+Introduction to Software Engineering Introduction to Software Engineering Lecture Slides: Introduction to Software Engineering Slide
+Introduction to Software Engineering Introduction to Software Engineering Reading Material: Introduction to Software Engineering Document
+Introduction to Software Engineering Introduction to Software Engineering Video Lecture: Introduction to Software Engineering Video
+Introduction to Software Engineering Introduction to Software Engineering Practice Exercises: Introduction to Software Engineering Document
+Introduction to Software Engineering Introduction to Software Engineering Reference Link: Introduction to Software Engineering Link
+Introduction to Software Engineering Software Development Life Cycle Lecture Slides: Software Development Life Cycle Slide
+Introduction to Software Engineering Software Development Life Cycle Reading Material: Software Development Life Cycle Document
+Introduction to Software Engineering Software Development Life Cycle Video Lecture: Software Development Life Cycle Video
+Introduction to Software Engineering Software Development Life Cycle Practice Exercises: Software Development Life Cycle Document
+Introduction to Software Engineering Software Development Life Cycle Reference Link: Software Development Life Cycle Link
+Introduction to Software Engineering Agile & Scrum Lecture Slides: Agile & Scrum Slide
+Introduction to Software Engineering Agile & Scrum Reading Material: Agile & Scrum Document
+Introduction to Software Engineering Agile & Scrum Video Lecture: Agile & Scrum Video
+Introduction to Software Engineering Agile & Scrum Practice Exercises: Agile & Scrum Document
+Introduction to Software Engineering Agile & Scrum Reference Link: Agile & Scrum Link
+Introduction to Software Engineering Requirements Engineering Lecture Slides: Requirements Engineering Slide
+Introduction to Software Engineering Requirements Engineering Reading Material: Requirements Engineering Document
+Introduction to Software Engineering Requirements Engineering Video Lecture: Requirements Engineering Video
+Introduction to Software Engineering Requirements Engineering Practice Exercises: Requirements Engineering Document
+Introduction to Software Engineering Requirements Engineering Reference Link: Requirements Engineering Link
+Introduction to Software Engineering Software Design & Architecture Lecture Slides: Software Design & Architecture Slide
+Introduction to Software Engineering Software Design & Architecture Reading Material: Software Design & Architecture Document
+Introduction to Software Engineering Software Design & Architecture Video Lecture: Software Design & Architecture Video
+Introduction to Software Engineering Software Design & Architecture Practice Exercises: Software Design & Architecture Document
+Introduction to Software Engineering Software Design & Architecture Reference Link: Software Design & Architecture Link
+Introduction to Software Engineering UML & Modeling Lecture Slides: UML & Modeling Slide
+Introduction to Software Engineering UML & Modeling Reading Material: UML & Modeling Document
+Introduction to Software Engineering UML & Modeling Video Lecture: UML & Modeling Video
+Introduction to Software Engineering UML & Modeling Practice Exercises: UML & Modeling Document
+Introduction to Software Engineering UML & Modeling Reference Link: UML & Modeling Link
+Introduction to Software Engineering Implementation & Coding Standards Lecture Slides: Implementation & Coding Standards Slide
+Introduction to Software Engineering Implementation & Coding Standards Reading Material: Implementation & Coding Standards Document
+Introduction to Software Engineering Implementation & Coding Standards Video Lecture: Implementation & Coding Standards Video
+Introduction to Software Engineering Implementation & Coding Standards Practice Exercises: Implementation & Coding Standards Document
+Introduction to Software Engineering Implementation & Coding Standards Reference Link: Implementation & Coding Standards Link
+Introduction to Software Engineering Software Testing & QA Lecture Slides: Software Testing & QA Slide
+Introduction to Software Engineering Software Testing & QA Reading Material: Software Testing & QA Document
+Introduction to Software Engineering Software Testing & QA Video Lecture: Software Testing & QA Video
+Introduction to Software Engineering Software Testing & QA Practice Exercises: Software Testing & QA Document
+Introduction to Software Engineering Software Testing & QA Reference Link: Software Testing & QA Link
+Introduction to Software Engineering Configuration Management & DevOps Lecture Slides: Configuration Management & DevOps Slide
+Introduction to Software Engineering Configuration Management & DevOps Reading Material: Configuration Management & DevOps Document
+Introduction to Software Engineering Configuration Management & DevOps Video Lecture: Configuration Management & DevOps Video
+Introduction to Software Engineering Configuration Management & DevOps Practice Exercises: Configuration Management & DevOps Document
+Introduction to Software Engineering Configuration Management & DevOps Reference Link: Configuration Management & DevOps Link
+Introduction to Software Engineering Software Maintenance & Project Wrap-up Lecture Slides: Software Maintenance & Project Wrap-up Slide
+Introduction to Software Engineering Software Maintenance & Project Wrap-up Reading Material: Software Maintenance & Project Wrap-up Document
+Introduction to Software Engineering Software Maintenance & Project Wrap-up Video Lecture: Software Maintenance & Project Wrap-up Video
+Introduction to Software Engineering Software Maintenance & Project Wrap-up Practice Exercises: Software Maintenance & Project Wrap-up Document
+Introduction to Software Engineering Software Maintenance & Project Wrap-up Reference Link: Software Maintenance & Project Wrap-up Link
+Machine Learning Introduction to Machine Learning Lecture Slides: Introduction to Machine Learning Slide
+Machine Learning Introduction to Machine Learning Reading Material: Introduction to Machine Learning Document
+Machine Learning Introduction to Machine Learning Video Lecture: Introduction to Machine Learning Video
+Machine Learning Introduction to Machine Learning Practice Exercises: Introduction to Machine Learning Document
+Machine Learning Introduction to Machine Learning Reference Link: Introduction to Machine Learning Link
+Machine Learning Exploratory Data Analysis Lecture Slides: Exploratory Data Analysis Slide
+Machine Learning Exploratory Data Analysis Reading Material: Exploratory Data Analysis Document
+Machine Learning Exploratory Data Analysis Video Lecture: Exploratory Data Analysis Video
+Machine Learning Exploratory Data Analysis Practice Exercises: Exploratory Data Analysis Document
+Machine Learning Exploratory Data Analysis Reference Link: Exploratory Data Analysis Link
+Machine Learning Data Preprocessing & Feature Engineering Lecture Slides: Data Preprocessing & Feature Engineering Slide
+Machine Learning Data Preprocessing & Feature Engineering Reading Material: Data Preprocessing & Feature Engineering Document
+Machine Learning Data Preprocessing & Feature Engineering Video Lecture: Data Preprocessing & Feature Engineering Video
+Machine Learning Data Preprocessing & Feature Engineering Practice Exercises: Data Preprocessing & Feature Engineering Document
+Machine Learning Data Preprocessing & Feature Engineering Reference Link: Data Preprocessing & Feature Engineering Link
+Machine Learning Supervised Learning: Linear Regression Lecture Slides: Supervised Learning: Linear Regression Slide
+Machine Learning Supervised Learning: Linear Regression Reading Material: Supervised Learning: Linear Regression Document
+Machine Learning Supervised Learning: Linear Regression Video Lecture: Supervised Learning: Linear Regression Video
+Machine Learning Supervised Learning: Linear Regression Practice Exercises: Supervised Learning: Linear Regression Document
+Machine Learning Supervised Learning: Linear Regression Reference Link: Supervised Learning: Linear Regression Link
+Machine Learning Supervised Learning: Logistic Regression Lecture Slides: Supervised Learning: Logistic Regression Slide
+Machine Learning Supervised Learning: Logistic Regression Reading Material: Supervised Learning: Logistic Regression Document
+Machine Learning Supervised Learning: Logistic Regression Video Lecture: Supervised Learning: Logistic Regression Video
+Machine Learning Supervised Learning: Logistic Regression Practice Exercises: Supervised Learning: Logistic Regression Document
+Machine Learning Supervised Learning: Logistic Regression Reference Link: Supervised Learning: Logistic Regression Link
+Machine Learning K-Nearest Neighbors & Decision Trees Lecture Slides: K-Nearest Neighbors & Decision Trees Slide
+Machine Learning K-Nearest Neighbors & Decision Trees Reading Material: K-Nearest Neighbors & Decision Trees Document
+Machine Learning K-Nearest Neighbors & Decision Trees Video Lecture: K-Nearest Neighbors & Decision Trees Video
+Machine Learning K-Nearest Neighbors & Decision Trees Practice Exercises: K-Nearest Neighbors & Decision Trees Document
+Machine Learning K-Nearest Neighbors & Decision Trees Reference Link: K-Nearest Neighbors & Decision Trees Link
+Machine Learning Support Vector Machines Lecture Slides: Support Vector Machines Slide
+Machine Learning Support Vector Machines Reading Material: Support Vector Machines Document
+Machine Learning Support Vector Machines Video Lecture: Support Vector Machines Video
+Machine Learning Support Vector Machines Practice Exercises: Support Vector Machines Document
+Machine Learning Support Vector Machines Reference Link: Support Vector Machines Link
+Machine Learning Unsupervised Learning: K-Means & Clustering Lecture Slides: Unsupervised Learning: K-Means & Clustering Slide
+Machine Learning Unsupervised Learning: K-Means & Clustering Reading Material: Unsupervised Learning: K-Means & Clustering Document
+Machine Learning Unsupervised Learning: K-Means & Clustering Video Lecture: Unsupervised Learning: K-Means & Clustering Video
+Machine Learning Unsupervised Learning: K-Means & Clustering Practice Exercises: Unsupervised Learning: K-Means & Clustering Document
+Machine Learning Unsupervised Learning: K-Means & Clustering Reference Link: Unsupervised Learning: K-Means & Clustering Link
+Machine Learning Hierarchical Clustering & DBSCAN Lecture Slides: Hierarchical Clustering & DBSCAN Slide
+Machine Learning Hierarchical Clustering & DBSCAN Reading Material: Hierarchical Clustering & DBSCAN Document
+Machine Learning Hierarchical Clustering & DBSCAN Video Lecture: Hierarchical Clustering & DBSCAN Video
+Machine Learning Hierarchical Clustering & DBSCAN Practice Exercises: Hierarchical Clustering & DBSCAN Document
+Machine Learning Hierarchical Clustering & DBSCAN Reference Link: Hierarchical Clustering & DBSCAN Link
+Machine Learning Ensemble Learning Lecture Slides: Ensemble Learning Slide
+Machine Learning Ensemble Learning Reading Material: Ensemble Learning Document
+Machine Learning Ensemble Learning Video Lecture: Ensemble Learning Video
+Machine Learning Ensemble Learning Practice Exercises: Ensemble Learning Document
+Machine Learning Ensemble Learning Reference Link: Ensemble Learning Link
+Machine Learning Model Evaluation & Selection Lecture Slides: Model Evaluation & Selection Slide
+Machine Learning Model Evaluation & Selection Reading Material: Model Evaluation & Selection Document
+Machine Learning Model Evaluation & Selection Video Lecture: Model Evaluation & Selection Video
+Machine Learning Model Evaluation & Selection Practice Exercises: Model Evaluation & Selection Document
+Machine Learning Model Evaluation & Selection Reference Link: Model Evaluation & Selection Link
+Mathematics for Engineering Limits & Derivatives Lecture Slides: Limits & Derivatives Slide
+Mathematics for Engineering Limits & Derivatives Reading Material: Limits & Derivatives Document
+Mathematics for Engineering Limits & Derivatives Video Lecture: Limits & Derivatives Video
+Mathematics for Engineering Limits & Derivatives Practice Exercises: Limits & Derivatives Document
+Mathematics for Engineering Limits & Derivatives Reference Link: Limits & Derivatives Link
+Mathematics for Engineering Functions & Graphs Lecture Slides: Functions & Graphs Slide
+Mathematics for Engineering Functions & Graphs Reading Material: Functions & Graphs Document
+Mathematics for Engineering Functions & Graphs Video Lecture: Functions & Graphs Video
+Mathematics for Engineering Functions & Graphs Practice Exercises: Functions & Graphs Document
+Mathematics for Engineering Functions & Graphs Reference Link: Functions & Graphs Link
+Mathematics for Engineering Continuity Lecture Slides: Continuity Slide
+Mathematics for Engineering Continuity Reading Material: Continuity Document
+Mathematics for Engineering Continuity Video Lecture: Continuity Video
+Mathematics for Engineering Continuity Practice Exercises: Continuity Document
+Mathematics for Engineering Continuity Reference Link: Continuity Link
+Mathematics for Engineering Differentiation Rules Lecture Slides: Differentiation Rules Slide
+Mathematics for Engineering Differentiation Rules Reading Material: Differentiation Rules Document
+Mathematics for Engineering Differentiation Rules Video Lecture: Differentiation Rules Video
+Mathematics for Engineering Differentiation Rules Practice Exercises: Differentiation Rules Document
+Mathematics for Engineering Differentiation Rules Reference Link: Differentiation Rules Link
+Mathematics for Engineering Applications of Derivatives Lecture Slides: Applications of Derivatives Slide
+Mathematics for Engineering Applications of Derivatives Reading Material: Applications of Derivatives Document
+Mathematics for Engineering Applications of Derivatives Video Lecture: Applications of Derivatives Video
+Mathematics for Engineering Applications of Derivatives Practice Exercises: Applications of Derivatives Document
+Mathematics for Engineering Applications of Derivatives Reference Link: Applications of Derivatives Link
+Mathematics for Engineering The Definite Integral Lecture Slides: The Definite Integral Slide
+Mathematics for Engineering The Definite Integral Reading Material: The Definite Integral Document
+Mathematics for Engineering The Definite Integral Video Lecture: The Definite Integral Video
+Mathematics for Engineering The Definite Integral Practice Exercises: The Definite Integral Document
+Mathematics for Engineering The Definite Integral Reference Link: The Definite Integral Link
+Mathematics for Engineering Techniques of Integration Lecture Slides: Techniques of Integration Slide
+Mathematics for Engineering Techniques of Integration Reading Material: Techniques of Integration Document
+Mathematics for Engineering Techniques of Integration Video Lecture: Techniques of Integration Video
+Mathematics for Engineering Techniques of Integration Practice Exercises: Techniques of Integration Document
+Mathematics for Engineering Techniques of Integration Reference Link: Techniques of Integration Link
+Mathematics for Engineering Sequences & Series Lecture Slides: Sequences & Series Slide
+Mathematics for Engineering Sequences & Series Reading Material: Sequences & Series Document
+Mathematics for Engineering Sequences & Series Video Lecture: Sequences & Series Video
+Mathematics for Engineering Sequences & Series Practice Exercises: Sequences & Series Document
+Mathematics for Engineering Sequences & Series Reference Link: Sequences & Series Link
+Mathematics for Engineering Matrices & Linear Algebra Lecture Slides: Matrices & Linear Algebra Slide
+Mathematics for Engineering Matrices & Linear Algebra Reading Material: Matrices & Linear Algebra Document
+Mathematics for Engineering Matrices & Linear Algebra Video Lecture: Matrices & Linear Algebra Video
+Mathematics for Engineering Matrices & Linear Algebra Practice Exercises: Matrices & Linear Algebra Document
+Mathematics for Engineering Matrices & Linear Algebra Reference Link: Matrices & Linear Algebra Link
+Mathematics for Engineering Vectors & Multivariable Basics Lecture Slides: Vectors & Multivariable Basics Slide
+Mathematics for Engineering Vectors & Multivariable Basics Reading Material: Vectors & Multivariable Basics Document
+Mathematics for Engineering Vectors & Multivariable Basics Video Lecture: Vectors & Multivariable Basics Video
+Mathematics for Engineering Vectors & Multivariable Basics Practice Exercises: Vectors & Multivariable Basics Document
+Mathematics for Engineering Vectors & Multivariable Basics Reference Link: Vectors & Multivariable Basics Link
+Mathematics for Machine Learning Linear Algebra Foundations Lecture Slides: Linear Algebra Foundations Slide
+Mathematics for Machine Learning Linear Algebra Foundations Reading Material: Linear Algebra Foundations Document
+Mathematics for Machine Learning Linear Algebra Foundations Video Lecture: Linear Algebra Foundations Video
+Mathematics for Machine Learning Linear Algebra Foundations Practice Exercises: Linear Algebra Foundations Document
+Mathematics for Machine Learning Linear Algebra Foundations Reference Link: Linear Algebra Foundations Link
+Mathematics for Machine Learning Vectors & Vector Spaces Lecture Slides: Vectors & Vector Spaces Slide
+Mathematics for Machine Learning Vectors & Vector Spaces Reading Material: Vectors & Vector Spaces Document
+Mathematics for Machine Learning Vectors & Vector Spaces Video Lecture: Vectors & Vector Spaces Video
+Mathematics for Machine Learning Vectors & Vector Spaces Practice Exercises: Vectors & Vector Spaces Document
+Mathematics for Machine Learning Vectors & Vector Spaces Reference Link: Vectors & Vector Spaces Link
+Mathematics for Machine Learning Matrices & Linear Transformations Lecture Slides: Matrices & Linear Transformations Slide
+Mathematics for Machine Learning Matrices & Linear Transformations Reading Material: Matrices & Linear Transformations Document
+Mathematics for Machine Learning Matrices & Linear Transformations Video Lecture: Matrices & Linear Transformations Video
+Mathematics for Machine Learning Matrices & Linear Transformations Practice Exercises: Matrices & Linear Transformations Document
+Mathematics for Machine Learning Matrices & Linear Transformations Reference Link: Matrices & Linear Transformations Link
+Mathematics for Machine Learning Eigenvalues & Eigenvectors Lecture Slides: Eigenvalues & Eigenvectors Slide
+Mathematics for Machine Learning Eigenvalues & Eigenvectors Reading Material: Eigenvalues & Eigenvectors Document
+Mathematics for Machine Learning Eigenvalues & Eigenvectors Video Lecture: Eigenvalues & Eigenvectors Video
+Mathematics for Machine Learning Eigenvalues & Eigenvectors Practice Exercises: Eigenvalues & Eigenvectors Document
+Mathematics for Machine Learning Eigenvalues & Eigenvectors Reference Link: Eigenvalues & Eigenvectors Link
+Mathematics for Machine Learning Calculus & Derivatives Lecture Slides: Calculus & Derivatives Slide
+Mathematics for Machine Learning Calculus & Derivatives Reading Material: Calculus & Derivatives Document
+Mathematics for Machine Learning Calculus & Derivatives Video Lecture: Calculus & Derivatives Video
+Mathematics for Machine Learning Calculus & Derivatives Practice Exercises: Calculus & Derivatives Document
+Mathematics for Machine Learning Calculus & Derivatives Reference Link: Calculus & Derivatives Link
+Mathematics for Machine Learning Multivariate Calculus & Gradients Lecture Slides: Multivariate Calculus & Gradients Slide
+Mathematics for Machine Learning Multivariate Calculus & Gradients Reading Material: Multivariate Calculus & Gradients Document
+Mathematics for Machine Learning Multivariate Calculus & Gradients Video Lecture: Multivariate Calculus & Gradients Video
+Mathematics for Machine Learning Multivariate Calculus & Gradients Practice Exercises: Multivariate Calculus & Gradients Document
+Mathematics for Machine Learning Multivariate Calculus & Gradients Reference Link: Multivariate Calculus & Gradients Link
+Mathematics for Machine Learning Optimization & Gradient Descent Lecture Slides: Optimization & Gradient Descent Slide
+Mathematics for Machine Learning Optimization & Gradient Descent Reading Material: Optimization & Gradient Descent Document
+Mathematics for Machine Learning Optimization & Gradient Descent Video Lecture: Optimization & Gradient Descent Video
+Mathematics for Machine Learning Optimization & Gradient Descent Practice Exercises: Optimization & Gradient Descent Document
+Mathematics for Machine Learning Optimization & Gradient Descent Reference Link: Optimization & Gradient Descent Link
+Mathematics for Machine Learning Probability Foundations Lecture Slides: Probability Foundations Slide
+Mathematics for Machine Learning Probability Foundations Reading Material: Probability Foundations Document
+Mathematics for Machine Learning Probability Foundations Video Lecture: Probability Foundations Video
+Mathematics for Machine Learning Probability Foundations Practice Exercises: Probability Foundations Document
+Mathematics for Machine Learning Probability Foundations Reference Link: Probability Foundations Link
+Mathematics for Machine Learning Statistics for Machine Learning Lecture Slides: Statistics for Machine Learning Slide
+Mathematics for Machine Learning Statistics for Machine Learning Reading Material: Statistics for Machine Learning Document
+Mathematics for Machine Learning Statistics for Machine Learning Video Lecture: Statistics for Machine Learning Video
+Mathematics for Machine Learning Statistics for Machine Learning Practice Exercises: Statistics for Machine Learning Document
+Mathematics for Machine Learning Statistics for Machine Learning Reference Link: Statistics for Machine Learning Link
+Mathematics for Machine Learning Principal Component Analysis Lecture Slides: Principal Component Analysis Slide
+Mathematics for Machine Learning Principal Component Analysis Reading Material: Principal Component Analysis Document
+Mathematics for Machine Learning Principal Component Analysis Video Lecture: Principal Component Analysis Video
+Mathematics for Machine Learning Principal Component Analysis Practice Exercises: Principal Component Analysis Document
+Mathematics for Machine Learning Principal Component Analysis Reference Link: Principal Component Analysis Link
+Natural Language Processing Introduction to NLP Lecture Slides: Introduction to NLP Slide
+Natural Language Processing Introduction to NLP Reading Material: Introduction to NLP Document
+Natural Language Processing Introduction to NLP Video Lecture: Introduction to NLP Video
+Natural Language Processing Introduction to NLP Practice Exercises: Introduction to NLP Document
+Natural Language Processing Introduction to NLP Reference Link: Introduction to NLP Link
+Natural Language Processing Text Preprocessing & Normalization Lecture Slides: Text Preprocessing & Normalization Slide
+Natural Language Processing Text Preprocessing & Normalization Reading Material: Text Preprocessing & Normalization Document
+Natural Language Processing Text Preprocessing & Normalization Video Lecture: Text Preprocessing & Normalization Video
+Natural Language Processing Text Preprocessing & Normalization Practice Exercises: Text Preprocessing & Normalization Document
+Natural Language Processing Text Preprocessing & Normalization Reference Link: Text Preprocessing & Normalization Link
+Natural Language Processing Tokenization & Lemmatization Lecture Slides: Tokenization & Lemmatization Slide
+Natural Language Processing Tokenization & Lemmatization Reading Material: Tokenization & Lemmatization Document
+Natural Language Processing Tokenization & Lemmatization Video Lecture: Tokenization & Lemmatization Video
+Natural Language Processing Tokenization & Lemmatization Practice Exercises: Tokenization & Lemmatization Document
+Natural Language Processing Tokenization & Lemmatization Reference Link: Tokenization & Lemmatization Link
+Natural Language Processing Part-of-Speech Tagging Lecture Slides: Part-of-Speech Tagging Slide
+Natural Language Processing Part-of-Speech Tagging Reading Material: Part-of-Speech Tagging Document
+Natural Language Processing Part-of-Speech Tagging Video Lecture: Part-of-Speech Tagging Video
+Natural Language Processing Part-of-Speech Tagging Practice Exercises: Part-of-Speech Tagging Document
+Natural Language Processing Part-of-Speech Tagging Reference Link: Part-of-Speech Tagging Link
+Natural Language Processing Syntactic Parsing Lecture Slides: Syntactic Parsing Slide
+Natural Language Processing Syntactic Parsing Reading Material: Syntactic Parsing Document
+Natural Language Processing Syntactic Parsing Video Lecture: Syntactic Parsing Video
+Natural Language Processing Syntactic Parsing Practice Exercises: Syntactic Parsing Document
+Natural Language Processing Syntactic Parsing Reference Link: Syntactic Parsing Link
+Natural Language Processing TF-IDF & Bag of Words Lecture Slides: TF-IDF & Bag of Words Slide
+Natural Language Processing TF-IDF & Bag of Words Reading Material: TF-IDF & Bag of Words Document
+Natural Language Processing TF-IDF & Bag of Words Video Lecture: TF-IDF & Bag of Words Video
+Natural Language Processing TF-IDF & Bag of Words Practice Exercises: TF-IDF & Bag of Words Document
+Natural Language Processing TF-IDF & Bag of Words Reference Link: TF-IDF & Bag of Words Link
+Natural Language Processing Word Embeddings Lecture Slides: Word Embeddings Slide
+Natural Language Processing Word Embeddings Reading Material: Word Embeddings Document
+Natural Language Processing Word Embeddings Video Lecture: Word Embeddings Video
+Natural Language Processing Word Embeddings Practice Exercises: Word Embeddings Document
+Natural Language Processing Word Embeddings Reference Link: Word Embeddings Link
+Natural Language Processing Text Classification & Sentiment Analysis Lecture Slides: Text Classification & Sentiment Analysis Slide
+Natural Language Processing Text Classification & Sentiment Analysis Reading Material: Text Classification & Sentiment Analysis Document
+Natural Language Processing Text Classification & Sentiment Analysis Video Lecture: Text Classification & Sentiment Analysis Video
+Natural Language Processing Text Classification & Sentiment Analysis Practice Exercises: Text Classification & Sentiment Analysis Document
+Natural Language Processing Text Classification & Sentiment Analysis Reference Link: Text Classification & Sentiment Analysis Link
+Natural Language Processing Language Modeling Lecture Slides: Language Modeling Slide
+Natural Language Processing Language Modeling Reading Material: Language Modeling Document
+Natural Language Processing Language Modeling Video Lecture: Language Modeling Video
+Natural Language Processing Language Modeling Practice Exercises: Language Modeling Document
+Natural Language Processing Language Modeling Reference Link: Language Modeling Link
+Natural Language Processing Sequence Labeling & Applications Lecture Slides: Sequence Labeling & Applications Slide
+Natural Language Processing Sequence Labeling & Applications Reading Material: Sequence Labeling & Applications Document
+Natural Language Processing Sequence Labeling & Applications Video Lecture: Sequence Labeling & Applications Video
+Natural Language Processing Sequence Labeling & Applications Practice Exercises: Sequence Labeling & Applications Document
+Natural Language Processing Sequence Labeling & Applications Reference Link: Sequence Labeling & Applications Link
+On the Job Training Internship Orientation Lecture Slides: Internship Orientation Slide
+On the Job Training Internship Orientation Reading Material: Internship Orientation Document
+On the Job Training Internship Orientation Video Lecture: Internship Orientation Video
+On the Job Training Internship Orientation Practice Exercises: Internship Orientation Document
+On the Job Training Internship Orientation Reference Link: Internship Orientation Link
+On the Job Training Workplace Professionalism Lecture Slides: Workplace Professionalism Slide
+On the Job Training Workplace Professionalism Reading Material: Workplace Professionalism Document
+On the Job Training Workplace Professionalism Video Lecture: Workplace Professionalism Video
+On the Job Training Workplace Professionalism Practice Exercises: Workplace Professionalism Document
+On the Job Training Workplace Professionalism Reference Link: Workplace Professionalism Link
+On the Job Training Company Tools & Workflow Lecture Slides: Company Tools & Workflow Slide
+On the Job Training Company Tools & Workflow Reading Material: Company Tools & Workflow Document
+On the Job Training Company Tools & Workflow Video Lecture: Company Tools & Workflow Video
+On the Job Training Company Tools & Workflow Practice Exercises: Company Tools & Workflow Document
+On the Job Training Company Tools & Workflow Reference Link: Company Tools & Workflow Link
+On the Job Training Assigned Project Work Lecture Slides: Assigned Project Work Slide
+On the Job Training Assigned Project Work Reading Material: Assigned Project Work Document
+On the Job Training Assigned Project Work Video Lecture: Assigned Project Work Video
+On the Job Training Assigned Project Work Practice Exercises: Assigned Project Work Document
+On the Job Training Assigned Project Work Reference Link: Assigned Project Work Link
+On the Job Training Mentorship & Feedback Lecture Slides: Mentorship & Feedback Slide
+On the Job Training Mentorship & Feedback Reading Material: Mentorship & Feedback Document
+On the Job Training Mentorship & Feedback Video Lecture: Mentorship & Feedback Video
+On the Job Training Mentorship & Feedback Practice Exercises: Mentorship & Feedback Document
+On the Job Training Mentorship & Feedback Reference Link: Mentorship & Feedback Link
+On the Job Training Weekly Progress Reporting Lecture Slides: Weekly Progress Reporting Slide
+On the Job Training Weekly Progress Reporting Reading Material: Weekly Progress Reporting Document
+On the Job Training Weekly Progress Reporting Video Lecture: Weekly Progress Reporting Video
+On the Job Training Weekly Progress Reporting Practice Exercises: Weekly Progress Reporting Document
+On the Job Training Weekly Progress Reporting Reference Link: Weekly Progress Reporting Link
+On the Job Training Final Internship Report Lecture Slides: Final Internship Report Slide
+On the Job Training Final Internship Report Reading Material: Final Internship Report Document
+On the Job Training Final Internship Report Video Lecture: Final Internship Report Video
+On the Job Training Final Internship Report Practice Exercises: Final Internship Report Document
+On the Job Training Final Internship Report Reference Link: Final Internship Report Link
+On the Job Training Performance Evaluation Lecture Slides: Performance Evaluation Slide
+On the Job Training Performance Evaluation Reading Material: Performance Evaluation Document
+On the Job Training Performance Evaluation Video Lecture: Performance Evaluation Video
+On the Job Training Performance Evaluation Practice Exercises: Performance Evaluation Document
+On the Job Training Performance Evaluation Reference Link: Performance Evaluation Link
+Programming Fundamental with Python Getting Started with Python Lecture Slides: Getting Started with Python Slide
+Programming Fundamental with Python Getting Started with Python Reading Material: Getting Started with Python Document
+Programming Fundamental with Python Getting Started with Python Video Lecture: Getting Started with Python Video
+Programming Fundamental with Python Getting Started with Python Practice Exercises: Getting Started with Python Document
+Programming Fundamental with Python Getting Started with Python Reference Link: Getting Started with Python Link
+Programming Fundamental with Python Control Flow & Functions Lecture Slides: Control Flow & Functions Slide
+Programming Fundamental with Python Control Flow & Functions Reading Material: Control Flow & Functions Document
+Programming Fundamental with Python Control Flow & Functions Video Lecture: Control Flow & Functions Video
+Programming Fundamental with Python Control Flow & Functions Practice Exercises: Control Flow & Functions Document
+Programming Fundamental with Python Control Flow & Functions Reference Link: Control Flow & Functions Link
+Programming Fundamental with Python Variables, Numbers & Strings Lecture Slides: Variables, Numbers & Strings Slide
+Programming Fundamental with Python Variables, Numbers & Strings Reading Material: Variables, Numbers & Strings Document
+Programming Fundamental with Python Variables, Numbers & Strings Video Lecture: Variables, Numbers & Strings Video
+Programming Fundamental with Python Variables, Numbers & Strings Practice Exercises: Variables, Numbers & Strings Document
+Programming Fundamental with Python Variables, Numbers & Strings Reference Link: Variables, Numbers & Strings Link
+Programming Fundamental with Python Operators & Expressions Lecture Slides: Operators & Expressions Slide
+Programming Fundamental with Python Operators & Expressions Reading Material: Operators & Expressions Document
+Programming Fundamental with Python Operators & Expressions Video Lecture: Operators & Expressions Video
+Programming Fundamental with Python Operators & Expressions Practice Exercises: Operators & Expressions Document
+Programming Fundamental with Python Operators & Expressions Reference Link: Operators & Expressions Link
+Programming Fundamental with Python Lists, Tuples & Sets Lecture Slides: Lists, Tuples & Sets Slide
+Programming Fundamental with Python Lists, Tuples & Sets Reading Material: Lists, Tuples & Sets Document
+Programming Fundamental with Python Lists, Tuples & Sets Video Lecture: Lists, Tuples & Sets Video
+Programming Fundamental with Python Lists, Tuples & Sets Practice Exercises: Lists, Tuples & Sets Document
+Programming Fundamental with Python Lists, Tuples & Sets Reference Link: Lists, Tuples & Sets Link
+Programming Fundamental with Python Dictionaries & Comprehensions Lecture Slides: Dictionaries & Comprehensions Slide
+Programming Fundamental with Python Dictionaries & Comprehensions Reading Material: Dictionaries & Comprehensions Document
+Programming Fundamental with Python Dictionaries & Comprehensions Video Lecture: Dictionaries & Comprehensions Video
+Programming Fundamental with Python Dictionaries & Comprehensions Practice Exercises: Dictionaries & Comprehensions Document
+Programming Fundamental with Python Dictionaries & Comprehensions Reference Link: Dictionaries & Comprehensions Link
+Programming Fundamental with Python Functions, Scope & Recursion Lecture Slides: Functions, Scope & Recursion Slide
+Programming Fundamental with Python Functions, Scope & Recursion Reading Material: Functions, Scope & Recursion Document
+Programming Fundamental with Python Functions, Scope & Recursion Video Lecture: Functions, Scope & Recursion Video
+Programming Fundamental with Python Functions, Scope & Recursion Practice Exercises: Functions, Scope & Recursion Document
+Programming Fundamental with Python Functions, Scope & Recursion Reference Link: Functions, Scope & Recursion Link
+Programming Fundamental with Python File Input/Output Lecture Slides: File Input/Output Slide
+Programming Fundamental with Python File Input/Output Reading Material: File Input/Output Document
+Programming Fundamental with Python File Input/Output Video Lecture: File Input/Output Video
+Programming Fundamental with Python File Input/Output Practice Exercises: File Input/Output Document
+Programming Fundamental with Python File Input/Output Reference Link: File Input/Output Link
+Programming Fundamental with Python Error & Exception Handling Lecture Slides: Error & Exception Handling Slide
+Programming Fundamental with Python Error & Exception Handling Reading Material: Error & Exception Handling Document
+Programming Fundamental with Python Error & Exception Handling Video Lecture: Error & Exception Handling Video
+Programming Fundamental with Python Error & Exception Handling Practice Exercises: Error & Exception Handling Document
+Programming Fundamental with Python Error & Exception Handling Reference Link: Error & Exception Handling Link
+Programming Fundamental with Python Modules, Packages & Standard Library Lecture Slides: Modules, Packages & Standard Library Slide
+Programming Fundamental with Python Modules, Packages & Standard Library Reading Material: Modules, Packages & Standard Library Document
+Programming Fundamental with Python Modules, Packages & Standard Library Video Lecture: Modules, Packages & Standard Library Video
+Programming Fundamental with Python Modules, Packages & Standard Library Practice Exercises: Modules, Packages & Standard Library Document
+Programming Fundamental with Python Modules, Packages & Standard Library Reference Link: Modules, Packages & Standard Library Link
+Programming Fundamental with Python Object-Oriented Programming Basics Lecture Slides: Object-Oriented Programming Basics Slide
+Programming Fundamental with Python Object-Oriented Programming Basics Reading Material: Object-Oriented Programming Basics Document
+Programming Fundamental with Python Object-Oriented Programming Basics Video Lecture: Object-Oriented Programming Basics Video
+Programming Fundamental with Python Object-Oriented Programming Basics Practice Exercises: Object-Oriented Programming Basics Document
+Programming Fundamental with Python Object-Oriented Programming Basics Reference Link: Object-Oriented Programming Basics Link
+Project Management Introduction to Project Management Lecture Slides: Introduction to Project Management Slide
+Project Management Introduction to Project Management Reading Material: Introduction to Project Management Document
+Project Management Introduction to Project Management Video Lecture: Introduction to Project Management Video
+Project Management Introduction to Project Management Practice Exercises: Introduction to Project Management Document
+Project Management Introduction to Project Management Reference Link: Introduction to Project Management Link
+Project Management Project Life Cycle Lecture Slides: Project Life Cycle Slide
+Project Management Project Life Cycle Reading Material: Project Life Cycle Document
+Project Management Project Life Cycle Video Lecture: Project Life Cycle Video
+Project Management Project Life Cycle Practice Exercises: Project Life Cycle Document
+Project Management Project Life Cycle Reference Link: Project Life Cycle Link
+Project Management Project Initiation & Charter Lecture Slides: Project Initiation & Charter Slide
+Project Management Project Initiation & Charter Reading Material: Project Initiation & Charter Document
+Project Management Project Initiation & Charter Video Lecture: Project Initiation & Charter Video
+Project Management Project Initiation & Charter Practice Exercises: Project Initiation & Charter Document
+Project Management Project Initiation & Charter Reference Link: Project Initiation & Charter Link
+Project Management Scope Management Lecture Slides: Scope Management Slide
+Project Management Scope Management Reading Material: Scope Management Document
+Project Management Scope Management Video Lecture: Scope Management Video
+Project Management Scope Management Practice Exercises: Scope Management Document
+Project Management Scope Management Reference Link: Scope Management Link
+Project Management Schedule & Time Management Lecture Slides: Schedule & Time Management Slide
+Project Management Schedule & Time Management Reading Material: Schedule & Time Management Document
+Project Management Schedule & Time Management Video Lecture: Schedule & Time Management Video
+Project Management Schedule & Time Management Practice Exercises: Schedule & Time Management Document
+Project Management Schedule & Time Management Reference Link: Schedule & Time Management Link
+Project Management Cost & Budget Management Lecture Slides: Cost & Budget Management Slide
+Project Management Cost & Budget Management Reading Material: Cost & Budget Management Document
+Project Management Cost & Budget Management Video Lecture: Cost & Budget Management Video
+Project Management Cost & Budget Management Practice Exercises: Cost & Budget Management Document
+Project Management Cost & Budget Management Reference Link: Cost & Budget Management Link
+Project Management Risk Management Lecture Slides: Risk Management Slide
+Project Management Risk Management Reading Material: Risk Management Document
+Project Management Risk Management Video Lecture: Risk Management Video
+Project Management Risk Management Practice Exercises: Risk Management Document
+Project Management Risk Management Reference Link: Risk Management Link
+Project Management Quality & Resource Management Lecture Slides: Quality & Resource Management Slide
+Project Management Quality & Resource Management Reading Material: Quality & Resource Management Document
+Project Management Quality & Resource Management Video Lecture: Quality & Resource Management Video
+Project Management Quality & Resource Management Practice Exercises: Quality & Resource Management Document
+Project Management Quality & Resource Management Reference Link: Quality & Resource Management Link
+Project Management Agile Project Management Lecture Slides: Agile Project Management Slide
+Project Management Agile Project Management Reading Material: Agile Project Management Document
+Project Management Agile Project Management Video Lecture: Agile Project Management Video
+Project Management Agile Project Management Practice Exercises: Agile Project Management Document
+Project Management Agile Project Management Reference Link: Agile Project Management Link
+Project Management Project Closure & Case Study Lecture Slides: Project Closure & Case Study Slide
+Project Management Project Closure & Case Study Reading Material: Project Closure & Case Study Document
+Project Management Project Closure & Case Study Video Lecture: Project Closure & Case Study Video
+Project Management Project Closure & Case Study Practice Exercises: Project Closure & Case Study Document
+Project Management Project Closure & Case Study Reference Link: Project Closure & Case Study Link
+Statistics & Probability Descriptive Statistics Lecture Slides: Descriptive Statistics Slide
+Statistics & Probability Descriptive Statistics Reading Material: Descriptive Statistics Document
+Statistics & Probability Descriptive Statistics Video Lecture: Descriptive Statistics Video
+Statistics & Probability Descriptive Statistics Practice Exercises: Descriptive Statistics Document
+Statistics & Probability Descriptive Statistics Reference Link: Descriptive Statistics Link
+Statistics & Probability Probability Fundamentals Lecture Slides: Probability Fundamentals Slide
+Statistics & Probability Probability Fundamentals Reading Material: Probability Fundamentals Document
+Statistics & Probability Probability Fundamentals Video Lecture: Probability Fundamentals Video
+Statistics & Probability Probability Fundamentals Practice Exercises: Probability Fundamentals Document
+Statistics & Probability Probability Fundamentals Reference Link: Probability Fundamentals Link
+Statistics & Probability Conditional Probability & Bayes' Theorem Lecture Slides: Conditional Probability & Bayes' Theorem Slide
+Statistics & Probability Conditional Probability & Bayes' Theorem Reading Material: Conditional Probability & Bayes' Theorem Document
+Statistics & Probability Conditional Probability & Bayes' Theorem Video Lecture: Conditional Probability & Bayes' Theorem Video
+Statistics & Probability Conditional Probability & Bayes' Theorem Practice Exercises: Conditional Probability & Bayes' Theorem Document
+Statistics & Probability Conditional Probability & Bayes' Theorem Reference Link: Conditional Probability & Bayes' Theorem Link
+Statistics & Probability Random Variables Lecture Slides: Random Variables Slide
+Statistics & Probability Random Variables Reading Material: Random Variables Document
+Statistics & Probability Random Variables Video Lecture: Random Variables Video
+Statistics & Probability Random Variables Practice Exercises: Random Variables Document
+Statistics & Probability Random Variables Reference Link: Random Variables Link
+Statistics & Probability Discrete Probability Distributions Lecture Slides: Discrete Probability Distributions Slide
+Statistics & Probability Discrete Probability Distributions Reading Material: Discrete Probability Distributions Document
+Statistics & Probability Discrete Probability Distributions Video Lecture: Discrete Probability Distributions Video
+Statistics & Probability Discrete Probability Distributions Practice Exercises: Discrete Probability Distributions Document
+Statistics & Probability Discrete Probability Distributions Reference Link: Discrete Probability Distributions Link
+Statistics & Probability Continuous Probability Distributions Lecture Slides: Continuous Probability Distributions Slide
+Statistics & Probability Continuous Probability Distributions Reading Material: Continuous Probability Distributions Document
+Statistics & Probability Continuous Probability Distributions Video Lecture: Continuous Probability Distributions Video
+Statistics & Probability Continuous Probability Distributions Practice Exercises: Continuous Probability Distributions Document
+Statistics & Probability Continuous Probability Distributions Reference Link: Continuous Probability Distributions Link
+Statistics & Probability Sampling & Sampling Distributions Lecture Slides: Sampling & Sampling Distributions Slide
+Statistics & Probability Sampling & Sampling Distributions Reading Material: Sampling & Sampling Distributions Document
+Statistics & Probability Sampling & Sampling Distributions Video Lecture: Sampling & Sampling Distributions Video
+Statistics & Probability Sampling & Sampling Distributions Practice Exercises: Sampling & Sampling Distributions Document
+Statistics & Probability Sampling & Sampling Distributions Reference Link: Sampling & Sampling Distributions Link
+Statistics & Probability Confidence Intervals Lecture Slides: Confidence Intervals Slide
+Statistics & Probability Confidence Intervals Reading Material: Confidence Intervals Document
+Statistics & Probability Confidence Intervals Video Lecture: Confidence Intervals Video
+Statistics & Probability Confidence Intervals Practice Exercises: Confidence Intervals Document
+Statistics & Probability Confidence Intervals Reference Link: Confidence Intervals Link
+Statistics & Probability Hypothesis Testing Lecture Slides: Hypothesis Testing Slide
+Statistics & Probability Hypothesis Testing Reading Material: Hypothesis Testing Document
+Statistics & Probability Hypothesis Testing Video Lecture: Hypothesis Testing Video
+Statistics & Probability Hypothesis Testing Practice Exercises: Hypothesis Testing Document
+Statistics & Probability Hypothesis Testing Reference Link: Hypothesis Testing Link
+Statistics & Probability Correlation & Regression Lecture Slides: Correlation & Regression Slide
+Statistics & Probability Correlation & Regression Reading Material: Correlation & Regression Document
+Statistics & Probability Correlation & Regression Video Lecture: Correlation & Regression Video
+Statistics & Probability Correlation & Regression Practice Exercises: Correlation & Regression Document
+Statistics & Probability Correlation & Regression Reference Link: Correlation & Regression Link
+UI/UX Design Principles Design Thinking Lecture Slides: Design Thinking Slide
+UI/UX Design Principles Design Thinking Reading Material: Design Thinking Document
+UI/UX Design Principles Design Thinking Video Lecture: Design Thinking Video
+UI/UX Design Principles Design Thinking Practice Exercises: Design Thinking Document
+UI/UX Design Principles Design Thinking Reference Link: Design Thinking Link
+UI/UX Design Principles Fundamentals of UX Lecture Slides: Fundamentals of UX Slide
+UI/UX Design Principles Fundamentals of UX Reading Material: Fundamentals of UX Document
+UI/UX Design Principles Fundamentals of UX Video Lecture: Fundamentals of UX Video
+UI/UX Design Principles Fundamentals of UX Practice Exercises: Fundamentals of UX Document
+UI/UX Design Principles Fundamentals of UX Reference Link: Fundamentals of UX Link
+UI/UX Design Principles User Research & Personas Lecture Slides: User Research & Personas Slide
+UI/UX Design Principles User Research & Personas Reading Material: User Research & Personas Document
+UI/UX Design Principles User Research & Personas Video Lecture: User Research & Personas Video
+UI/UX Design Principles User Research & Personas Practice Exercises: User Research & Personas Document
+UI/UX Design Principles User Research & Personas Reference Link: User Research & Personas Link
+UI/UX Design Principles Information Architecture Lecture Slides: Information Architecture Slide
+UI/UX Design Principles Information Architecture Reading Material: Information Architecture Document
+UI/UX Design Principles Information Architecture Video Lecture: Information Architecture Video
+UI/UX Design Principles Information Architecture Practice Exercises: Information Architecture Document
+UI/UX Design Principles Information Architecture Reference Link: Information Architecture Link
+UI/UX Design Principles Wireframing & Prototyping Lecture Slides: Wireframing & Prototyping Slide
+UI/UX Design Principles Wireframing & Prototyping Reading Material: Wireframing & Prototyping Document
+UI/UX Design Principles Wireframing & Prototyping Video Lecture: Wireframing & Prototyping Video
+UI/UX Design Principles Wireframing & Prototyping Practice Exercises: Wireframing & Prototyping Document
+UI/UX Design Principles Wireframing & Prototyping Reference Link: Wireframing & Prototyping Link
+UI/UX Design Principles Interaction Design Patterns Lecture Slides: Interaction Design Patterns Slide
+UI/UX Design Principles Interaction Design Patterns Reading Material: Interaction Design Patterns Document
+UI/UX Design Principles Interaction Design Patterns Video Lecture: Interaction Design Patterns Video
+UI/UX Design Principles Interaction Design Patterns Practice Exercises: Interaction Design Patterns Document
+UI/UX Design Principles Interaction Design Patterns Reference Link: Interaction Design Patterns Link
+UI/UX Design Principles Visual Design: Color & Typography Lecture Slides: Visual Design: Color & Typography Slide
+UI/UX Design Principles Visual Design: Color & Typography Reading Material: Visual Design: Color & Typography Document
+UI/UX Design Principles Visual Design: Color & Typography Video Lecture: Visual Design: Color & Typography Video
+UI/UX Design Principles Visual Design: Color & Typography Practice Exercises: Visual Design: Color & Typography Document
+UI/UX Design Principles Visual Design: Color & Typography Reference Link: Visual Design: Color & Typography Link
+UI/UX Design Principles Prototyping with Figma Lecture Slides: Prototyping with Figma Slide
+UI/UX Design Principles Prototyping with Figma Reading Material: Prototyping with Figma Document
+UI/UX Design Principles Prototyping with Figma Video Lecture: Prototyping with Figma Video
+UI/UX Design Principles Prototyping with Figma Practice Exercises: Prototyping with Figma Document
+UI/UX Design Principles Prototyping with Figma Reference Link: Prototyping with Figma Link
+UI/UX Design Principles Usability Testing & Heuristics Lecture Slides: Usability Testing & Heuristics Slide
+UI/UX Design Principles Usability Testing & Heuristics Reading Material: Usability Testing & Heuristics Document
+UI/UX Design Principles Usability Testing & Heuristics Video Lecture: Usability Testing & Heuristics Video
+UI/UX Design Principles Usability Testing & Heuristics Practice Exercises: Usability Testing & Heuristics Document
+UI/UX Design Principles Usability Testing & Heuristics Reference Link: Usability Testing & Heuristics Link
+UI/UX Design Principles Design Handoff & Case Study Lecture Slides: Design Handoff & Case Study Slide
+UI/UX Design Principles Design Handoff & Case Study Reading Material: Design Handoff & Case Study Document
+UI/UX Design Principles Design Handoff & Case Study Video Lecture: Design Handoff & Case Study Video
+UI/UX Design Principles Design Handoff & Case Study Practice Exercises: Design Handoff & Case Study Document
+UI/UX Design Principles Design Handoff & Case Study Reference Link: Design Handoff & Case Study Link
+Web Development Basics HTML & CSS Lecture Slides: HTML & CSS Slide
+Web Development Basics HTML & CSS Reading Material: HTML & CSS Document
+Web Development Basics HTML & CSS Video Lecture: HTML & CSS Video
+Web Development Basics HTML & CSS Practice Exercises: HTML & CSS Document
+Web Development Basics HTML & CSS Reference Link: HTML & CSS Link
+Web Development Basics HTML5 Semantic Structure Lecture Slides: HTML5 Semantic Structure Slide
+Web Development Basics HTML5 Semantic Structure Reading Material: HTML5 Semantic Structure Document
+Web Development Basics HTML5 Semantic Structure Video Lecture: HTML5 Semantic Structure Video
+Web Development Basics HTML5 Semantic Structure Practice Exercises: HTML5 Semantic Structure Document
+Web Development Basics HTML5 Semantic Structure Reference Link: HTML5 Semantic Structure Link
+Web Development Basics CSS Layout: Flexbox & Grid Lecture Slides: CSS Layout: Flexbox & Grid Slide
+Web Development Basics CSS Layout: Flexbox & Grid Reading Material: CSS Layout: Flexbox & Grid Document
+Web Development Basics CSS Layout: Flexbox & Grid Video Lecture: CSS Layout: Flexbox & Grid Video
+Web Development Basics CSS Layout: Flexbox & Grid Practice Exercises: CSS Layout: Flexbox & Grid Document
+Web Development Basics CSS Layout: Flexbox & Grid Reference Link: CSS Layout: Flexbox & Grid Link
+Web Development Basics Responsive & Mobile-First Design Lecture Slides: Responsive & Mobile-First Design Slide
+Web Development Basics Responsive & Mobile-First Design Reading Material: Responsive & Mobile-First Design Document
+Web Development Basics Responsive & Mobile-First Design Video Lecture: Responsive & Mobile-First Design Video
+Web Development Basics Responsive & Mobile-First Design Practice Exercises: Responsive & Mobile-First Design Document
+Web Development Basics Responsive & Mobile-First Design Reference Link: Responsive & Mobile-First Design Link
+Web Development Basics JavaScript Fundamentals Lecture Slides: JavaScript Fundamentals Slide
+Web Development Basics JavaScript Fundamentals Reading Material: JavaScript Fundamentals Document
+Web Development Basics JavaScript Fundamentals Video Lecture: JavaScript Fundamentals Video
+Web Development Basics JavaScript Fundamentals Practice Exercises: JavaScript Fundamentals Document
+Web Development Basics JavaScript Fundamentals Reference Link: JavaScript Fundamentals Link
+Web Development Basics The DOM & Event Handling Lecture Slides: The DOM & Event Handling Slide
+Web Development Basics The DOM & Event Handling Reading Material: The DOM & Event Handling Document
+Web Development Basics The DOM & Event Handling Video Lecture: The DOM & Event Handling Video
+Web Development Basics The DOM & Event Handling Practice Exercises: The DOM & Event Handling Document
+Web Development Basics The DOM & Event Handling Reference Link: The DOM & Event Handling Link
+Web Development Basics Forms & Validation Lecture Slides: Forms & Validation Slide
+Web Development Basics Forms & Validation Reading Material: Forms & Validation Document
+Web Development Basics Forms & Validation Video Lecture: Forms & Validation Video
+Web Development Basics Forms & Validation Practice Exercises: Forms & Validation Document
+Web Development Basics Forms & Validation Reference Link: Forms & Validation Link
+Web Development Basics Asynchronous JS & Fetch API Lecture Slides: Asynchronous JS & Fetch API Slide
+Web Development Basics Asynchronous JS & Fetch API Reading Material: Asynchronous JS & Fetch API Document
+Web Development Basics Asynchronous JS & Fetch API Video Lecture: Asynchronous JS & Fetch API Video
+Web Development Basics Asynchronous JS & Fetch API Practice Exercises: Asynchronous JS & Fetch API Document
+Web Development Basics Asynchronous JS & Fetch API Reference Link: Asynchronous JS & Fetch API Link
+Web Development Basics Version Control with Git Lecture Slides: Version Control with Git Slide
+Web Development Basics Version Control with Git Reading Material: Version Control with Git Document
+Web Development Basics Version Control with Git Video Lecture: Version Control with Git Video
+Web Development Basics Version Control with Git Practice Exercises: Version Control with Git Document
+Web Development Basics Version Control with Git Reference Link: Version Control with Git Link
+Web Development Basics Capstone: Portfolio Website Lecture Slides: Capstone: Portfolio Website Slide
+Web Development Basics Capstone: Portfolio Website Reading Material: Capstone: Portfolio Website Document
+Web Development Basics Capstone: Portfolio Website Video Lecture: Capstone: Portfolio Website Video
+Web Development Basics Capstone: Portfolio Website Practice Exercises: Capstone: Portfolio Website Document
+Web Development Basics Capstone: Portfolio Website Reference Link: Capstone: Portfolio Website Link
+Web Development with Python Introduction to Web Development with Python Lecture Slides: Introduction to Web Development with Python Slide
+Web Development with Python Introduction to Web Development with Python Reading Material: Introduction to Web Development with Python Document
+Web Development with Python Introduction to Web Development with Python Video Lecture: Introduction to Web Development with Python Video
+Web Development with Python Introduction to Web Development with Python Practice Exercises: Introduction to Web Development with Python Document
+Web Development with Python Introduction to Web Development with Python Reference Link: Introduction to Web Development with Python Link
+Web Development with Python HTTP & Web Fundamentals Lecture Slides: HTTP & Web Fundamentals Slide
+Web Development with Python HTTP & Web Fundamentals Reading Material: HTTP & Web Fundamentals Document
+Web Development with Python HTTP & Web Fundamentals Video Lecture: HTTP & Web Fundamentals Video
+Web Development with Python HTTP & Web Fundamentals Practice Exercises: HTTP & Web Fundamentals Document
+Web Development with Python HTTP & Web Fundamentals Reference Link: HTTP & Web Fundamentals Link
+Web Development with Python Flask Framework Basics Lecture Slides: Flask Framework Basics Slide
+Web Development with Python Flask Framework Basics Reading Material: Flask Framework Basics Document
+Web Development with Python Flask Framework Basics Video Lecture: Flask Framework Basics Video
+Web Development with Python Flask Framework Basics Practice Exercises: Flask Framework Basics Document
+Web Development with Python Flask Framework Basics Reference Link: Flask Framework Basics Link
+Web Development with Python Routing & Templates (Jinja2) Lecture Slides: Routing & Templates (Jinja2) Slide
+Web Development with Python Routing & Templates (Jinja2) Reading Material: Routing & Templates (Jinja2) Document
+Web Development with Python Routing & Templates (Jinja2) Video Lecture: Routing & Templates (Jinja2) Video
+Web Development with Python Routing & Templates (Jinja2) Practice Exercises: Routing & Templates (Jinja2) Document
+Web Development with Python Routing & Templates (Jinja2) Reference Link: Routing & Templates (Jinja2) Link
+Web Development with Python Forms & User Input Lecture Slides: Forms & User Input Slide
+Web Development with Python Forms & User Input Reading Material: Forms & User Input Document
+Web Development with Python Forms & User Input Video Lecture: Forms & User Input Video
+Web Development with Python Forms & User Input Practice Exercises: Forms & User Input Document
+Web Development with Python Forms & User Input Reference Link: Forms & User Input Link
+Web Development with Python Working with Databases (SQLAlchemy) Lecture Slides: Working with Databases (SQLAlchemy) Slide
+Web Development with Python Working with Databases (SQLAlchemy) Reading Material: Working with Databases (SQLAlchemy) Document
+Web Development with Python Working with Databases (SQLAlchemy) Video Lecture: Working with Databases (SQLAlchemy) Video
+Web Development with Python Working with Databases (SQLAlchemy) Practice Exercises: Working with Databases (SQLAlchemy) Document
+Web Development with Python Working with Databases (SQLAlchemy) Reference Link: Working with Databases (SQLAlchemy) Link
+Web Development with Python REST APIs with Python Lecture Slides: REST APIs with Python Slide
+Web Development with Python REST APIs with Python Reading Material: REST APIs with Python Document
+Web Development with Python REST APIs with Python Video Lecture: REST APIs with Python Video
+Web Development with Python REST APIs with Python Practice Exercises: REST APIs with Python Document
+Web Development with Python REST APIs with Python Reference Link: REST APIs with Python Link
+Web Development with Python Authentication & Sessions Lecture Slides: Authentication & Sessions Slide
+Web Development with Python Authentication & Sessions Reading Material: Authentication & Sessions Document
+Web Development with Python Authentication & Sessions Video Lecture: Authentication & Sessions Video
+Web Development with Python Authentication & Sessions Practice Exercises: Authentication & Sessions Document
+Web Development with Python Authentication & Sessions Reference Link: Authentication & Sessions Link
+Web Development with Python Deployment & Web Servers Lecture Slides: Deployment & Web Servers Slide
+Web Development with Python Deployment & Web Servers Reading Material: Deployment & Web Servers Document
+Web Development with Python Deployment & Web Servers Video Lecture: Deployment & Web Servers Video
+Web Development with Python Deployment & Web Servers Practice Exercises: Deployment & Web Servers Document
+Web Development with Python Deployment & Web Servers Reference Link: Deployment & Web Servers Link
+Web Development with Python Capstone Web Application Lecture Slides: Capstone Web Application Slide
+Web Development with Python Capstone Web Application Reading Material: Capstone Web Application Document
+Web Development with Python Capstone Web Application Video Lecture: Capstone Web Application Video
+Web Development with Python Capstone Web Application Practice Exercises: Capstone Web Application Document
+Web Development with Python Capstone Web Application Reference Link: Capstone Web Application Link
+--- [Q32] Forum posts with author and replied-to author (SELF JOIN) ---
+Thread Author ReplyingTo
+------ ------ ----------
+Difference between WHERE and HAVING? Ngo Thi Lan NULL
+Difference between WHERE and HAVING? Tran Thi Binh Ngo Thi Lan
+How to fix IndentationError? Hoang Van Dung NULL
+How to fix IndentationError? Le Van An Hoang Van Dung
+How to fix IndentationError? Do Thi Giang Hoang Van Dung
+THÔNG BÁO Nguyen Thi Dao NULL
+--- [Q33] Quiz answer key check: answer -> question -> chosen option (JOIN) ---
+SubmissionID QuestionID ChoseCorrect
+------------ ---------- ------------
+7 4 1
+7 5 1
+--- [Q34] Courses with MORE THAN 3 enrollments (HAVING) ---
+Title Enrollments
+----- -----------
+Data Science Foundations 9
+Data Structures and Algorithms with C 8
+Introduction to Software Engineering 8
+Mathematics for Machine Learning 8
+Natural Language Processing 8
+Web Development Basics 8
+On the Job Training 7
+Mathematics for Engineering 7
+Database Systems 7
+Ethics in IT 7
+AI-DS Project 7
+AI, Data Science with Python & SQL 6
+Computer Vision 6
+Discrete Mathematics 6
+Programming Fundamental with Python 6
+Web Development with Python 6
+Machine Learning 5
+Introduction to Computer Science 5
+Deep Learning 5
+Computer Organization and Architecture 5
+AI Development with TensorFlow 5
+Communication and In-Group Working Skills 4
+Data Structures and Algorithms with Python 4
+Project Management 4
+Statistics & Probability 4
+UI/UX Design Principles 4
+--- [Q35] Instructors who own more than one course (HAVING) ---
+FullName Courses
+-------- -------
+Le Hoang Long 3
+Le Van An 3
+Nguyen Minh Tuan 3
+Nguyen Thi Dao 3
+Tran Thu Ha 3
+Vo Dang Khoa 2
+Dinh Thi Lien 2
+Pham Thi Mai 2
+Pham Van Cuong 2
+Tran Thi Binh 2
+--- [Q36] Students with average grade >= 80 (HAVING on aggregate) ---
+FullName AvgScore
+-------- --------
+--- [Q37] Courses priced above the overall average price (scalar subquery) ---
+CourseCode Title Price
+---------- ----- -----
+DS301 Data Science Foundations 79.00
+DBI202 Database Systems 49.00
+UX150 UI/UX Design Principles 29.00
+--- [Q38] Each course with its enrollment count via subquery in SELECT ---
+CourseCode Title Enrollments
+---------- ----- -----------
+DS301 Data Science Foundations 9
+WD110 Web Development Basics 8
+CSD201 Data Structures and Algorithms with C 8
+MAI391 Mathematics for Machine Learning 8
+SWE201c Introduction to Software Engineering 8
+NLP301c Natural Language Processing 8
+OJT202 On the Job Training 7
+DAP391m AI-DS Project 7
+MAE101 Mathematics for Engineering 7
+ITE303c Ethics in IT 7
+DBI202 Database Systems 7
+PFP191 Programming Fundamental with Python 6
+MAD101 Discrete Mathematics 6
+ADY201m AI, Data Science with Python & SQL 6
+CPV301 Computer Vision 6
+DWP301c Web Development with Python 6
+DPL302m Deep Learning 5
+DAT301m AI Development with TensorFlow 5
+AIL303m Machine Learning 5
+CEA201 Computer Organization and Architecture 5
+CSI106 Introduction to Computer Science 5
+CSD203 Data Structures and Algorithms with Python 4
+UX150 UI/UX Design Principles 4
+MAS291 Statistics & Probability 4
+SSG105 Communication and In-Group Working Skills 4
+PMG201c Project Management 4
+--- [Q39] Top categories by course count (subquery in FROM / derived table) ---
+CategoryName CourseCount
+------------ -----------
+Artificial Intelligence 6
+Mathematics 4
+Programming 4
+Computer Science 3
+Soft Skills 3
+Software Engineering 2
+Data Science 2
+Design 1
+Database 1
+--- [Q40] Students whose best score beats their course average (correlated) ---
+FullName
+--------
+Bui Tan Loc
+Bui Van Minh
+Cao Van Vinh
+Dang Thi Kieu
+Dang Thi Nga
+Dinh Thi Uyen
+Do Thi Giang
+Duong Van Tai
+Ho Thi My
+Ho Thi Quyen
+Hoang Van Dung
+Le Thi Cam
+Ly Thi Quynh
+Ly Van Phuc
+Ngo Quang Phu
+Ngo Thi Lan
+Nguyen Thi Diu
+Pham Hoang Duc
+Phan Van Nam
+Tran Quoc Bao
+Truong Thi Oanh
+Vo Minh Khang
+Vu Van Hai
+--- [Q41] Courses where NO assignment has been graded yet (nested NOT EXISTS) ---
+CourseCode Title
+---------- -----
+CEA201 Computer Organization and Architecture
+CSD203 Data Structures and Algorithms with Python
+CSI106 Introduction to Computer Science
+DAP391m AI-DS Project
+DAT301m AI Development with TensorFlow
+DWP301c Web Development with Python
+ITE303c Ethics in IT
+MAD101 Discrete Mathematics
+MAE101 Mathematics for Engineering
+MAI391 Mathematics for Machine Learning
+NLP301c Natural Language Processing
+OJT202 On the Job Training
+PMG201c Project Management
+SSG105 Communication and In-Group Working Skills
+--- [Q42] Most-enrolled course per category (nested aggregate subquery) ---
+CategoryName Title Enrollments
+------------ ----- -----------
+Artificial Intelligence Natural Language Processing 8
+Computer Science Data Structures and Algorithms with C 8
+Data Science Data Science Foundations 9
+Database Database Systems 7
+Design UI/UX Design Principles 4
+Mathematics Mathematics for Machine Learning 8
+Programming Web Development Basics 8
+Soft Skills Ethics in IT 7
+Soft Skills On the Job Training 7
+Software Engineering Introduction to Software Engineering 8
+--- [Q43] Students who have at least one certificate (EXISTS) ---
+UserID FullName
+------ --------
+28 Bui Tan Loc
+9 Bui Van Minh
+36 Cao Van Vinh
+27 Dang Thi Kieu
+10 Dang Thi Nga
+35 Dinh Thi Uyen
+6 Do Thi Giang
+34 Duong Van Tai
+29 Ho Thi My
+12 Ho Thi Quyen
+5 Hoang Van Dung
+33 Ly Thi Quynh
+11 Ly Van Phuc
+32 Ngo Quang Phu
+8 Ngo Thi Lan
+25 Nguyen Thi Diu
+24 Pham Hoang Duc
+30 Phan Van Nam
+22 Tran Quoc Bao
+31 Truong Thi Oanh
+26 Vo Minh Khang
+7 Vu Van Hai
+--- [Q44] Courses in the same categories as published courses (IN) ---
+CourseCode Title
+---------- -----
+ADY201m AI, Data Science with Python & SQL
+AIL303m Machine Learning
+CEA201 Computer Organization and Architecture
+CPV301 Computer Vision
+CSD201 Data Structures and Algorithms with C
+CSD203 Data Structures and Algorithms with Python
+CSI106 Introduction to Computer Science
+DAP391m AI-DS Project
+DAT301m AI Development with TensorFlow
+DBI202 Database Systems
+DPL302m Deep Learning
+DS301 Data Science Foundations
+DWP301c Web Development with Python
+ITE303c Ethics in IT
+MAD101 Discrete Mathematics
+MAE101 Mathematics for Engineering
+MAI391 Mathematics for Machine Learning
+MAS291 Statistics & Probability
+NLP301c Natural Language Processing
+OJT202 On the Job Training
+PFP191 Programming Fundamental with Python
+PMG201c Project Management
+SSG105 Communication and In-Group Working Skills
+SWE201c Introduction to Software Engineering
+UX150 UI/UX Design Principles
+WD110 Web Development Basics
+--- [Q45] Courses more expensive than ANY beginner course (> ANY) ---
+CourseCode Title Price
+---------- ----- -----
+UX150 UI/UX Design Principles 29.00
+DBI202 Database Systems 49.00
+DS301 Data Science Foundations 79.00
+--- [Q46] Courses at least as expensive as ALL beginner courses (>= ALL) ---
+CourseCode Title Price
+---------- ----- -----
+DS301 Data Science Foundations 79.00
+DBI202 Database Systems 49.00
+UX150 UI/UX Design Principles 29.00
+--- [Q47] Users who have NEVER logged an interaction (NOT IN) ---
+UserID FullName
+------ --------
+1 Nguyen Quan Tri
+2 Le Van An
+3 Tran Thi Binh
+4 Pham Van Cuong
+7 Vu Van Hai
+9 Bui Van Minh
+10 Dang Thi Nga
+11 Ly Van Phuc
+12 Ho Thi Quyen
+13 Nguyen Thi Dao
+14 Vo Dang Khoa
+15 Dinh Thi Lien
+16 Truong Van Son
+17 Nguyen Minh Tuan
+18 Tran Thu Ha
+19 Le Hoang Long
+20 Pham Thi Mai
+23 Le Thi Cam
+24 Pham Hoang Duc
+25 Nguyen Thi Diu
+27 Dang Thi Kieu
+28 Bui Tan Loc
+29 Ho Thi My
+31 Truong Thi Oanh
+32 Ngo Quang Phu
+34 Duong Van Tai
+35 Dinh Thi Uyen
+36 Cao Van Vinh
+37 Mai Xuan Bach
+38 Trinh Thu Cuc
+39 Hoang Dinh Em
+40 Vu Thi Phuong
+--- [Q48] Combined contact list of instructors and admins (UNION) ---
+FullName Kind
+-------- ----
+Dinh Thi Lien Instructor
+Hoang Dinh Em Instructor
+Le Hoang Long Instructor
+Le Van An Instructor
+Mai Xuan Bach Instructor
+Nguyen Minh Tuan Instructor
+Nguyen Quan Tri Admin
+Nguyen Thi Dao Instructor
+Pham Thi Mai Instructor
+Pham Van Cuong Instructor
+Tran Thi Binh Instructor
+Tran Thu Ha Instructor
+Trinh Thu Cuc Instructor
+Truong Van Son Instructor
+Vo Dang Khoa Instructor
+Vu Thi Phuong Instructor
+--- [Q49] Students who are BOTH enrolled and certified (INTERSECT) ---
+StudentID
+---------
+5
+6
+7
+8
+9
+10
+11
+12
+22
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+--- [Q50] Students enrolled but with NO submission yet (EXCEPT) ---
+StudentID
+---------
+--- [Q51] Course completion-rate report (CASE + aggregate) ---
+Title TotalEnroll Completed CompletionRatePct
+----- ----------- --------- -----------------
+Deep Learning 5 5 100.00
+UI/UX Design Principles 4 3 75.00
+AI, Data Science with Python & SQL 6 4 66.67
+Introduction to Software Engineering 8 5 62.50
+Machine Learning 5 3 60.00
+Computer Vision 6 3 50.00
+Data Structures and Algorithms with C 8 4 50.00
+Statistics & Probability 4 2 50.00
+Web Development Basics 8 3 37.50
+Data Science Foundations 9 3 33.33
+Programming Fundamental with Python 6 1 16.67
+Database Systems 7 1 14.29
+AI Development with TensorFlow 5 0 .00
+Project Management 4 0 .00
+Web Development with Python 6 0 .00
+Data Structures and Algorithms with Python 4 0 .00
+AI-DS Project 7 0 .00
+Communication and In-Group Working Skills 4 0 .00
+Computer Organization and Architecture 5 0 .00
+Mathematics for Engineering 7 0 .00
+Mathematics for Machine Learning 8 0 .00
+Natural Language Processing 8 0 .00
+On the Job Training 7 0 .00
+Discrete Mathematics 6 0 .00
+Ethics in IT 7 0 .00
+Introduction to Computer Science 5 0 .00
+--- [Q52] On-time vs late submission report (CASE) ---
+Title Total OnTime Late
+----- ----- ------ ----
+Course Assignment 1 61 61 0
+Course Quiz 1 61 61 0
+Python Basics Assignment 3 0 3
+Database Quiz 2 2 0
+SQL SELECT Exercise 2 0 2
+Python Quiz 1 1 0 1
+--- [Q53] Recommendation effectiveness (conversion funnel) ---
+TotalShown Clicked Enrolled ConversionRatePct
+---------- ------- -------- -----------------
+26 4 1 3.85
+--- [Q54] Daily usage analytics from logs (date grouping) ---
+Date ActiveUsers TotalActions
+---- ----------- ------------
+2026-06-20 2 6
+2026-06-21 1 3
+2026-06-22 1 3
+2026-06-23 1 2
+2026-06-24 1 3
+2026-06-25 1 2
+2026-06-26 1 2
+--- [Q55] Read view vw_CourseCatalog ---
+CourseCode Title InstructorName EnrolledStudents ModuleCount
+---------- ----- -------------- ---------------- -----------
+DS301 Data Science Foundations Pham Van Cuong 9 10
+WD110 Web Development Basics Le Van An 8 10
+CSD201 Data Structures and Algorithms with C Dinh Thi Lien 8 11
+MAI391 Mathematics for Machine Learning Dinh Thi Lien 8 10
+SWE201c Introduction to Software Engineering Le Hoang Long 8 10
+NLP301c Natural Language Processing Nguyen Minh Tuan 8 10
+OJT202 On the Job Training Le Hoang Long 7 8
+DAP391m AI-DS Project Nguyen Minh Tuan 7 8
+MAE101 Mathematics for Engineering Vo Dang Khoa 7 10
+ITE303c Ethics in IT Pham Thi Mai 7 10
+--- [Q56] Read view vw_Gradebook ---
+CourseTitle StudentName AssignmentTitle Score SubmissionStatus
+----------- ----------- --------------- ----- ----------------
+AI, Data Science with Python & SQL Bui Tan Loc Course Assignment 1 9.00 Graded
+AI, Data Science with Python & SQL Bui Tan Loc Course Quiz 1 9.00 Graded
+AI, Data Science with Python & SQL Dang Thi Kieu Course Assignment 1 6.00 Graded
+AI, Data Science with Python & SQL Dang Thi Kieu Course Quiz 1 9.00 Graded
+AI, Data Science with Python & SQL Ho Thi My Course Assignment 1 9.00 Graded
+AI, Data Science with Python & SQL Ho Thi My Course Quiz 1 9.00 Graded
+AI, Data Science with Python & SQL Nguyen Thi Diu Course Assignment 1 9.00 Graded
+AI, Data Science with Python & SQL Nguyen Thi Diu Course Quiz 1 8.00 Graded
+AI, Data Science with Python & SQL Phan Van Nam Course Assignment 1 9.00 Graded
+AI, Data Science with Python & SQL Phan Van Nam Course Quiz 1 8.00 Graded
+--- [Q57..Q60] Scalar functions on a real enrolled pair ---
+StudentID CourseID CanAccess ProgressPct FinalGrade HasPassed
+--------- -------- --------- ----------- ---------- ---------
+5 1 1 50.00 42.50 0
+--- [Q61] Table-valued function fn_AccessibleMaterials ---
+MaterialID Title MaterialType CourseTitle
+---------- ----- ------------ -----------
+1 Lecture Slides: Getting Started with Python Slide Programming Fundamental with Python
+2 Reading Material: Getting Started with Python Document Programming Fundamental with Python
+3 Video Lecture: Getting Started with Python Video Programming Fundamental with Python
+4 Practice Exercises: Getting Started with Python Document Programming Fundamental with Python
+5 Reference Link: Getting Started with Python Link Programming Fundamental with Python
+6 Lecture Slides: Control Flow & Functions Slide Programming Fundamental with Python
+7 Reading Material: Control Flow & Functions Document Programming Fundamental with Python
+8 Video Lecture: Control Flow & Functions Video Programming Fundamental with Python
+9 Practice Exercises: Control Flow & Functions Document Programming Fundamental with Python
+10 Reference Link: Control Flow & Functions Link Programming Fundamental with Python
+--- [Q62] List user-defined indexes on the LMS tables ---
+TableName IndexName IndexType IsUnique
+--------- --------- --------- --------
+Courses IX_Courses_Instructor NONCLUSTERED 0
+Courses PK__Courses__C92D7187E637B1A2 CLUSTERED 1
+Courses UQ_Courses_Code NONCLUSTERED 1
+Enrollments IX_Enroll_Course NONCLUSTERED 0
+Enrollments IX_Enroll_Student NONCLUSTERED 0
+Enrollments PK__Enrollme__7F6877FB8213D51B CLUSTERED 1
+Enrollments UQ_Enroll NONCLUSTERED 1
+InteractionLogs IX_Log_User_Time NONCLUSTERED 0
+InteractionLogs PK__Interact__5E5499A8FF000B4B CLUSTERED 1
+Submissions IX_Sub_Assignment NONCLUSTERED 0
+Submissions IX_Sub_Student NONCLUSTERED 0
+Submissions PK__Submissi__449EE1056EF1B970 CLUSTERED 1
+Submissions UQ_Sub NONCLUSTERED 1
+--- [Q63] sp_RecommendCourses (writes Recommendations; rolled back) ---
+RecommendationID CourseID Title Score Reason
+---------------- -------- ----- ----- ------
+35 13 Ethics in IT .9375 Similar to categories you study
+36 17 Computer Vision .9286 Similar to categories you study
+37 16 Machine Learning .9167 Similar to categories you study
+2 10 Data Structures and Algorithms with Python .5000 Similar to categories you study
+3 22 Web Development with Python .5000 Similar to categories you study
+OK: sp_RecommendCourses demonstrated and rolled back.
+--- [Q64] sp_EnrollStudent (writes Enrollments; rolled back) ---
+StudentID CourseID Result
+--------- -------- ------
+5 3 enrolled (rolled back)
+OK: sp_EnrollStudent demonstrated and rolled back.
+--- [Q65] sp_SubmitAssignment + sp_AutoGradeQuiz (writes; rolled back) ---
+SubmissionID Score
+------------ -----
+135 .00
+OK: submit + auto-grade demonstrated and rolled back.
+--- [Q66] sp_IssueCertificate (writes Certificates; rolled back) ---
+Warning: Null value is eliminated by an aggregate or other SET operation.
+SKIP: no passing, not-yet-certified (student, course) pair found.
+OK: sp_IssueCertificate demonstrated and rolled back.
+--- [Q67] trg_Enroll_Validate: a non-Student cannot enroll (expected to fail) ---
+OK (rule enforced): Business rule violated: only users with role Student can enroll.
+--- [Q68] trg_StudentAnswers_OptionMatchesQuestion (effect via SELECT) ---
+MismatchedAnswers
+-----------------
+0
+======================================================================
+ LAB 5 QUERY WORKBOOK COMPLETED (read-only / all writes rolled back).
+======================================================================
