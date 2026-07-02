@@ -1,8 +1,0 @@
-chore: don repo chi con ma nguon chay duoc + README
-
-- Gom toan bo tai lieu nguon (docs/: .md, so do, screenshots, evidence,
-  script build) va webapp/README.md, webapp/_build_review_pdf.py vao
-  thu muc cuc bo _tailieu_nguon/ (gitignore, khong push GitHub)
-- Repo tren GitHub chi con: sql/ + webapp/ (chay duoc) + README.md
-- README tu chua: bo link/anh tro toi file da gom di, giu ERD mermaid inline,
-  bo sung buoc chay web app truc tiep trong README
