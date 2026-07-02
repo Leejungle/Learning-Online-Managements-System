@@ -72,3 +72,7 @@ Desktop.ini
 *.xlsx
 # File khóa tạm của MS Office (vd ~$AI_AuditLog...xlsx)
 ~$*
+
+# ---------- Tài liệu nguồn gom lại: GIỮ TRÊN MÁY, KHÔNG push GitHub ----------
+# Toàn bộ .md/sơ đồ/screenshots/script build phục vụ tạo báo cáo, không cần để chạy.
+_tailieu_nguon/

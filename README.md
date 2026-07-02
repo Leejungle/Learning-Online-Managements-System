@@ -20,57 +20,19 @@ sql/
 ├── 09_positive_smoke_tests.sql-- Smoke test luồng hợp lệ (chạy trong transaction + ROLLBACK, an toàn)
 ├── run_all.sql                -- Chạy tất cả theo thứ tự (đường dẫn TƯƠNG ĐỐI, SQLCMD mode)
 └── run_all_local.sql          -- Chạy tất cả với đường dẫn TUYỆT ĐỐI (tiện chạy trong SSMS trên máy này)
-docs/
-├── erd.mmd / erd_chen.dot / erd_chen.svg -- ERD nguồn (mermaid + Graphviz Chen)
-├── diagrams/                             -- Ảnh sơ đồ đã render (PNG/SVG)
-│   ├── erd.png                           -- Sơ đồ ERD tổng quan (mermaid)
-│   ├── erd_chen.png                      -- ERD Chen đầy đủ (dùng cho Lab 2 & Final Report)
-│   ├── lms_core_chen_erd_presentation.png / .svg / .dot -- ERD Chen rút gọn (Lab 4 & slide thuyết trình)
-│   └── block_diagram.png                 -- Sơ đồ khối kiến trúc hệ thống
-├── Normalization_and_DataDictionary.md   -- Chuẩn hóa 1NF/2NF/3NF + Data dictionary
-├── PROJECT_REVIEW.md / .pdf              -- Bản tự rà soát/đánh giá tổng thể dự án
-├── Lab 1..5 *.docx                       -- Đề bài gốc (template) của 5 lab từ giảng viên
-├── reports/                              -- Báo cáo 5 lab để nộp + phụ trợ (xem mục 1b)
-│   ├── lab1_data_models.md / .docx
-│   ├── lab2_entities_fds_keys.md / .docx
-│   ├── lab3_anomalies_and_normalization.md / .docx
-│   ├── lab4_relational_design_process.md / .docx
-│   ├── lab5_sql_programming.md / .docx
-│   ├── _build_lab_docx.py                -- Script build 5 .md -> .docx (python-docx)
-│   └── _build_lab_pdfs.py                -- Script build 5 .md -> .pdf
-└── screenshots/                          -- Ảnh chụp web app (minh họa cho Lab 5 / Final Report)
 webapp/                          -- Web app demo (Flask + pyodbc) kết nối SQL Server thật
 ├── app.py                       -- Route Flask
 ├── db.py                        -- Lớp truy cập DB (parameterized, chỉ đọc/gọi SP có sẵn)
 ├── templates/                   -- Giao diện Jinja2 + Bootstrap
 ├── static/css/app.css           -- CSS tùy biến (giao diện academic)
 ├── requirements.txt             -- Thư viện Python
-├── .env.example                 -- Mẫu biến môi trường (copy thành .env)
-└── README.md                    -- Hướng dẫn riêng cho web app
+└── .env.example                 -- Mẫu biến môi trường (copy thành .env)
 README.md
 ```
 
-> Tài liệu thiết kế chi tiết (chuẩn hóa 3NF & từ điển dữ liệu):
-> [`docs/Normalization_and_DataDictionary.md`](docs/Normalization_and_DataDictionary.md).
-> Sơ đồ ERD: [`docs/diagrams/erd.png`](docs/diagrams/erd.png).
-> Hướng dẫn web app demo: [`webapp/README.md`](webapp/README.md).
-
-## 1b. Báo cáo các lab (docs/reports/)
-
-Năm bài lab của môn được viết trong `docs/reports/` (mỗi lab có bản `.md` nguồn và bản
-`.docx` để nộp). Trang bìa để placeholder — nhóm điền `[GROUP NAME]`,
-`[FULL NAME — STUDENT ID]`, `[CLASS CODE]`, `[SUBMISSION DATE]` trước khi nộp.
-
-| Lab | Nội dung | File |
-|-----|----------|------|
-| Lab 1 | Study of Data Models (so sánh các mô hình dữ liệu, biện minh chọn mô hình quan hệ) | `lab1_data_models.md` / `.docx` |
-| Lab 2 | Entities, attributes, functional dependencies, keys (17 thực thể) | `lab2_entities_fds_keys.md` / `.docx` |
-| Lab 3 | Anomalies + chuẩn hóa 1NF→2NF→3NF (ghi chú BCNF) | `lab3_anomalies_and_normalization.md` / `.docx` |
-| Lab 4 | Quy trình thiết kế CSDL quan hệ (ERD → logical → physical → constraints) | `lab4_relational_design_process.md` / `.docx` |
-| Lab 5 | SQL cơ bản → nâng cao + view/index/function/procedure/trigger | `lab5_sql_programming.md` / `.docx` |
-
-- **Build lại tài liệu:** `python docs/reports/_build_lab_docx.py` (ra `.docx`),
-  `python docs/reports/_build_lab_pdfs.py` (ra `.pdf`).
+> Tài liệu thiết kế chi tiết (chuẩn hóa 3NF, từ điển dữ liệu, ERD, báo cáo 5 lab và bản
+> tự rà soát dự án) được giữ **cục bộ** trong thư mục `_tailieu_nguon/` để phục vụ nộp bài,
+> không đưa lên repo này (repo chỉ chứa mã nguồn để chạy được).
 
 ## 2. Cách chạy database
 
@@ -124,11 +86,20 @@ sqlcmd -S localhost -E -C -i 01_schema.sql -i 02_triggers.sql -i 03_functions_vi
 - Web demo gồm: danh mục & chi tiết khóa, cổng theo vai trò **Student / Instructor / Admin**,
   báo cáo **kèm biểu đồ**, hệ thống **chứng chỉ ≥ 80%**, showcase quy tắc nghiệp vụ, và trang
   **minh bạch SQL** (`/sql-objects` + panel "SQL chạy cho trang này") đọc trực tiếp system catalog.
-- Chi tiết cài đặt & cách chạy web app: xem [`webapp/README.md`](webapp/README.md).
+- **Cách chạy web app demo** (sau khi đã dựng database ở mục 2):
+
+```powershell
+cd webapp
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+copy .env.example .env
+.\.venv\Scripts\python.exe app.py
+```
+
+  Mở **http://127.0.0.1:5000**. Chỉnh chuỗi kết nối trong `webapp/.env` (copy từ `.env.example`):
+  `DB_DRIVER=ODBC Driver 18 for SQL Server`, `DB_TRUST_SERVER_CERTIFICATE=yes`, dùng Windows Authentication.
 
 ## 3. Sơ đồ thực thể quan hệ (ERD)
-
-![ERD](docs/diagrams/erd.png)
 
 <details><summary>Mã nguồn mermaid của ERD</summary>
 
