@@ -76,3 +76,7 @@ Desktop.ini
 # ---------- Tài liệu nguồn gom lại: GIỮ TRÊN MÁY, KHÔNG push GitHub ----------
 # Toàn bộ .md/sơ đồ/screenshots/script build phục vụ tạo báo cáo, không cần để chạy.
 _tailieu_nguon/
+
+# ---------- Runner đường dẫn tuyệt đối theo máy: GIỮ LOCAL, KHÔNG push ----------
+# run_all_local.sql chứa đường dẫn cứng của máy dev; máy khác dùng run_all.sql (mục 2.2 README).
+sql/run_all_local.sql

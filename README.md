@@ -18,8 +18,7 @@ sql/
 ├── 07_business_rule_tests.sql -- Kiểm thử quy tắc nghiệp vụ (12 negative tests)
 ├── 08_more_sample_data.sql    -- Làm giàu dữ liệu mẫu (idempotent, chạy lại không nhân đôi)
 ├── 09_positive_smoke_tests.sql-- Smoke test luồng hợp lệ (chạy trong transaction + ROLLBACK, an toàn)
-├── run_all.sql                -- Chạy tất cả theo thứ tự (đường dẫn TƯƠNG ĐỐI, SQLCMD mode)
-└── run_all_local.sql          -- Chạy tất cả với đường dẫn TUYỆT ĐỐI (tiện chạy trong SSMS trên máy này)
+└── run_all.sql                -- Chạy tất cả 01→09 theo thứ tự (dùng với sqlcmd, xem mục 2.2)
 webapp/                          -- Web app demo (Flask + pyodbc) kết nối SQL Server thật
 ├── app.py                       -- Route Flask
 ├── db.py                        -- Lớp truy cập DB (parameterized, chỉ đọc/gọi SP có sẵn)
@@ -36,39 +35,40 @@ README.md
 
 ## 2. Cách chạy database
 
-> ⚠️ **Quan trọng:** `run_all.sql` / `run_all_local.sql` sẽ **DROP và tạo lại** database `LMS`
+> ⚠️ **Quan trọng:** chạy toàn bộ script sẽ **DROP và tạo lại** database `LMS`
 > (xem `01_schema.sql`: `ALTER DATABASE ... SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE LMS;`).
 > Mọi dữ liệu trong `LMS` sẽ bị xóa và dựng lại từ đầu. **Hãy tắt web app trước khi chạy** (xem mục 2.3).
 
-### 2.1. Cách A — SSMS (khuyến nghị `run_all_local.sql`)
+### 2.1. Cách A — SSMS (mở từng file 01 → 09)
 
-1. Mở `sql/run_all_local.sql` (file này dùng **đường dẫn tuyệt đối** nên không bị lỗi
-   "file not found" như `run_all.sql` dùng đường dẫn tương đối).
-2. Bật **SQLCMD Mode**: menu `Query > SQLCMD Mode` (bắt buộc, để chạy được lệnh `:r`).
-3. Đổi database trên thanh công cụ sang **`master`** (KHÔNG để là `LMS`). Vì script drop/tạo
+1. Đổi database trên thanh công cụ sang **`master`** (KHÔNG để là `LMS`). Vì script drop/tạo
    lại `LMS`, nếu cửa sổ query đang đứng trong `LMS` thì sẽ tự khóa chính mình → lỗi kết nối.
-4. Nhấn **F5 (Execute)**. Tab *Messages* sẽ in lần lượt `... created successfully`,
-   `Sample data inserted successfully`, các REPORT, và `TEST 1..12: PASS`.
+2. Mở lần lượt `01_schema.sql` → `09_positive_smoke_tests.sql` và nhấn **F5 (Execute)** đúng
+   thứ tự (cách này **không cần SQLCMD Mode**, không phụ thuộc đường dẫn nên luôn chạy được).
+3. Tab *Messages* sẽ in `... created successfully`, `Sample data inserted successfully`,
+   các REPORT, `TEST 1..12: PASS` và `SMOKE: PASS`.
 
-> Nếu chạy trên máy khác: sửa đường dẫn trong `run_all_local.sql`, hoặc mở từng file
-> `01 → 09` theo đúng thứ tự và Execute lần lượt (cách này không cần SQLCMD Mode).
+> Muốn chạy **một phát** trong SSMS: mở `run_all.sql`, bật **SQLCMD Mode**
+> (`Query > SQLCMD Mode`) rồi F5 — nhưng cần SSMS đứng đúng thư mục `sql/` để lệnh `:r`
+> tìm thấy file. Nếu báo "file not found", dùng Cách B (sqlcmd) cho chắc ăn.
 
-### 2.2. Cách B — dòng lệnh (sqlcmd)
+### 2.2. Cách B — dòng lệnh (sqlcmd, khuyến nghị chạy một phát)
 
 ```powershell
 cd sql
-sqlcmd -S localhost -E -C -i 01_schema.sql -i 02_triggers.sql -i 03_functions_views.sql -i 04_procedures.sql -i 05_sample_data.sql -i 06_reports.sql -i 07_business_rule_tests.sql -i 08_more_sample_data.sql -i 09_positive_smoke_tests.sql
+sqlcmd -S localhost -E -C -i run_all.sql
 ```
 
-> `-E` = Windows Authentication, `-C` = trust server certificate. Thay `-S` bằng
-> tên instance của bạn (ví dụ `localhost\SQLEXPRESS`). Cách này luôn chạy ở context `master`.
+> `run_all.sql` gọi lần lượt `01 → 09` bằng lệnh `:r` (đường dẫn tương đối, khớp với `cd sql`).
+> `-E` = Windows Authentication, `-C` = trust server certificate. Thay `-S` bằng tên instance
+> của bạn (ví dụ `localhost\SQLEXPRESS`). Cách này luôn chạy ở context `master`.
 
 ### 2.3. Trình tự an toàn khi reset database
 
 1. **Tắt web app** nếu đang chạy (Ctrl+C ở cửa sổ chạy Flask). Web app dùng pyodbc mở/đóng
    kết nối theo từng request nên thường không giữ `LMS`, nhưng tắt hẳn cho chắc.
 2. Đóng các tab query SSMS đang nối vào `LMS` (hoặc chuyển chúng sang `master`).
-3. Chạy `run_all_local.sql` (theo mục 2.1) → đợi `TEST 1..12: PASS` (và `SMOKE: PASS`).
+3. Chạy lại toàn bộ script (Cách A hoặc Cách B ở trên) → đợi `TEST 1..12: PASS` (và `SMOKE: PASS`).
 4. Bật lại web app khi cần demo.
 
 > Các file SQL **phải chạy đúng thứ tự** `01 → 09` (qua runner script hoặc thủ công),
@@ -235,7 +235,7 @@ Triển khai này **cố ý** dùng mô hình phân quyền đơn giản hóa đ
 | Triệu chứng | Nguyên nhân | Cách xử lý |
 |---|---|---|
 | `Msg 102: Incorrect syntax near ':'` khi chạy runner | Chưa bật **SQLCMD Mode** | Menu `Query > SQLCMD Mode`, rồi chạy lại |
-| `The file specified for :r command was not found` | `run_all.sql` dùng đường dẫn **tương đối**, SSMS không tìm thấy | Dùng `run_all_local.sql` (đường dẫn tuyệt đối), hoặc sửa lại đường dẫn cho đúng máy |
+| `The file specified for :r command was not found` | `run_all.sql` dùng đường dẫn **tương đối**, SSMS không đứng đúng thư mục | Chạy bằng sqlcmd sau khi `cd sql` (mục 2.2), hoặc mở từng file `01 → 09` trong SSMS (mục 2.1) |
 | Lỗi `connection broken / unrecoverable`, DB hiện **`LMS (Single User)`** | Cửa sổ query đang đứng trong `LMS` khi script `DROP DATABASE LMS` → tự khóa chính mình | Đổi database trên thanh công cụ sang **`master`** rồi chạy lại. Nếu vẫn kẹt Single User: chạy `ALTER DATABASE LMS SET MULTI_USER;` từ một cửa sổ nối vào `master` |
 | `Msg 208: Invalid object name 'sp_...'` khi tạo procedure | Có procedure tên `sp_...` bị lỡ tạo trong database `master` (do từng chạy lẻ đoạn `CREATE PROCEDURE` khi đang đứng ở `master`); tên `sp_` được SQL Server tra ở `master` trước | Xóa proc "ma" trong `master`: `DROP PROCEDURE IF EXISTS dbo.sp_EnrollStudent, dbo.sp_SubmitAssignment, dbo.sp_GradeSubmission, dbo.sp_AutoGradeQuiz, dbo.sp_RecommendCourses;` (chạy ở `master`), rồi chạy lại runner. **Phòng ngừa:** luôn chạy nguyên file (đã có `USE LMS;`), không bôi đen chạy lẻ khi đứng ở `master` |
 | Reset database báo lỗi đang bị dùng / kẹt Single User | Web app hoặc tab SSMS đang giữ kết nối tới `LMS` | **Tắt web app** (Ctrl+C) và đóng/đổi tab SSMS sang `master` trước khi chạy runner (xem mục 2.3) |
